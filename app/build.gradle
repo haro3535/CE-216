@@ -29,7 +29,11 @@ dependencies {
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:31.1-jre'
 }
+compileJava.options.encoding = 'UTF-8'
 
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
 application {
     // Define the main class for the application.
     mainClass = 'ce.App'
