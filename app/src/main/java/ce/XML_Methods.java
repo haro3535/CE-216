@@ -11,6 +11,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 public class XML_Methods implements Runnable {
 
@@ -28,7 +29,7 @@ public class XML_Methods implements Runnable {
                 Node node = element.getElementsByTagName("orth").item(0);
                 NodeList nodeL2 = node.getParentNode().getParentNode().getChildNodes();
                 for (int j=3;j<nodeL2.getLength();j++){
-                    if(nodeL2.item(j).getNodeName()=="sense"){
+                    if(Objects.equals(nodeL2.item(j).getNodeName(), "sense")){
                         System.out.println("Meaning " + (j/2) + ": " + nodeL2.item(j).getChildNodes().item(1).getChildNodes().item(1).getTextContent());
                     }
                 }
