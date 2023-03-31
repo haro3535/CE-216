@@ -49,8 +49,6 @@ public class XML_Methods implements Runnable {
             Element element = (Element) nodeL.item(i);
             if (element.getElementsByTagName("orth").item(0).getTextContent().equals(word)){
                 System.out.println("Word found!");
-                System.out.println(word);
-                System.out.println(element.getElementsByTagName("orth").item(0).getTextContent());
             }
         }
     }
