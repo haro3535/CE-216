@@ -12,11 +12,13 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Objects;
 
 public class XML_Methods implements Runnable {
 
     private final ArrayList<Node> foundedEntries = new ArrayList<>();
+    private final ArrayList<LinkedList<String>> meanings = new ArrayList<>();
     private String filepath;
     private String word;
 
@@ -31,9 +33,10 @@ public class XML_Methods implements Runnable {
 
             int meaningIndex = 1;
 
+            // Eş sesli kelimeler için
+            meanings.add(new LinkedList<>());
 
             for (int j = 0; j < senses.getLength(); j++) {
-
                 // Some XML dictionaries also have multiple cit tag inside sense tag.
                 // For that reason, we take them all and
                 Element currentSense = (Element) senses.item(j);
@@ -42,20 +45,26 @@ public class XML_Methods implements Runnable {
 
 
                 System.out.print("Meaning " +(j+1) +": ");
+                StringBuilder sense = new StringBuilder();
                 for (int k = 0; k < cites.getLength(); k++) {
                     Element citeT = (Element) cites.item(k);
                     if (citeT.getAttribute("type").equals("trans")) {
                         String quote = citeT.getElementsByTagName("quote").item(0).getTextContent();
                         if (k+1!= cites.getLength()){
                             System.out.print(quote + ", ");
+                            sense.append(quote).append(", ");
                         }
                         else{
                             System.out.print(quote);
+                            sense.append(quote);
                         }
                         meaningIndex++;
                     }
                 }
                 System.out.println();
+
+                // Sonradan Guı den kelimelerin anlamlarına ulaşabilmek için
+                meanings.get(j).add(String.valueOf(sense));
             }
         }
     }
