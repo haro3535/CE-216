@@ -19,32 +19,12 @@ public class XML_Methods implements Runnable {
     private final ArrayList<Node> foundedEntries = new ArrayList<>();
 
 
-    public void searchMeaning(String word){
-        /*File file = new File("eng-tur.xml");
-        DocumentBuilderFactory fac = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = fac.newDocumentBuilder();
-        Document doc = builder.parse(file);
-        doc.getDocumentElement().normalize();
-        NodeList nodeL = doc.getElementsByTagName("entry");
-        for (int i=0;i<nodeL.getLength();i++){
-                Element element = (Element) nodeL.item(i);
-                if (element.getElementsByTagName("orth").item(0).getTextContent().equals(word)){
-                    Node node = element.getElementsByTagName("orth").item(0);
-                    NodeList nodeL2 = node.getParentNode().getParentNode().getChildNodes();
-                    for (int j=3;j<nodeL2.getLength();j++){
-                        if(Objects.equals(nodeL2.item(j).getNodeName(), "sense")){
-                            System.out.println("Meaning " + (j/2) + ": " + nodeL2.item(j).getChildNodes().item(1).getChildNodes().item(1).getTextContent());
-                        }
-                    }
-                }
-            }
-         */
-
+    public void searchMeaning(){
         for (Node foundedEntry : foundedEntries) {
 
             Element entry = (Element) foundedEntry;
 
-            // Bazı XML dosyaları birden fazla sense tagına sahip o yüzden eğer böyle bir durumla karşılaşırsa sıkıntı çıkmasın diye
+            // Some XML files have more than one sense tag, so if he encounters such a situation, so that there are no problems.
             NodeList senses = entry.getElementsByTagName("sense");
 
             for (int j = 0; j < senses.getLength(); j++) {
@@ -53,15 +33,22 @@ public class XML_Methods implements Runnable {
 
                 NodeList cites = currentSense.getElementsByTagName("cit");
 
+                int meaningIndex = 1;
+                System.out.print("Meaning " +(j+1) +": ");
                 for (int k = 0; k < cites.getLength(); k++) {
                     Element citeT = (Element) cites.item(k);
-
-                    int meaningIndex = 1;
                     if (citeT.getAttribute("type").equals("trans")) {
                         String quote = citeT.getElementsByTagName("quote").item(0).getTextContent();
-                        System.out.println("Meaning " + (meaningIndex) + ": " + quote);
+                        if (k+1!= cites.getLength()){
+                            System.out.print(quote + ", ");
+                        }
+                        else{
+                            System.out.print(quote);
+                        }
+                        meaningIndex++;
                     }
                 }
+                System.out.println();
             }
         }
     }
@@ -79,7 +66,7 @@ public class XML_Methods implements Runnable {
             if (element.getElementsByTagName("orth").item(0).getTextContent().equals(word)){
                 System.out.println("Word found!");
 
-                // Sonradan tekrar dosyayı aratmamak için bulunan entry i kayıt ediyor
+                // It saves the found entry so as not to search the file again later.
                 foundedEntries.add(nodeL.item(i));
             }
         }
