@@ -17,6 +17,8 @@ import java.util.Objects;
 public class XML_Methods implements Runnable {
 
     private final ArrayList<Node> foundedEntries = new ArrayList<>();
+    private String filepath;
+    private String word;
 
 
     public void searchMeaning(){
@@ -27,13 +29,18 @@ public class XML_Methods implements Runnable {
             // Some XML files have more than one sense tag, so if he encounters such a situation, so that there are no problems.
             NodeList senses = entry.getElementsByTagName("sense");
 
+            int meaningIndex = 1;
+
+
             for (int j = 0; j < senses.getLength(); j++) {
 
+                // Some XML dictionaries also have multiple cit tag inside sense tag.
+                // For that reason, we take them all and
                 Element currentSense = (Element) senses.item(j);
 
                 NodeList cites = currentSense.getElementsByTagName("cit");
 
-                int meaningIndex = 1;
+
                 System.out.print("Meaning " +(j+1) +": ");
                 for (int k = 0; k < cites.getLength(); k++) {
                     Element citeT = (Element) cites.item(k);
@@ -53,26 +60,39 @@ public class XML_Methods implements Runnable {
         }
     }
 
-    public void findWord(String word) throws ParserConfigurationException, IOException, SAXException {
+    public void findWord() {
 
-        File file = new File("eng-tur.xml");
+        File file = new File(filepath);
+
+        // These three lines of code below for parsing the xml file.
         DocumentBuilderFactory fac = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = fac.newDocumentBuilder();
-        Document doc = builder.parse(file);
-        doc.getDocumentElement().normalize();
-        NodeList nodeL = doc.getElementsByTagName("entry");
-        for (int i=0;i<nodeL.getLength();i++){
-            Element element = (Element) nodeL.item(i);
-            if (element.getElementsByTagName("orth").item(0).getTextContent().equals(word)){
-                System.out.println("Word found!");
 
-                // It saves the found entry so as not to search the file again later.
-                foundedEntries.add(nodeL.item(i));
+
+        try {
+            DocumentBuilder builder = fac.newDocumentBuilder();
+            Document doc = builder.parse(file);
+
+            // It is not necessary but recommended for parsing
+            doc.getDocumentElement().normalize();
+
+            NodeList nodeL = doc.getElementsByTagName("entry");
+            for (int i=0;i<nodeL.getLength();i++){
+                Element element = (Element) nodeL.item(i);
+                if (element.getElementsByTagName("orth").item(0).getTextContent().equals(word)){
+                    System.out.println("Word found!");
+
+                    // It saves the found entry so as not to search the file again later.
+                    foundedEntries.add(nodeL.item(i));
+                }
             }
+        } catch (ParserConfigurationException | IOException | SAXException e) {
+            e.printStackTrace();
         }
+
+
     }
 
-    protected void search(String filepath){
+    protected void search(){
 
         File file = new File(filepath);
 
@@ -92,5 +112,23 @@ public class XML_Methods implements Runnable {
     @Override
     public void run() {
 
+        findWord();
+        searchMeaning();
+    }
+
+    public String getWord() {
+        return word;
+    }
+
+    public void setWord(String word) {
+        this.word = word;
+    }
+
+    public String getFilepath() {
+        return filepath;
+    }
+
+    public void setFilepath(String filepath) {
+        this.filepath = filepath;
     }
 }
