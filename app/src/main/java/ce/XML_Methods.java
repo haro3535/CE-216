@@ -37,7 +37,7 @@ public class XML_Methods implements Runnable {
             meanings.add(new LinkedList<>());
 
             for (int j = 0; j < senses.getLength(); j++) {
-                // Some XML dictionaries also have multiple cit tag inside sense tag.
+                // Some XML dictionaries also have multiple cit tag inside the sense tag.
                 // For that reason, we take them all and
                 Element currentSense = (Element) senses.item(j);
 
