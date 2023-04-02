@@ -76,7 +76,7 @@ public class GUI_Actions {
     }
 
     public void searchingAction (TextField textField, Stage stage){
-        int meaningNumber = 1;
+        int meaningNumber = 6;
         BorderPane borderPane = new BorderPane();
 
         MenuBar mainMenuBar = new MenuBar();

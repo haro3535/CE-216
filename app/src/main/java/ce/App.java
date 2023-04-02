@@ -72,13 +72,6 @@ public class App extends Application {
 
         borderPane.setCenter(searchImageBox);
 
-
-
-
-
-
-
-
         Scene scene = new Scene(borderPane, 500, 600);
         stage.setTitle("Team 6");
         stage.setScene(scene);
