@@ -6,6 +6,8 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import javafx.scene.control.Button;
@@ -56,7 +58,10 @@ public class App extends Application {
 
         HBox imageBox = new HBox();
 
-        Image image = new Image(new FileInputStream("C:\\Users\\Ali Boztepe\\Desktop\\Team 61.png"));
+        // To find absolute path of img file
+        File file = new File("Team_61.png");
+
+        Image image = new Image(new FileInputStream(file.getAbsolutePath()));
         ImageView imageView = new ImageView(image);
         imageView.setPreserveRatio(true);
         Group imageGroup = new Group(imageView);
