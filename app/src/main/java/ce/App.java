@@ -2,108 +2,85 @@ package ce;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import javafx.scene.control.Button;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+
 public class App extends Application {
-    public Menu fFL;
+
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage) throws FileNotFoundException {
 
         GUI_Actions actions = new GUI_Actions();
 
-        VBox mainBox = new VBox();
-        MenuBar menuBar = new MenuBar();
+        BorderPane borderPane = new BorderPane();
+        Scene scene = new Scene(borderPane, 500, 600);
+        stage.setTitle("Team 6");
+        stage.setScene(scene);
+        stage.show();
+
+        MenuBar mainMenuBar = new MenuBar();
         Menu mHelp = new Menu("Help");
         Menu mAdd = new Menu("Add a word");
-        menuBar.getMenus().addAll(mHelp, mAdd);
+        mainMenuBar.getMenus().addAll(mHelp, mAdd);
 
         MenuItem mAddItem = new MenuItem("Add");
         mAdd.getItems().add(mAddItem);
 
-        mAddItem.setOnAction(e -> actions.popupMenu(stage) );
+        mAddItem.setOnAction(e -> actions.popupMenu(stage, scene) );
 
-        HBox allTBox = new HBox();
-
-        VBox fTBox = new VBox();
-        TextArea ftextA = new TextArea();
-        VBox.setVgrow(ftextA, Priority.ALWAYS);
-        MenuBar fTMenuBar = new MenuBar();
-        Menu fAL = new Menu("˅");
-        MenuItem fA = new MenuItem(actions.language1);
-        MenuItem fB = new MenuItem(actions.language2);
-        MenuItem fC = new MenuItem(actions.language3);
-        MenuItem fD = new MenuItem(actions.language4);
-        MenuItem fE = new MenuItem(actions.language5);
-        MenuItem fF = new MenuItem(actions.language6);
-        MenuItem fG = new MenuItem(actions.language7);
-
-        fA.setOnAction(event -> actions.firstChosenLanguage(fA, actions.language1));
-        fB.setOnAction(event -> actions.firstChosenLanguage(fB, actions.language2));
-        fC.setOnAction(event -> actions.firstChosenLanguage(fC, actions.language3));
-        fD.setOnAction(event -> actions.firstChosenLanguage(fD, actions.language4));
-        fE.setOnAction(event -> actions.firstChosenLanguage(fE, actions.language5));
-        fF.setOnAction(event -> actions.firstChosenLanguage(fF, actions.language6));
-        fG.setOnAction(event -> actions.firstChosenLanguage(fG, actions.language7));
-
-        fAL.getItems().addAll(fA,fB,fC,fD,fE,fF,fG);
-        fFL = new Menu();
-        /*Label t = new Label(actions.fChosenLanguage);
-        t.setStyle("-fx-text-fill: blue;");
-        fFL.setGraphic(t);*/
+        borderPane.setTop(mainMenuBar);
 
 
-        Button button = new Button("Button");
-        VBox.setMargin(button, new Insets(80));
-        button.setLayoutX(200);
+        VBox searchImageBox = new VBox();
+        HBox textWithButton = new HBox();
+
+        TextField searchingText = new TextField();
+        HBox.setHgrow(searchingText, Priority.ALWAYS);
+        VBox.setMargin(textWithButton, new Insets(80,0,80,80));
+        searchingText.minWidth(600);
+
+        Button searchButton = new Button("Search");
+        HBox.setMargin(searchButton, new Insets(0,40,0,40));
+        searchButton.setOnAction(event -> actions.searchingAction(searchingText,stage, scene));
+
+        HBox imageBox = new HBox();
+
+        // To find absolute path of img file
+        File file = new File("Team_61.png");
+
+        Image image = new Image(new FileInputStream(file.getAbsolutePath()));
+        ImageView imageView = new ImageView(image);
+        imageView.setPreserveRatio(true);
+        Group imageGroup = new Group(imageView);
+        VBox.setMargin(imageBox, new Insets(0,0,0,100));
 
 
-        fTMenuBar.getMenus().addAll(fFL, fAL);
-        fTBox.getChildren().addAll(fTMenuBar, ftextA, button);
+        imageBox.getChildren().add(imageGroup);
 
 
-
-        VBox sTBox = new VBox();
-        TextArea stextA = new TextArea();
-        VBox.setVgrow(stextA, Priority.ALWAYS);
-        MenuBar sTMenuBar = new MenuBar();
-        Menu fSL = new Menu("");
-        Label t2 = new Label("English");
-        t2.setStyle("-fx-text-fill: blue;");
-        fSL.setGraphic(t2);
-        Menu sAL = new Menu("˅");
+        textWithButton.getChildren().addAll(searchingText, searchButton);
+        searchImageBox.getChildren().addAll(textWithButton, imageBox);
 
 
-        TextArea synonyms = new TextArea();
-        VBox.setVgrow(synonyms, Priority.ALWAYS);
+        borderPane.setCenter(searchImageBox);
 
-
-        sTMenuBar.getMenus().addAll(fSL, sAL);
-        sTBox.getChildren().addAll(sTMenuBar,stextA,synonyms);
-
-        Button change = new Button("←→");
-
-
-
-
-
-
-        allTBox.getChildren().addAll(fTBox, change, sTBox);
-        mainBox.getChildren().addAll(menuBar,allTBox);
-
-
-
-
-
-
-        Scene scene = new Scene(mainBox, 1000, 600);
-        stage.setTitle("Team 6");
-        stage.setScene(scene);
-        stage.show();
     }
 
     public static void main(String[] args) {
