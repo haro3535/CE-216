@@ -26,15 +26,14 @@ import java.util.Objects;
 
 public class XML_Methods implements Runnable {
 
-    private final ArrayList<Node> foundedEntries = new ArrayList<>();
+    private final ArrayList<Node> foundEntries = new ArrayList<>();
     private final ArrayList<LinkedList<String>> meanings = new ArrayList<>();
-    private final ArrayList<Node> nodes = new ArrayList<>();
     private String filepath;
     private String word;
 
 
     public void searchMeaning(){
-        for (Node foundedEntry : foundedEntries) {
+        for (Node foundedEntry : foundEntries) {
 
             Element entry = (Element) foundedEntry;
 
@@ -101,7 +100,7 @@ public class XML_Methods implements Runnable {
                     System.out.println("Word found!");
 
                     // It saves the found entry so as not to search the file again later.
-                    foundedEntries.add(nodeL.item(i));
+                    foundEntries.add(nodeL.item(i));
                 }
             }
         } catch (ParserConfigurationException | IOException | SAXException e) {
@@ -111,7 +110,20 @@ public class XML_Methods implements Runnable {
 
     }
 
-    protected void findWordAndMeaning(){
+    protected void parseFoundEntries(){
+
+        String[] meanings = {};
+
+        if (foundEntries.size() != 0) {
+            for (Node currentEntry:
+                 foundEntries) {
+
+
+            }
+        }
+    }
+
+    protected void findEntries(){
 
         String target = getWord();
 
@@ -194,7 +206,7 @@ public class XML_Methods implements Runnable {
 
                     if (endElement.getName().getLocalPart().equals("entry")) {
                         if (rootNode != null) {
-                            nodes.add(rootNode);
+                            foundEntries.add(rootNode);
                         }else {
                             tagQueue.clear();
                             rootNode = doc.createElement("entry");
@@ -238,7 +250,8 @@ public class XML_Methods implements Runnable {
     @Override
     public void run() {
 
-        findWordAndMeaning();
+        findEntries();
+        searchMeaning();
     }
 
     public String getWord() {
