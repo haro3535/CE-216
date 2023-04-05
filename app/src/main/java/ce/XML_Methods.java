@@ -9,7 +9,16 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.Attribute;
+import javax.xml.stream.events.EndElement;
+import javax.xml.stream.events.StartElement;
+import javax.xml.stream.events.XMLEvent;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -19,6 +28,7 @@ public class XML_Methods implements Runnable {
 
     private final ArrayList<Node> foundedEntries = new ArrayList<>();
     private final ArrayList<LinkedList<String>> meanings = new ArrayList<>();
+    private final ArrayList<Node> nodes = new ArrayList<>();
     private String filepath;
     private String word;
 
@@ -101,28 +111,134 @@ public class XML_Methods implements Runnable {
 
     }
 
-    protected void search(){
+    protected void findWordAndMeaning(){
 
-        File file = new File(filepath);
+        String target = getWord();
 
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        XMLInputFactory xmlInputFactory = XMLInputFactory.newDefaultFactory();
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newDefaultInstance();
 
         try {
-
+            XMLEventReader xmlEventReader = xmlInputFactory.createXMLEventReader(new FileInputStream(filepath));
             DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(file);
+            Document doc = builder.newDocument();
+
+            Node rootNode = doc.createElement("entry");
+
+            ArrayList<String> tagQueue = new ArrayList<>();
+            String currentTextValue = "";
+
+            boolean isInsideTheEntry = false;
+            boolean isItCorrectEntry = true;
+            while (xmlEventReader.hasNext()){
+
+                XMLEvent nextEvent = xmlEventReader.nextEvent();
+
+                if (nextEvent.isStartElement() && isItCorrectEntry) {
+
+                    StartElement startElement = nextEvent.asStartElement();
 
 
-        } catch (ParserConfigurationException | SAXException | IOException e) {
-            throw new RuntimeException(e);
+                    if (startElement.getName().getLocalPart().equals("entry") && !isInsideTheEntry) {
+                        isInsideTheEntry = true;
+                        continue;
+                    }else if (isInsideTheEntry){
+                        tagQueue.add(startElement.getName().getLocalPart());
+                        Element currentNode = doc.createElement(startElement.getName().getLocalPart());
+                        if (tagQueue.size() == 1){
+                            // Direkt entry ye ekliyor
+                            rootNode.appendChild(currentNode);
+                        }
+                        if (tagQueue.size() > 1) {
+                            Node parentE = rootNode;
+                            Node childE = parentE.getLastChild();
+
+                            for (int i = 0; i < (tagQueue.size()-1); i++) {
+                                parentE = childE;
+                                // Son eleman daha eklenmediği için atlama yaptırıyorum
+                                if ((i+1) != (tagQueue.size()-1)) {
+                                    childE = parentE.getLastChild();
+                                }
+                            }
+
+
+                            if (startElement.getAttributes().hasNext()) {
+                                Attribute attribute = startElement.getAttributes().next();
+                                currentNode.setAttribute(attribute.getName().getLocalPart(),attribute.getValue());
+                                System.out.println(attribute.getName().getLocalPart() + " - " + attribute.getValue());
+                            }
+
+                            parentE.appendChild(currentNode);
+                        }
+                    }
+                }
+
+                if (nextEvent.isCharacters()) {
+                    if (!nextEvent.asCharacters().getData().equals("") && isInsideTheEntry
+                            && !nextEvent.asCharacters().getData().contains("\n")) {
+                        currentTextValue = nextEvent.asCharacters().getData();
+                    }
+                    if (!tagQueue.isEmpty()) {
+                        // Burada entry nin bizim istedğimiz entry olup olmadığına bakıyor
+                        if (tagQueue.get(tagQueue.size()-1).equals("orth")) {
+                            if(!target.equals(nextEvent.asCharacters().getData())){
+                                isItCorrectEntry = false;
+                                rootNode = null;
+                            }
+                        }
+                    }
+                }
+
+                if (nextEvent.isEndElement()) {
+                    EndElement endElement = nextEvent.asEndElement();
+
+                    if (endElement.getName().getLocalPart().equals("entry")) {
+                        if (rootNode != null) {
+                            nodes.add(rootNode);
+                        }else {
+                            tagQueue.clear();
+                            rootNode = doc.createElement("entry");
+                        }
+                        isItCorrectEntry = true;
+                        continue;
+                    }
+
+                    if (!endElement.getName().getLocalPart().equals("entry") && !isItCorrectEntry){
+                        continue;
+                    }
+
+                    if (!tagQueue.isEmpty()) {
+                        if (endElement.getName().getLocalPart().equals(tagQueue.get(tagQueue.size()-1))) {
+
+                            if (!currentTextValue.equals("")) {
+                                Node parentE = rootNode;
+                                Node childE = parentE.getLastChild();
+
+                                for (int i = 0; i < (tagQueue.size()-1); i++) {
+                                    parentE = childE;
+                                    childE = parentE.getLastChild();
+                                }
+                                childE.setTextContent(currentTextValue);
+                                currentTextValue = "";
+                            }
+
+                            tagQueue.remove(tagQueue.size()-1);
+                        }
+                    }
+                }
+            }
+
+
+
+        } catch (FileNotFoundException | XMLStreamException | ParserConfigurationException e) {
+            e.printStackTrace();
         }
     }
 
     @Override
     public void run() {
 
-        findWord();
-        searchMeaning();
+        findWordAndMeaning();
     }
 
     public String getWord() {
