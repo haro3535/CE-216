@@ -63,12 +63,13 @@ public class App extends Application {
         HBox imageBox = new HBox();
 
         // To find absolute path of img file
-        File file = new File("Team6.png");
+        File file = new File("Team64.png");
 
         Image image = new Image(new FileInputStream(file.getAbsolutePath()));
         ImageView imageView = new ImageView(image);
         imageView.setPreserveRatio(true);
         Group imageGroup = new Group(imageView);
+        imageGroup.var
         VBox.setMargin(imageBox, new Insets(0,0,0,100));
 
 
