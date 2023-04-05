@@ -27,7 +27,7 @@ public class GUI_Actions {
     public String language6 = "French";
     public String language7 = "Swedish";
 
-    public void popupMenu (Stage stage){
+    public void popupMenu (Stage stage, Scene scene){
 
         BorderPane borderPane = new BorderPane();
 
@@ -39,17 +39,18 @@ public class GUI_Actions {
         MenuItem mAddItem = new MenuItem("Add");
         mAdd.getItems().add(mAddItem);
 
-        mAddItem.setOnAction(e -> popupMenu(stage) );
+        mAddItem.setOnAction(e -> popupMenu(stage, scene) );
 
         borderPane.setTop(mainMenuBar);
 
         VBox mainBox = new VBox();
 
-        Label usingAddWordLabel = new Label("In the first selection box, select the language of the word you want \n" +
-                "to enter and write this word in the space below. In the second selection box,\n" +
-                "select the language of the meaning you want to enter and enter the meaning in the \n" +
-                "space below. If you want to add more meaning, press the \"Add meaning\" \n" +
-                "button at the bottom. You can add up to 3 meanings at once.");
+        Label usingAddWordLabel = new Label("""
+                In the first selection box, select the language of the word you want\s
+                to enter and write this word in the space below. In the second selection box,
+                select the language of the meaning you want to enter and enter the meaning in the\s
+                space below. If you want to add more meaning, press the "Add meaning"\s
+                button at the bottom. You can add up to 3 meanings at once.""");
 
         usingAddWordLabel.setPadding(new Insets(20,20,0,20));
 
@@ -73,7 +74,7 @@ public class GUI_Actions {
 
         Button addMeaningButton = new Button("Add Meaning");
         VBox.setMargin(addMeaningButton, new Insets(10,20,0, 390));
-        addMeaningButton.setOnAction(event -> addMeaning(ftextA,stextA,languageChoiceBox1,languageChoiceBox2,stage) );
+        addMeaningButton.setOnAction(event -> addMeaning(ftextA,stextA,languageChoiceBox1,languageChoiceBox2,stage, scene) );
 
 
 
@@ -97,13 +98,13 @@ public class GUI_Actions {
 
         borderPane.setBottom(buttonsBox);
 
-        Scene scene = new Scene(borderPane, 500, 600);
+        scene.setRoot(borderPane);
         stage.setTitle("Add a word");
         stage.setScene(scene);
         stage.show();
     }
 
-    public void searchingAction (TextField textField, Stage stage){
+    public void searchingAction (TextField textField, Stage stage, Scene scene){
         int meaningNumber = 6;
         BorderPane borderPane = new BorderPane();
 
@@ -115,7 +116,7 @@ public class GUI_Actions {
         MenuItem mAddItem = new MenuItem("Add");
         mAdd.getItems().add(mAddItem);
 
-        mAddItem.setOnAction(e -> popupMenu(stage) );
+        mAddItem.setOnAction(e -> popupMenu(stage, scene) );
 
         borderPane.setTop(mainMenuBar);
 
@@ -130,7 +131,7 @@ public class GUI_Actions {
 
         Button searchButton = new Button("Search");
         HBox.setMargin(searchButton, new Insets(0,40,0,40));
-        searchButton.setOnAction(event -> searchingAction(searchingText,stage));
+        searchButton.setOnAction(event -> searchingAction(searchingText,stage, scene));
 
 
         if (meaningNumber==1) {
@@ -144,7 +145,7 @@ public class GUI_Actions {
 
             Button meaning1Button = new Button("<--");
             HBox.setMargin(meaning1Button, new Insets(25, 10, 0, 0));
-            meaning1Button.setOnAction(event -> choosingLanguage(textField,stage));
+            meaning1Button.setOnAction(event -> choosingLanguage(textField,stage, scene));
 
             meaningButtonBox1.getChildren().addAll(meaning1, meaning1Button);
 
@@ -161,7 +162,7 @@ public class GUI_Actions {
 
             Button meaning1Button = new Button("<--");
             HBox.setMargin(meaning1Button, new Insets(25, 10, 0, 0));
-            meaning1Button.setOnAction(event -> choosingLanguage(textField,stage));
+            meaning1Button.setOnAction(event -> choosingLanguage(textField,stage, scene));
 
             meaningButtonBox1.getChildren().addAll(meaning1, meaning1Button);
 
@@ -175,7 +176,7 @@ public class GUI_Actions {
 
             Button meaning2Button = new Button("<--");
             HBox.setMargin(meaning2Button, new Insets(25, 10, 0, 0));
-            meaning2Button.setOnAction(event -> choosingLanguage(textField,stage));
+            meaning2Button.setOnAction(event -> choosingLanguage(textField,stage, scene));
 
             meaningButtonBox2.getChildren().addAll(meaning2, meaning2Button);
 
@@ -191,7 +192,7 @@ public class GUI_Actions {
 
             Button meaning1Button = new Button("<--");
             HBox.setMargin(meaning1Button, new Insets(25, 10, 0, 0));
-            meaning1Button.setOnAction(event -> choosingLanguage(textField,stage));
+            meaning1Button.setOnAction(event -> choosingLanguage(textField,stage, scene));
 
             meaningButtonBox1.getChildren().addAll(meaning1, meaning1Button);
 
@@ -205,7 +206,7 @@ public class GUI_Actions {
 
             Button meaning2Button = new Button("<--");
             HBox.setMargin(meaning2Button, new Insets(25, 10, 0, 0));
-            meaning2Button.setOnAction(event -> choosingLanguage(textField,stage));
+            meaning2Button.setOnAction(event -> choosingLanguage(textField,stage, scene));
 
             meaningButtonBox2.getChildren().addAll(meaning2, meaning2Button);
 
@@ -219,7 +220,7 @@ public class GUI_Actions {
 
             Button meaning3Button = new Button("<--");
             HBox.setMargin(meaning3Button, new Insets(25, 10, 0, 0));
-            meaning3Button.setOnAction(event -> choosingLanguage(textField,stage));
+            meaning3Button.setOnAction(event -> choosingLanguage(textField,stage, scene));
 
             meaningButtonBox3.getChildren().addAll(meaning3, meaning3Button);
 
@@ -235,7 +236,7 @@ public class GUI_Actions {
 
             Button meaning1Button = new Button("<--");
             HBox.setMargin(meaning1Button, new Insets(25, 10, 0, 0));
-            meaning1Button.setOnAction(event -> choosingLanguage(textField,stage));
+            meaning1Button.setOnAction(event -> choosingLanguage(textField,stage, scene));
 
             meaningButtonBox1.getChildren().addAll(meaning1, meaning1Button);
 
@@ -249,7 +250,7 @@ public class GUI_Actions {
 
             Button meaning2Button = new Button("<--");
             HBox.setMargin(meaning2Button, new Insets(25, 10, 0, 0));
-            meaning2Button.setOnAction(event -> choosingLanguage(textField,stage));
+            meaning2Button.setOnAction(event -> choosingLanguage(textField,stage, scene));
 
             meaningButtonBox2.getChildren().addAll(meaning2, meaning2Button);
 
@@ -263,7 +264,7 @@ public class GUI_Actions {
 
             Button meaning3Button = new Button("<--");
             HBox.setMargin(meaning3Button, new Insets(25, 10, 0, 0));
-            meaning3Button.setOnAction(event -> choosingLanguage(textField,stage));
+            meaning3Button.setOnAction(event -> choosingLanguage(textField,stage, scene));
 
             meaningButtonBox3.getChildren().addAll(meaning3, meaning3Button);
 
@@ -277,7 +278,7 @@ public class GUI_Actions {
 
             Button meaning4Button = new Button("<--");
             HBox.setMargin(meaning4Button, new Insets(25, 10, 0, 0));
-            meaning4Button.setOnAction(event -> choosingLanguage(textField,stage));
+            meaning4Button.setOnAction(event -> choosingLanguage(textField,stage, scene));
 
             meaningButtonBox4.getChildren().addAll(meaning4, meaning4Button);
 
@@ -295,7 +296,7 @@ public class GUI_Actions {
 
             Button meaning1Button = new Button("<--");
             HBox.setMargin(meaning1Button, new Insets(25, 10, 0, 0));
-            meaning1Button.setOnAction(event -> choosingLanguage(textField,stage));
+            meaning1Button.setOnAction(event -> choosingLanguage(textField,stage, scene));
 
             meaningButtonBox1.getChildren().addAll(meaning1, meaning1Button);
 
@@ -309,7 +310,7 @@ public class GUI_Actions {
 
             Button meaning2Button = new Button("<--");
             HBox.setMargin(meaning2Button, new Insets(25, 10, 0, 0));
-            meaning2Button.setOnAction(event -> choosingLanguage(textField,stage));
+            meaning2Button.setOnAction(event -> choosingLanguage(textField,stage, scene));
 
             meaningButtonBox2.getChildren().addAll(meaning2, meaning2Button);
 
@@ -323,7 +324,7 @@ public class GUI_Actions {
 
             Button meaning3Button = new Button("<--");
             HBox.setMargin(meaning3Button, new Insets(25, 10, 0, 0));
-            meaning3Button.setOnAction(event -> choosingLanguage(textField,stage));
+            meaning3Button.setOnAction(event -> choosingLanguage(textField,stage, scene));
 
             meaningButtonBox3.getChildren().addAll(meaning3, meaning3Button);
 
@@ -337,7 +338,7 @@ public class GUI_Actions {
 
             Button meaning4Button = new Button("<--");
             HBox.setMargin(meaning4Button, new Insets(25, 10, 0, 0));
-            meaning4Button.setOnAction(event -> choosingLanguage(textField,stage));
+            meaning4Button.setOnAction(event -> choosingLanguage(textField,stage, scene));
 
             meaningButtonBox4.getChildren().addAll(meaning4, meaning4Button);
 
@@ -351,7 +352,7 @@ public class GUI_Actions {
 
             Button meaning5Button = new Button("<--");
             HBox.setMargin(meaning5Button, new Insets(25, 10, 0, 0));
-            meaning5Button.setOnAction(event -> choosingLanguage(textField,stage));
+            meaning5Button.setOnAction(event -> choosingLanguage(textField,stage, scene));
 
             meaningButtonBox5.getChildren().addAll(meaning5, meaning5Button);
 
@@ -368,7 +369,7 @@ public class GUI_Actions {
 
             Button meaning1Button = new Button("<--");
             HBox.setMargin(meaning1Button, new Insets(25, 10, 0, 0));
-            meaning1Button.setOnAction(event -> choosingLanguage(textField,stage));
+            meaning1Button.setOnAction(event -> choosingLanguage(textField,stage, scene));
 
             meaningButtonBox1.getChildren().addAll(meaning1, meaning1Button);
 
@@ -382,7 +383,7 @@ public class GUI_Actions {
 
             Button meaning2Button = new Button("<--");
             HBox.setMargin(meaning2Button, new Insets(25, 10, 0, 0));
-            meaning2Button.setOnAction(event -> choosingLanguage(textField,stage));
+            meaning2Button.setOnAction(event -> choosingLanguage(textField,stage, scene));
 
             meaningButtonBox2.getChildren().addAll(meaning2, meaning2Button);
 
@@ -396,7 +397,7 @@ public class GUI_Actions {
 
             Button meaning3Button = new Button("<--");
             HBox.setMargin(meaning3Button, new Insets(25, 10, 0, 0));
-            meaning3Button.setOnAction(event -> choosingLanguage(textField,stage));
+            meaning3Button.setOnAction(event -> choosingLanguage(textField,stage, scene));
 
             meaningButtonBox3.getChildren().addAll(meaning3, meaning3Button);
 
@@ -410,7 +411,7 @@ public class GUI_Actions {
 
             Button meaning4Button = new Button("<--");
             HBox.setMargin(meaning4Button, new Insets(25, 10, 0, 0));
-            meaning4Button.setOnAction(event -> choosingLanguage(textField,stage));
+            meaning4Button.setOnAction(event -> choosingLanguage(textField,stage, scene));
 
             meaningButtonBox4.getChildren().addAll(meaning4, meaning4Button);
 
@@ -424,7 +425,7 @@ public class GUI_Actions {
 
             Button meaning5Button = new Button("<--");
             HBox.setMargin(meaning5Button, new Insets(25, 10, 0, 0));
-            meaning5Button.setOnAction(event -> choosingLanguage(textField,stage));
+            meaning5Button.setOnAction(event -> choosingLanguage(textField,stage, scene));
 
             meaningButtonBox5.getChildren().addAll(meaning5, meaning5Button);
 
@@ -438,7 +439,7 @@ public class GUI_Actions {
 
             Button meaning6Button = new Button("<--");
             HBox.setMargin(meaning6Button, new Insets(25, 10, 0, 0));
-            meaning6Button.setOnAction(event -> choosingLanguage(textField,stage));
+            meaning6Button.setOnAction(event -> choosingLanguage(textField,stage, scene));
 
             meaningButtonBox6.getChildren().addAll(meaning6, meaning6Button);
 
@@ -466,14 +467,13 @@ public class GUI_Actions {
         lastBox.getChildren().addAll(backButton, chooseLabel);
         borderPane.setBottom(lastBox);
 
-
-        Scene scene = new Scene(borderPane, 500, 600);
+        scene.setRoot(borderPane);
         stage.setTitle("Team 6");
         stage.setScene(scene);
         stage.show();
     }
 
-    public void choosingLanguage (TextField textField, Stage stage){
+    public void choosingLanguage (TextField textField, Stage stage, Scene scene){
         BorderPane borderPane = new BorderPane();
 
         MenuBar mainMenuBar = new MenuBar();
@@ -484,7 +484,7 @@ public class GUI_Actions {
         MenuItem mAddItem = new MenuItem("Add");
         mAdd.getItems().add(mAddItem);
 
-        mAddItem.setOnAction(e -> popupMenu(stage) );
+        mAddItem.setOnAction(e -> popupMenu(stage, scene) );
 
         borderPane.setTop(mainMenuBar);
 
@@ -499,7 +499,7 @@ public class GUI_Actions {
 
         Button searchButton = new Button("Search");
         HBox.setMargin(searchButton, new Insets(0,40,0,40));
-        searchButton.setOnAction(event -> searchingAction(searchingText,stage));
+        searchButton.setOnAction(event -> searchingAction(searchingText,stage, scene));
 
         Label chosenLanguageLabel = new Label(language1 + " meanings: ");
         chosenLanguageLabel.setPadding(new Insets(0,0,0,40));
@@ -527,8 +527,7 @@ public class GUI_Actions {
 
         borderPane.setCenter(searchMeaningBox);
 
-
-        Scene scene = new Scene(borderPane, 500, 600);
+        scene.setRoot(borderPane);
         stage.setTitle("Team 6");
         stage.setScene(scene);
         stage.show();
@@ -536,7 +535,8 @@ public class GUI_Actions {
 
     }
 
-    public void addMeaning (TextArea textArea1, TextArea textArea2, ChoiceBox<String> choiceBox1,ChoiceBox<String> choiceBox2, Stage stage) {
+    public void addMeaning (TextArea textArea1, TextArea textArea2, ChoiceBox<String> choiceBox1,ChoiceBox<String> choiceBox2,
+                            Stage stage, Scene scene) {
         BorderPane borderPane = new BorderPane();
 
         MenuBar mainMenuBar = new MenuBar();
@@ -547,21 +547,22 @@ public class GUI_Actions {
         MenuItem mAddItem = new MenuItem("Add");
         mAdd.getItems().add(mAddItem);
 
-        mAddItem.setOnAction(e -> popupMenu(stage));
+        mAddItem.setOnAction(e -> popupMenu(stage, scene));
 
         borderPane.setTop(mainMenuBar);
 
         VBox mainBox = new VBox();
 
-        Label usingAddWordLabel = new Label("In the first selection box, select the language of the word you want \n" +
-                "to enter and write this word in the space below. In the second selection box,\n" +
-                "select the language of the meaning you want to enter and enter the meaning in the \n" +
-                "space below. If you want to add more meaning, press the \"Add meaning\" \n" +
-                "button at the bottom. You can add up to 3 meanings at once.");
+        Label usingAddWordLabel = new Label("""
+                In the first selection box, select the language of the word you want\s
+                to enter and write this word in the space below. In the second selection box,
+                select the language of the meaning you want to enter and enter the meaning in the\s
+                space below. If you want to add more meaning, press the "Add meaning"\s
+                button at the bottom. You can add up to 3 meanings at once.""");
 
         usingAddWordLabel.setPadding(new Insets(20, 20, 0, 20));
 
-        Label chosenLanguageLabel1 = new Label((String) choiceBox1.getValue()+":");
+        Label chosenLanguageLabel1 = new Label( choiceBox1.getValue()+":");
         chosenLanguageLabel1.setPadding(new Insets(10, 20, 0, 20));
 
         TextArea ftextA = new TextArea();
@@ -570,7 +571,7 @@ public class GUI_Actions {
         ftextA.setPrefHeight(80);
         ftextA.setPrefWidth(350);
 
-        Label chosenLanguageLabel2 = new Label((String) choiceBox2.getValue()+":");
+        Label chosenLanguageLabel2 = new Label(choiceBox2.getValue()+":");
         chosenLanguageLabel2.setPadding(new Insets(10, 20, 0, 20));
 
         TextArea stextA = new TextArea();
@@ -586,7 +587,7 @@ public class GUI_Actions {
 
 
         Button addMeaningButton = new Button("Add Meaning");
-        addMeaningButton.setOnAction(event -> addMeaningAgain(textArea1,textArea2, ttextA,choiceBox1,choiceBox2,stage));
+        addMeaningButton.setOnAction(event -> addMeaningAgain(textArea1,textArea2, ttextA,choiceBox1,choiceBox2,stage, scene));
         VBox.setMargin(addMeaningButton, new Insets(10, 20, 0, 390));
 
 
@@ -610,14 +611,14 @@ public class GUI_Actions {
 
         borderPane.setBottom(buttonsBox);
 
-        Scene scene = new Scene(borderPane, 500, 600);
+        scene.setRoot(borderPane);
         stage.setTitle("Add a word");
         stage.setScene(scene);
         stage.show();
     }
 
     public void addMeaningAgain (TextArea textArea1, TextArea textArea2, TextArea textArea3,ChoiceBox<String> choiceBox1,
-                                 ChoiceBox<String> choiceBox2, Stage stage){
+                                 ChoiceBox<String> choiceBox2, Stage stage, Scene scene){
         BorderPane borderPane = new BorderPane();
 
         MenuBar mainMenuBar = new MenuBar();
@@ -628,21 +629,22 @@ public class GUI_Actions {
         MenuItem mAddItem = new MenuItem("Add");
         mAdd.getItems().add(mAddItem);
 
-        mAddItem.setOnAction(e -> popupMenu(stage));
+        mAddItem.setOnAction(e -> popupMenu(stage, scene));
 
         borderPane.setTop(mainMenuBar);
 
         VBox mainBox = new VBox();
 
-        Label usingAddWordLabel = new Label("In the first selection box, select the language of the word you want \n" +
-                "to enter and write this word in the space below. In the second selection box,\n" +
-                "select the language of the meaning you want to enter and enter the meaning in the \n" +
-                "space below. If you want to add more meaning, press the \"Add meaning\" \n" +
-                "button at the bottom. You can add up to 3 meanings at once.");
+        Label usingAddWordLabel = new Label("""
+                In the first selection box, select the language of the word you want\s
+                to enter and write this word in the space below. In the second selection box,
+                select the language of the meaning you want to enter and enter the meaning in the\s
+                space below. If you want to add more meaning, press the "Add meaning"\s
+                button at the bottom. You can add up to 3 meanings at once.""");
 
         usingAddWordLabel.setPadding(new Insets(20, 20, 0, 20));
 
-        Label chosenLanguageLabel1 = new Label((String) choiceBox1.getValue()+":");
+        Label chosenLanguageLabel1 = new Label( choiceBox1.getValue()+":");
         chosenLanguageLabel1.setPadding(new Insets(10, 20, 0, 20));
 
         TextArea ftextA = new TextArea(textArea1.getText());
@@ -650,7 +652,7 @@ public class GUI_Actions {
         ftextA.setPrefHeight(80);
         ftextA.setPrefWidth(350);
 
-        Label chosenLanguageLabel2 = new Label((String) choiceBox2.getValue()+":");
+        Label chosenLanguageLabel2 = new Label( choiceBox2.getValue()+":");
         chosenLanguageLabel2.setPadding(new Insets(10, 20, 0, 20));
 
         TextArea stextA = new TextArea(textArea2.getText());
@@ -690,7 +692,7 @@ public class GUI_Actions {
 
         borderPane.setBottom(buttonsBox);
 
-        Scene scene = new Scene(borderPane, 500, 600);
+        scene.setRoot(borderPane);
         stage.setTitle("Add a word");
         stage.setScene(scene);
         stage.show();

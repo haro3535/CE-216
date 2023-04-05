@@ -30,6 +30,10 @@ public class App extends Application {
         GUI_Actions actions = new GUI_Actions();
 
         BorderPane borderPane = new BorderPane();
+        Scene scene = new Scene(borderPane, 500, 600);
+        stage.setTitle("Team 6");
+        stage.setScene(scene);
+        stage.show();
 
         MenuBar mainMenuBar = new MenuBar();
         Menu mHelp = new Menu("Help");
@@ -39,7 +43,7 @@ public class App extends Application {
         MenuItem mAddItem = new MenuItem("Add");
         mAdd.getItems().add(mAddItem);
 
-        mAddItem.setOnAction(e -> actions.popupMenu(stage) );
+        mAddItem.setOnAction(e -> actions.popupMenu(stage, scene) );
 
         borderPane.setTop(mainMenuBar);
 
@@ -54,7 +58,7 @@ public class App extends Application {
 
         Button searchButton = new Button("Search");
         HBox.setMargin(searchButton, new Insets(0,40,0,40));
-        searchButton.setOnAction(event -> actions.searchingAction(searchingText,stage));
+        searchButton.setOnAction(event -> actions.searchingAction(searchingText,stage, scene));
 
         HBox imageBox = new HBox();
 
@@ -77,10 +81,6 @@ public class App extends Application {
 
         borderPane.setCenter(searchImageBox);
 
-        Scene scene = new Scene(borderPane, 500, 600);
-        stage.setTitle("Team 6");
-        stage.setScene(scene);
-        stage.show();
     }
 
     public static void main(String[] args) {
