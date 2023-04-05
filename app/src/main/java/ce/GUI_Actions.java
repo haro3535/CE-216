@@ -1,6 +1,7 @@
 package ce;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.ChoiceBox;
@@ -10,7 +11,9 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class GUI_Actions {
 
@@ -26,6 +29,9 @@ public class GUI_Actions {
     public String language5 = "Modern Greek";
     public String language6 = "French";
     public String language7 = "Swedish";
+    private final ArrayList<String> filePaths = new ArrayList<>();
+    private final ArrayList<XML_Methods> xmlMethodsArrayList = new ArrayList<>();
+    private final ArrayList<Thread> threads = new ArrayList<>();
 
     public void popupMenu (Stage stage, Scene scene){
 
@@ -105,7 +111,44 @@ public class GUI_Actions {
     }
 
     public void searchingAction (TextField textField, Stage stage, Scene scene){
-        int meaningNumber = 6;
+        for (String filePath:
+             filePaths) {
+
+            XML_Methods xmlMethods = new XML_Methods();
+            xmlMethods.setWord(textField.getText());
+            xmlMethods.setFilepath(filePath);
+
+            xmlMethodsArrayList.add(xmlMethods);
+
+            Thread thread = new Thread(xmlMethods);
+            threads.add(thread);
+            thread.start();
+
+        }
+
+        for (Thread t:
+             threads) {
+
+            try {
+                t.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        String value = "";
+
+        for (XML_Methods methods:
+             xmlMethodsArrayList) {
+
+            if (methods.getFoundEntries().size()>0) {
+                value = methods.getFoundEntries().get(0).getTextContent();
+            }
+
+        }
+
+        int meaningNumber = 1;
         BorderPane borderPane = new BorderPane();
 
         MenuBar mainMenuBar = new MenuBar();
@@ -124,8 +167,9 @@ public class GUI_Actions {
         VBox searchMeaningBox = new VBox();
         HBox textWithButton = new HBox();
 
+        textWithButton.setAlignment(Pos.TOP_CENTER);
+
         TextField searchingText = new TextField(textField.getText());
-        HBox.setHgrow(searchingText, Priority.ALWAYS);
         VBox.setMargin(textWithButton, new Insets(80,0,80,80));
         searchingText.minWidth(600);
 
@@ -137,7 +181,8 @@ public class GUI_Actions {
         if (meaningNumber==1) {
             HBox meaningButtonBox1 = new HBox();
 
-            TextArea meaning1 = new TextArea(language1);
+            TextArea meaning1 = new TextArea(value);
+            meaning1.setEditable(false);
             HBox.setMargin(meaning1, new Insets(0, 20, 80, 60));
             HBox.setHgrow(meaning1,Priority.ALWAYS);
             meaning1.setPrefHeight(80);
@@ -700,5 +745,20 @@ public class GUI_Actions {
 
     public void backToMainScreen (Stage stage) throws IOException {
         mainApp.start(stage);
+    }
+
+    public void searchAll(){
+
+        File folder = new File("Dictionary");
+
+        File[] files = folder.listFiles(File::isFile);
+
+        if (files != null) {
+
+            for (File file:
+                    files) {
+                filePaths.add(file.getPath());
+            }
+        }
     }
 }

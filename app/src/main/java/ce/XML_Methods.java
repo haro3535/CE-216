@@ -27,10 +27,10 @@ import java.util.Objects;
 public class XML_Methods implements Runnable {
 
     private final ArrayList<Node> foundEntries = new ArrayList<>();
+
     private final ArrayList<LinkedList<String>> meanings = new ArrayList<>();
     private String filepath;
     private String word;
-
 
     public void searchMeaning(){
         for (Node foundedEntry : foundEntries) {
@@ -268,5 +268,9 @@ public class XML_Methods implements Runnable {
 
     public void setFilepath(String filepath) {
         this.filepath = filepath;
+    }
+
+    public ArrayList<Node> getFoundEntries() {
+        return foundEntries;
     }
 }

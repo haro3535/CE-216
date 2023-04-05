@@ -2,6 +2,7 @@ package ce;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -28,6 +29,7 @@ public class App extends Application {
     public void start(Stage stage) throws FileNotFoundException {
 
         GUI_Actions actions = new GUI_Actions();
+        actions.searchAll();
 
         BorderPane borderPane = new BorderPane();
         Scene scene = new Scene(borderPane, 500, 600);
@@ -50,9 +52,11 @@ public class App extends Application {
 
         VBox searchImageBox = new VBox();
         HBox textWithButton = new HBox();
+        textWithButton.setAlignment(Pos.TOP_CENTER);
 
         TextField searchingText = new TextField();
-        HBox.setHgrow(searchingText, Priority.ALWAYS);
+        searchingText.setPrefWidth(250);
+        searchingText.setMaxWidth(700);
         VBox.setMargin(textWithButton, new Insets(80,0,80,80));
         searchingText.minWidth(600);
 
@@ -61,6 +65,7 @@ public class App extends Application {
         searchButton.setOnAction(event -> actions.searchingAction(searchingText,stage, scene));
 
         HBox imageBox = new HBox();
+        imageBox.setAlignment(Pos.CENTER);
 
         // To find absolute path of img file
         File file = new File("Team64.png");
@@ -69,8 +74,8 @@ public class App extends Application {
         ImageView imageView = new ImageView(image);
         imageView.setPreserveRatio(true);
         Group imageGroup = new Group(imageView);
-        imageGroup.var
-        VBox.setMargin(imageBox, new Insets(0,0,0,100));
+        VBox.setMargin(imageBox, new Insets(0,0,0,150));
+        imageBox.setLayoutX(-50);
 
 
         imageBox.getChildren().add(imageGroup);
