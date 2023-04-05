@@ -63,7 +63,7 @@ public class App extends Application {
         HBox imageBox = new HBox();
 
         // To find absolute path of img file
-        File file = new File("Team_61.png");
+        File file = new File("Team6.png");
 
         Image image = new Image(new FileInputStream(file.getAbsolutePath()));
         ImageView imageView = new ImageView(image);
