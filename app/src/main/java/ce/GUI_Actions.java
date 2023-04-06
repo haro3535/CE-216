@@ -273,6 +273,7 @@ public class GUI_Actions {
         chosenLanguageLabel.setPadding(new Insets(0,480,0,0));
 
         TextArea meaningsArea = new TextArea();
+        meaningsArea.setEditable(false);
         VBox.setMargin(meaningsArea, new Insets(0, 40, 80, 40));
         meaningsArea.setPrefWidth(500);
         meaningsArea.setMaxWidth(630);
