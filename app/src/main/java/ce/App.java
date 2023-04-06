@@ -32,6 +32,7 @@ public class App extends Application {
 
         GUI_Actions actions = new GUI_Actions();
         actions.searchAll();
+        System.out.println("Okuyor mu?");
 
 
         BorderPane borderPane = new BorderPane();

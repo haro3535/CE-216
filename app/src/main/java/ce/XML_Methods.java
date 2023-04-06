@@ -251,7 +251,7 @@ public class XML_Methods implements Runnable {
     public void run() {
 
         findEntries();
-        searchMeaning();
+        //searchMeaning();
     }
 
     public String getWord() {

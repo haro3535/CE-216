@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class GUI_Actions {
 
@@ -33,7 +34,8 @@ public class GUI_Actions {
     public String language7 = "Swedish";
     private final ArrayList<String> filePaths = new ArrayList<>();
     private final ArrayList<XML_Methods> xmlMethodsArrayList = new ArrayList<>();
-    private final ArrayList<Thread> threads = new ArrayList<>();
+    private final List<Thread> threads = new ArrayList<>();
+    private final ArrayList<String> textBody = new ArrayList<>();
 
     public void popupMenu (Stage stage, Scene scene){
 
@@ -127,34 +129,43 @@ public class GUI_Actions {
             xmlMethodsArrayList.add(xmlMethods);
 
             Thread thread = new Thread(xmlMethods);
-            threads.add(thread);
             thread.start();
+            threads.add(thread);
 
         }
 
-        for (Thread t:
-             threads) {
-
-            try {
+        try {
+            for (Thread t: threads) {
                 t.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                System.out.println(t.getName());
             }
 
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
-        String value = "";
 
-        for (XML_Methods methods:
+        StringBuilder value = new StringBuilder();
+        int meaningNumber = 0;
+
+        for (XML_Methods xmlClass:
              xmlMethodsArrayList) {
 
-            if (methods.getFoundEntries().size()>0) {
-                value = methods.getFoundEntries().get(0).getTextContent();
+            if (xmlClass.getFoundEntries().size()>0) {
+                for (int i = 0; i < xmlClass.getFoundEntries().size(); i++) {
+                    System.out.println(xmlClass.getFoundEntries().get(i).getTextContent());
+                    value.append(xmlClass.getFoundEntries().get(i).getTextContent()).append("\n");
+                }
+
+                textBody.add(String.valueOf(value));
+                value = new StringBuilder();
+                meaningNumber++;
+                System.out.println(meaningNumber);
             }
 
         }
 
-        int meaningNumber = 4;
+
         BorderPane borderPane = new BorderPane();
 
         MenuBar mainMenuBar = new MenuBar();
@@ -194,12 +205,13 @@ public class GUI_Actions {
             meaningButtonBox.setAlignment(Pos.TOP_CENTER);
             HBox.setHgrow(meaningButtonBox,Priority.ALWAYS);
 
-            TextArea meaning = new TextArea(value);
+            TextArea meaning = new TextArea(textBody.get(i));
             meaning.setEditable(false);
             HBox.setMargin(meaning, new Insets(0, 20, 0, 60));
             meaning.setPrefHeight(80);
             meaning.setPrefWidth(500);
             meaning.setMaxWidth(630);
+            meaning.setWrapText(true);
 
             Button meaningButton = new Button("<--");
             HBox.setMargin(meaningButton, new Insets(25, 10, 0, 0));
@@ -489,14 +501,19 @@ public class GUI_Actions {
     public void searchAll(){
 
         File folder = new File("Dictionary");
+        System.out.println(folder.getAbsolutePath());
 
         File[] files = folder.listFiles(File::isFile);
 
         if (files != null) {
 
+            System.out.println(files.length);
+
             for (File file:
                     files) {
-                filePaths.add(file.getPath());
+                if (file.getName().contains(".xml")) {
+                    filePaths.add(file.getPath());
+                }
             }
         }
     }
