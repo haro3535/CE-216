@@ -18,6 +18,8 @@ import java.util.ArrayList;
 public class GUI_Actions {
 
     App mainApp = new App();
+    private double sceneWidth = 650;
+    private double sceneHeight = 600;
     public MenuItem firstChosenLanguage;
     public MenuItem secondChosenLanguage;
     public String fChosenLanguage;
@@ -50,36 +52,40 @@ public class GUI_Actions {
         borderPane.setTop(mainMenuBar);
 
         VBox mainBox = new VBox();
+        mainBox.setAlignment(Pos.TOP_CENTER);
 
-        Label usingAddWordLabel = new Label("""
-                In the first selection box, select the language of the word you want\s
-                to enter and write this word in the space below. In the second selection box,
-                select the language of the meaning you want to enter and enter the meaning in the\s
-                space below. If you want to add more meaning, press the "Add meaning"\s
-                button at the bottom. You can add up to 3 meanings at once.""");
 
+        Label usingAddWordLabel = new Label("In the first selection box, select the language of the word you wants " +
+                "to enter and write this word in the space below. In the second selection box, select the language of the " +
+                "meaning you want to enter and enter the meaning in thes space below. If you want to add more meaning, press " +
+                "the \"Add meaning\"s button at the bottom. You can add up to 3 meanings at once.");
+        usingAddWordLabel.setWrapText(true);
         usingAddWordLabel.setPadding(new Insets(20,20,0,20));
+        usingAddWordLabel.setPrefWidth(1000);
+        usingAddWordLabel.setPrefHeight(90);
 
         ChoiceBox<String> languageChoiceBox1 = new ChoiceBox<>();
-        VBox.setMargin(languageChoiceBox1, new Insets(10, 20, 0, 20));
+        VBox.setMargin(languageChoiceBox1, new Insets(10, 520, 0, 20));
         languageChoiceBox1.getItems().addAll(language1, language2, language3, language4, language5, language6, language7);
 
         TextArea ftextA = new TextArea();
         VBox.setMargin(ftextA, new Insets(20, 20, 0, 20));
         ftextA.setPrefHeight(80);
-        ftextA.setPrefWidth(350);
+        ftextA.setPrefWidth(500);
+        ftextA.setMaxWidth(610);
 
         ChoiceBox<String> languageChoiceBox2 = new ChoiceBox<>();
-        VBox.setMargin(languageChoiceBox2, new Insets(10, 20, 0, 20));
+        VBox.setMargin(languageChoiceBox2, new Insets(10, 520, 0, 20));
         languageChoiceBox2.getItems().addAll(language1, language2, language3, language4, language5, language6, language7);
 
         TextArea stextA = new TextArea();
         VBox.setMargin(stextA, new Insets(20, 20, 0, 20));
         stextA.setPrefHeight(80);
-        stextA.setPrefWidth(350);
+        stextA.setPrefWidth(500);
+        stextA.setMaxWidth(610);
 
         Button addMeaningButton = new Button("Add Meaning");
-        VBox.setMargin(addMeaningButton, new Insets(10,20,0, 390));
+        VBox.setMargin(addMeaningButton, new Insets(10,20,0, 540));
         addMeaningButton.setOnAction(event -> addMeaning(ftextA,stextA,languageChoiceBox1,languageChoiceBox2,stage, scene) );
 
 
@@ -93,7 +99,7 @@ public class GUI_Actions {
 
         backButton.setOnAction(event -> {
             try {
-                backToMainScreen(stage);
+                backToMainScreen(stage, scene);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -169,8 +175,11 @@ public class GUI_Actions {
 
         textWithButton.setAlignment(Pos.TOP_CENTER);
 
+
         TextField searchingText = new TextField(textField.getText());
-        VBox.setMargin(textWithButton, new Insets(80,0,80,80));
+        searchingText.setPrefWidth(400);
+        searchingText.setMaxWidth(700);
+        VBox.setMargin(textWithButton, new Insets(80,0,80,100));
         searchingText.minWidth(600);
 
         Button searchButton = new Button("Search");
@@ -182,13 +191,15 @@ public class GUI_Actions {
 
         for (int i = 0; i < meaningNumber; i++) {
             HBox meaningButtonBox = new HBox();
+            meaningButtonBox.setAlignment(Pos.TOP_CENTER);
+            HBox.setHgrow(meaningButtonBox,Priority.ALWAYS);
 
             TextArea meaning = new TextArea(value);
             meaning.setEditable(false);
             HBox.setMargin(meaning, new Insets(0, 20, 0, 60));
-            HBox.setHgrow(meaning,Priority.ALWAYS);
             meaning.setPrefHeight(80);
-            meaning.setPrefWidth(350);
+            meaning.setPrefWidth(500);
+            meaning.setMaxWidth(630);
 
             Button meaningButton = new Button("<--");
             HBox.setMargin(meaningButton, new Insets(25, 10, 0, 0));
@@ -206,13 +217,14 @@ public class GUI_Actions {
         borderPane.setCenter(searchMeaningBox);
 
         HBox lastBox = new HBox();
+        lastBox.setAlignment(Pos.CENTER);
         Label chooseLabel = new Label("Please choose the meaning of the language you want.");
-        chooseLabel.setPadding(new Insets(0,0,0,50));
+        chooseLabel.setPadding(new Insets(0,300,0,0));
         Button backButton = new Button("Back");
-        HBox.setMargin(backButton, new Insets(0,0,5,5));
+        HBox.setMargin(backButton, new Insets(0,20,5,5));
         backButton.setOnAction(event -> {
             try {
-                backToMainScreen(stage);
+                backToMainScreen(stage, scene);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -244,10 +256,13 @@ public class GUI_Actions {
 
         VBox searchMeaningBox = new VBox();
         HBox textWithButton = new HBox();
+        searchMeaningBox.setAlignment(Pos.TOP_CENTER);
+        textWithButton.setAlignment(Pos.TOP_CENTER);
 
         TextField searchingText = new TextField(textField.getText());
-        HBox.setHgrow(searchingText, Priority.ALWAYS);
-        VBox.setMargin(textWithButton, new Insets(80,0,80,80));
+        searchingText.setPrefWidth(400);
+        searchingText.setMaxWidth(700);
+        VBox.setMargin(textWithButton, new Insets(80,20,80,60));
         searchingText.minWidth(600);
 
         Button searchButton = new Button("Search");
@@ -255,21 +270,25 @@ public class GUI_Actions {
         searchButton.setOnAction(event -> searchingAction(searchingText,stage, scene));
 
         Label chosenLanguageLabel = new Label(language1 + " meanings: ");
-        chosenLanguageLabel.setPadding(new Insets(0,0,0,40));
+        chosenLanguageLabel.setPadding(new Insets(0,480,0,0));
 
         TextArea meaningsArea = new TextArea();
         VBox.setMargin(meaningsArea, new Insets(0, 40, 80, 40));
-        VBox.setVgrow(meaningsArea, Priority.ALWAYS);
+        meaningsArea.setPrefWidth(500);
+        meaningsArea.setMaxWidth(630);
+        meaningsArea.setPrefHeight(400);
+
 
         textWithButton.getChildren().addAll(searchingText,searchButton);
         searchMeaningBox.getChildren().addAll(textWithButton, chosenLanguageLabel, meaningsArea);
 
         HBox lastBox = new HBox();
+        lastBox.setAlignment(Pos.CENTER);
         Button backButton = new Button("Back");
-        HBox.setMargin(backButton, new Insets(0,0,5,5));
+        HBox.setMargin(backButton, new Insets(0,605,5,5));
         backButton.setOnAction(event -> {
             try {
-                backToMainScreen(stage);
+                backToMainScreen(stage, scene);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -305,43 +324,45 @@ public class GUI_Actions {
         borderPane.setTop(mainMenuBar);
 
         VBox mainBox = new VBox();
+        mainBox.setAlignment(Pos.TOP_CENTER);
 
-        Label usingAddWordLabel = new Label("""
-                In the first selection box, select the language of the word you want\s
-                to enter and write this word in the space below. In the second selection box,
-                select the language of the meaning you want to enter and enter the meaning in the\s
-                space below. If you want to add more meaning, press the "Add meaning"\s
-                button at the bottom. You can add up to 3 meanings at once.""");
-
-        usingAddWordLabel.setPadding(new Insets(20, 20, 0, 20));
+        Label usingAddWordLabel = new Label("In the first selection box, select the language of the word you wants " +
+                "to enter and write this word in the space below. In the second selection box, select the language of the " +
+                "meaning you want to enter and enter the meaning in thes space below. If you want to add more meaning, press " +
+                "the \"Add meaning\"s button at the bottom. You can add up to 3 meanings at once.");
+        usingAddWordLabel.setWrapText(true);
+        usingAddWordLabel.setPadding(new Insets(20,20,0,20));
+        usingAddWordLabel.setPrefWidth(1000);
+        usingAddWordLabel.setPrefHeight(90);
 
         Label chosenLanguageLabel1 = new Label( choiceBox1.getValue()+":");
-        chosenLanguageLabel1.setPadding(new Insets(10, 20, 0, 20));
+        chosenLanguageLabel1.setPadding(new Insets(10, 605, 0, 20));
 
-        TextArea ftextA = new TextArea();
-        ftextA.setText(textArea1.getText());
+        TextArea ftextA = new TextArea(textArea1.getText());
         VBox.setMargin(ftextA, new Insets(20, 20, 0, 20));
         ftextA.setPrefHeight(80);
-        ftextA.setPrefWidth(350);
+        ftextA.setPrefWidth(500);
+        ftextA.setMaxWidth(610);
 
         Label chosenLanguageLabel2 = new Label(choiceBox2.getValue()+":");
-        chosenLanguageLabel2.setPadding(new Insets(10, 20, 0, 20));
+        chosenLanguageLabel2.setPadding(new Insets(10, 605, 0, 20));
 
-        TextArea stextA = new TextArea();
-        stextA.setText(textArea2.getText());
+        TextArea stextA = new TextArea(textArea2.getText());
         VBox.setMargin(stextA, new Insets(20, 20, 0, 20));
         stextA.setPrefHeight(80);
-        stextA.setPrefWidth(350);
+        stextA.setPrefWidth(500);
+        stextA.setMaxWidth(610);
 
         TextArea ttextA = new TextArea();
         VBox.setMargin(ttextA, new Insets(0, 20, 0, 20));
         ttextA.setPrefHeight(80);
-        ttextA.setPrefWidth(350);
+        ttextA.setPrefWidth(500);
+        ttextA.setMaxWidth(610);
 
 
         Button addMeaningButton = new Button("Add Meaning");
         addMeaningButton.setOnAction(event -> addMeaningAgain(textArea1,textArea2, ttextA,choiceBox1,choiceBox2,stage, scene));
-        VBox.setMargin(addMeaningButton, new Insets(10, 20, 0, 390));
+        VBox.setMargin(addMeaningButton, new Insets(10, 20, 0, 540));
 
 
         HBox buttonsBox = new HBox();
@@ -353,7 +374,7 @@ public class GUI_Actions {
 
         backButton.setOnAction(event -> {
             try {
-                backToMainScreen(stage);
+                backToMainScreen(stage, scene);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -387,41 +408,46 @@ public class GUI_Actions {
         borderPane.setTop(mainMenuBar);
 
         VBox mainBox = new VBox();
+        mainBox.setAlignment(Pos.TOP_CENTER);
 
-        Label usingAddWordLabel = new Label("""
-                In the first selection box, select the language of the word you want\s
-                to enter and write this word in the space below. In the second selection box,
-                select the language of the meaning you want to enter and enter the meaning in the\s
-                space below. If you want to add more meaning, press the "Add meaning"\s
-                button at the bottom. You can add up to 3 meanings at once.""");
-
-        usingAddWordLabel.setPadding(new Insets(20, 20, 0, 20));
+        Label usingAddWordLabel = new Label("In the first selection box, select the language of the word you wants " +
+                "to enter and write this word in the space below. In the second selection box, select the language of the " +
+                "meaning you want to enter and enter the meaning in thes space below. If you want to add more meaning, press " +
+                "the \"Add meaning\"s button at the bottom. You can add up to 3 meanings at once.");
+        usingAddWordLabel.setWrapText(true);
+        usingAddWordLabel.setPadding(new Insets(20,20,0,20));
+        usingAddWordLabel.setPrefWidth(1000);
+        usingAddWordLabel.setPrefHeight(90);
 
         Label chosenLanguageLabel1 = new Label( choiceBox1.getValue()+":");
-        chosenLanguageLabel1.setPadding(new Insets(10, 20, 0, 20));
+        chosenLanguageLabel1.setPadding(new Insets(10, 605, 0, 20));
 
         TextArea ftextA = new TextArea(textArea1.getText());
         VBox.setMargin(ftextA, new Insets(20, 20, 0, 20));
         ftextA.setPrefHeight(80);
-        ftextA.setPrefWidth(350);
+        ftextA.setPrefWidth(500);
+        ftextA.setMaxWidth(610);
 
         Label chosenLanguageLabel2 = new Label( choiceBox2.getValue()+":");
-        chosenLanguageLabel2.setPadding(new Insets(10, 20, 0, 20));
+        chosenLanguageLabel2.setPadding(new Insets(10, 605, 0, 20));
 
         TextArea stextA = new TextArea(textArea2.getText());
         VBox.setMargin(stextA, new Insets(20, 20, 0, 20));
         stextA.setPrefHeight(80);
-        stextA.setPrefWidth(350);
+        stextA.setPrefWidth(500);
+        stextA.setMaxWidth(610);
 
         TextArea ttextA = new TextArea(textArea3.getText());
         VBox.setMargin(ttextA, new Insets(0, 20, 0, 20));
         ttextA.setPrefHeight(80);
-        ttextA.setPrefWidth(350);
+        ttextA.setPrefWidth(500);
+        ttextA.setMaxWidth(610);
 
         TextArea fotextA = new TextArea();
         VBox.setMargin(fotextA, new Insets(0, 20, 0, 20));
         fotextA.setPrefHeight(80);
-        fotextA.setPrefWidth(350);
+        fotextA.setPrefWidth(500);
+        fotextA.setMaxWidth(610);
 
 
 
@@ -434,7 +460,7 @@ public class GUI_Actions {
 
         backButton.setOnAction(event -> {
             try {
-                backToMainScreen(stage);
+                backToMainScreen(stage, scene);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -451,8 +477,12 @@ public class GUI_Actions {
         stage.show();
     }
 
-    public void backToMainScreen (Stage stage) throws IOException {
+    public void backToMainScreen (Stage stage, Scene scene) throws IOException {
+        setSceneWidth(scene.getWidth());
+        setSceneHeight(scene.getHeight());
+        System.out.println(getSceneHeight());
         mainApp.start(stage);
+
     }
 
     public void searchAll(){
@@ -468,5 +498,21 @@ public class GUI_Actions {
                 filePaths.add(file.getPath());
             }
         }
+    }
+
+    public double getSceneWidth() {
+        return sceneWidth;
+    }
+
+    public void setSceneWidth(double sceneWidth) {
+        this.sceneWidth = sceneWidth;
+    }
+
+    public double getSceneHeight() {
+        return sceneHeight;
+    }
+
+    public void setSceneHeight(double sceneHeight) {
+        this.sceneHeight = sceneHeight;
     }
 }
