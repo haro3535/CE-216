@@ -43,6 +43,7 @@ public class GUI_Actions {
     public String language5 = "Modern Greek";
     public String language6 = "French";
     public String language7 = "Swedish";
+    public boolean isFilesFound = false;
     private final ArrayList<String> filePaths = new ArrayList<>();
     private final ArrayList<XML_Methods> xmlMethodsArrayList = new ArrayList<>();
     private final List<Thread> threads = new ArrayList<>();
@@ -600,13 +601,12 @@ public class GUI_Actions {
     public void searchAll(){
 
         File folder = new File("Dictionary");
-        System.out.println(folder.getAbsolutePath());
 
         File[] files = folder.listFiles(File::isFile);
 
         if (files != null) {
 
-            System.out.println(files.length);
+            System.out.println(files.length + " File Found!");
 
             for (File file:
                     files) {
@@ -614,6 +614,7 @@ public class GUI_Actions {
                     filePaths.add(file.getPath());
                 }
             }
+            isFilesFound = true;
         }
     }
 
