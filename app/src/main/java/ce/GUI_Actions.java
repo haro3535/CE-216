@@ -1,31 +1,25 @@
 package ce;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import org.w3c.dom.Node;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
-import static javafx.geometry.Pos.CENTER_LEFT;
+
 
 public class GUI_Actions {
 
@@ -46,8 +40,10 @@ public class GUI_Actions {
     public boolean isFilesFound = false;
     private final ArrayList<String> filePaths = new ArrayList<>();
     private final ArrayList<XML_Methods> xmlMethodsArrayList = new ArrayList<>();
+    private final ArrayList<Node> nodeeeeesss  = new ArrayList<>();
     private final List<Thread> threads = new ArrayList<>();
     private final ArrayList<String> textBody = new ArrayList<>();
+    StringBuilder meaningTextContent = new StringBuilder();
 
     public void popupMenu (Stage stage, Scene scene){
 
@@ -220,6 +216,9 @@ public class GUI_Actions {
 
 
     public void choosingLanguage (TextField textField, Stage stage, Scene scene, String string){
+
+        searchThreads("-aktig");
+
         BorderPane borderPane = new BorderPane();
 
         MenuBar mainMenuBar = new MenuBar();
@@ -253,7 +252,7 @@ public class GUI_Actions {
         Label chosenLanguageLabel = new Label("Meanings: ");
         chosenLanguageLabel.setPadding(new Insets(0,520,0,0));
 
-        TextArea meaningsArea = new TextArea();
+        TextArea meaningsArea = new TextArea(nodeeeeesss.get(1).getTextContent());
         meaningsArea.setFont(new Font(15));
         meaningsArea.setWrapText(true);
         meaningsArea.setEditable(false);
@@ -462,10 +461,71 @@ public class GUI_Actions {
 
     }
 
+    public void searchThreads(String word){
+
+        for (String filepath:
+             filePaths) {
+
+            XML_Methods xmlMethod = new XML_Methods();
+            xmlMethod.setWord(word);
+            xmlMethod.setFilepath(filepath);
+            xmlMethodsArrayList.add(xmlMethod);
+
+            Thread thread = new Thread(xmlMethod);
+            thread.start();
+            threads.add(thread);
+        }
+
+        try {
+            for (Thread thread:
+                    threads) {
+
+                thread.join();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        mergeMeanings();
+
+    }
+
+    public void mergeMeanings(){
+
+        System.out.println("Oğuz");
+
+        for (XML_Methods xmlClass:
+             xmlMethodsArrayList) {
+
+            if (xmlClass.getMeanings().size()>0) {
+
+
+                nodeeeeesss.add(xmlClass.getFoundEntries());
+
+                for (LinkedList<String> linkedList:
+                        xmlClass.getMeanings()) {
+                    int meaningCounter = 1;
+                    for (String meaning:
+                         linkedList) {
+                        meaningTextContent.append(meaningCounter).append(". ").append(meaning);
+                        meaningTextContent.append("\n");
+                        System.out.println("Berke");
+                        meaningCounter++;
+                    }
+                    meaningTextContent.append("--------\n");
+                    System.out.println("Ali");
+                }
+                meaningTextContent.append("+++++++++++++++++++++++++++++++\n");
+            }
+        }
+    }
+
     public void searchAll(){
 
+        // To read
         File folder = new File("Dictionary");
 
+        // To take all file inside Dictionary directory
         File[] files = folder.listFiles(File::isFile);
 
         if (files != null) {

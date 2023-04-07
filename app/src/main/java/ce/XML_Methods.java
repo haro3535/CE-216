@@ -22,60 +22,82 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
 public class XML_Methods implements Runnable {
 
-    private final ArrayList<Node> foundEntries = new ArrayList<>();
-
+    private Node foundEntries;
     private final ArrayList<LinkedList<String>> meanings = new ArrayList<>();
     private String filepath;
     private String word;
 
-    public void searchMeaning(){
-        for (Node foundedEntry : foundEntries) {
+    public void arrangeEntriesTextContents(){
 
-            Element entry = (Element) foundedEntry;
+        // To arrange each entry that we found in xml file.
+        if (foundEntries != null) {
+            NodeList entries = foundEntries.getChildNodes();
 
-            // Some XML files have more than one sense tag, so if he encounters such a situation, so that there are no problems.
-            NodeList senses = entry.getElementsByTagName("sense");
-
-            int meaningIndex = 1;
-
-            // Eş sesli kelimeler için
-            meanings.add(new LinkedList<>());
-
-            for (int j = 0; j < senses.getLength(); j++) {
-                // Some XML dictionaries also have multiple cit tag inside the sense tag.
-                // For that reason, we take them all and
-                Element currentSense = (Element) senses.item(j);
-
-                NodeList cites = currentSense.getElementsByTagName("cit");
+            for (int i = 0; i < entries.getLength(); i++) {
+                Element entry = (Element) entries.item(i);
 
 
-                System.out.print("Meaning " +(j+1) +": ");
-                StringBuilder sense = new StringBuilder();
-                for (int k = 0; k < cites.getLength(); k++) {
-                    Element citeT = (Element) cites.item(k);
-                    if (citeT.getAttribute("type").equals("trans")) {
-                        String quote = citeT.getElementsByTagName("quote").item(0).getTextContent();
-                        if (k+1!= cites.getLength()){
-                            System.out.print(quote + ", ");
-                            sense.append(quote).append(", ");
+                // Some XML files have more than one <sense> tag, so if he encounters such a situation, so that there are no problems.
+                NodeList senses = entry.getElementsByTagName("sense");
+
+
+                // Eş sesli kelimeler için
+                meanings.add(new LinkedList<>());
+
+                for (int j = 0; j < senses.getLength(); j++) {
+                    // Some XML dictionaries also have multiple <cit> tags or <def> tag inside the <sense> tag.
+                    // For that reason, we take them all and
+                    Element currentSense = (Element) senses.item(j);
+
+                    NodeList senseChildNodes = currentSense.getChildNodes();
+
+
+                    for (int k = 0; k < senseChildNodes.getLength(); k++) {
+                        Element child = (Element) senseChildNodes.item(k);
+                        if (child.getTagName().equals("cit") && child.getAttribute("type").equals("trans")) {
+                            meanings.get(meanings.size()-1).add(child.getElementsByTagName("quote").item(0).getTextContent());
                         }
-                        else{
-                            System.out.print(quote);
-                            sense.append(quote);
+                        else if (child.getTagName().equals("def")) {
+                            meanings.get(meanings.size()-1).add(child.getTextContent());
                         }
-                        meaningIndex++;
                     }
                 }
-                System.out.println();
-
-                // Sonradan Guı den kelimelerin anlamlarına ulaşabilmek için
-                meanings.get(j).add(String.valueOf(sense));
             }
         }
+
+
+             /*
+
+
+            String[] mainTags = {"form","gramGrp","sense"};
+
+
+
+            NodeList children = entry.getChildNodes();
+
+            for (int i = 0; i < children.getLength(); i++) {
+                Element child = (Element) children.item(i);
+
+                switch (child.getTagName()){
+                    case "form":
+                        Element form = (Element) child.getElementsByTagName("form").item(0);
+
+                        Element orth = (Element) form.getElementsByTagName("orth").item(0);
+
+
+
+
+                    case "gramGrp":
+                    case "sense":
+                }
+            }
+
+             */
     }
 
     public void findWord() {
@@ -100,7 +122,7 @@ public class XML_Methods implements Runnable {
                     System.out.println("Word found!");
 
                     // It saves the found entry so as not to search the file again later.
-                    foundEntries.add(nodeL.item(i));
+                    //foundEntries.add(nodeL.item(i));
                 }
             }
         } catch (ParserConfigurationException | IOException | SAXException e) {
@@ -108,19 +130,6 @@ public class XML_Methods implements Runnable {
         }
 
 
-    }
-
-    protected void parseFoundEntries(){
-
-        String[] meanings = {};
-
-        if (foundEntries.size() != 0) {
-            for (Node currentEntry:
-                 foundEntries) {
-
-
-            }
-        }
     }
 
     protected void findEntries(){
@@ -206,7 +215,7 @@ public class XML_Methods implements Runnable {
 
                     if (endElement.getName().getLocalPart().equals("entry")) {
                         if (rootNode != null) {
-                            foundEntries.add(rootNode);
+                            setFoundEntries(rootNode);
                         }else {
                             tagQueue.clear();
                             rootNode = doc.createElement("entry");
@@ -251,6 +260,7 @@ public class XML_Methods implements Runnable {
     public void run() {
 
         findEntries();
+        arrangeEntriesTextContents();
         //searchMeaning();
     }
 
@@ -270,7 +280,15 @@ public class XML_Methods implements Runnable {
         this.filepath = filepath;
     }
 
-    public ArrayList<Node> getFoundEntries() {
+    public Node getFoundEntries() {
         return foundEntries;
+    }
+
+    public void setFoundEntries(Node foundEntries) {
+        this.foundEntries = foundEntries;
+    }
+
+    public ArrayList<LinkedList<String>> getMeanings() {
+        return meanings;
     }
 }
