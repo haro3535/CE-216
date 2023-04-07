@@ -1,20 +1,31 @@
 package ce;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static javafx.geometry.Pos.CENTER_LEFT;
 
 public class GUI_Actions {
 
@@ -118,7 +129,95 @@ public class GUI_Actions {
         stage.show();
     }
 
-    public void searchingAction (TextField textField, Stage stage, Scene scene){
+    public void firstSearchScene (Stage stage, TextField textField, Scene scene){
+
+        int meanNumber = 2;
+        BorderPane borderPane = new BorderPane();
+
+
+        MenuBar mainMenuBar = new MenuBar();
+        Menu mHelp = new Menu("Help");
+        Menu mAdd = new Menu("Add a word");
+        mainMenuBar.getMenus().addAll(mHelp, mAdd);
+
+        MenuItem mAddItem = new MenuItem("Add");
+        mAdd.getItems().add(mAddItem);
+
+        mAddItem.setOnAction(e -> popupMenu(stage, scene) );
+
+        borderPane.setTop(mainMenuBar);
+
+
+        VBox searchMeanBox = new VBox();
+        searchMeanBox.setAlignment(Pos.TOP_CENTER);
+        HBox textWithButton = new HBox();
+        textWithButton.setAlignment(Pos.TOP_CENTER);
+
+        TextField searchingText = new TextField(textField.getText());
+        searchingText.setPrefWidth(400);
+        searchingText.setMaxWidth(700);
+        VBox.setMargin(textWithButton, new Insets(80,0,30,80));
+        searchingText.minWidth(600);
+
+        Button searchButton = new Button("Search");
+        HBox.setMargin(searchButton, new Insets(0,40,0,40));
+        searchButton.setOnAction(event -> firstSearchScene(stage,searchingText,scene));
+
+
+        String[] languageList = {"Modern Greece", "Turkish ", "fr"};
+        ListView<String> myListView = new ListView<>();
+        myListView.getItems().addAll(languageList);
+        myListView.setPrefHeight(250);
+        myListView.setPrefWidth(630);
+        myListView.setMaxWidth(630);
+
+        Label selectLanguageLabel = new Label();
+        VBox.setMargin(selectLanguageLabel, new Insets(0,0,30,0));
+        selectLanguageLabel.setFont(new Font(20));
+        selectLanguageLabel.setTextFill(Color.DARKTURQUOISE);
+
+        String[] selectedLanguage = new String[1];
+        myListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            selectedLanguage[0] = myListView.getSelectionModel().getSelectedItem();
+            selectLanguageLabel.setText(selectedLanguage[0]);
+        });
+
+        Button selectButton = new Button("Select");
+        VBox.setMargin(selectButton, new Insets(20,585,0,0));
+        selectButton.setOnAction(event -> searchingAction(textField, stage, scene,
+                selectedLanguage[0]));
+
+
+        textWithButton.getChildren().addAll(searchingText, searchButton);
+        searchMeanBox.getChildren().addAll(textWithButton, selectLanguageLabel,myListView, selectButton);
+
+
+
+        borderPane.setCenter(searchMeanBox);
+
+        HBox lastBox = new HBox();
+        lastBox.setAlignment(Pos.CENTER);
+        Label chooseLabel = new Label("Please choose the language you want.");
+        chooseLabel.setPadding(new Insets(0,380,0,0));
+        Button backButton = new Button("Back");
+        HBox.setMargin(backButton, new Insets(0,20,5,5));
+        backButton.setOnAction(event -> {
+            try {
+                backToMainScreen(stage, scene);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        lastBox.getChildren().addAll(backButton, chooseLabel);
+        borderPane.setBottom(lastBox);
+
+        scene.setRoot(borderPane);
+        stage.setTitle("Team 6");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public void searchingAction (TextField textField, Stage stage, Scene scene, String string){
         for (String filePath:
              filePaths) {
 
@@ -195,7 +294,7 @@ public class GUI_Actions {
 
         Button searchButton = new Button("Search");
         HBox.setMargin(searchButton, new Insets(0,40,0,40));
-        searchButton.setOnAction(event -> searchingAction(searchingText,stage, scene));
+        searchButton.setOnAction(event -> firstSearchScene(stage, searchingText, scene));
 
         searchMeaningBox.getChildren().add(textWithButton);
 
@@ -279,7 +378,7 @@ public class GUI_Actions {
 
         Button searchButton = new Button("Search");
         HBox.setMargin(searchButton, new Insets(0,40,0,40));
-        searchButton.setOnAction(event -> searchingAction(searchingText,stage, scene));
+        searchButton.setOnAction(event -> firstSearchScene(stage, searchingText, scene));
 
         Label chosenLanguageLabel = new Label(language1 + " meanings: ");
         chosenLanguageLabel.setPadding(new Insets(0,480,0,0));

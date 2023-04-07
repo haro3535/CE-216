@@ -66,7 +66,7 @@ public class App extends Application {
 
         Button searchButton = new Button("Search");
         HBox.setMargin(searchButton, new Insets(0,40,0,40));
-        searchButton.setOnAction(event -> actions.searchingAction(searchingText,stage, scene));
+        searchButton.setOnAction(event -> actions.firstSearchScene(stage,searchingText,scene));
 
         VBox imageBox = new VBox();
         VBox.setVgrow(imageBox, Priority.ALWAYS);
