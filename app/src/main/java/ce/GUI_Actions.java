@@ -185,7 +185,7 @@ public class GUI_Actions {
 
         Button selectButton = new Button("Select");
         VBox.setMargin(selectButton, new Insets(20,585,0,0));
-        selectButton.setOnAction(event -> searchingAction(textField, stage, scene,
+        selectButton.setOnAction(event -> choosingLanguage(textField, stage, scene,
                 selectedLanguage[0]));
 
 
@@ -218,139 +218,8 @@ public class GUI_Actions {
         stage.show();
     }
 
-    public void searchingAction (TextField textField, Stage stage, Scene scene, String string){
-        for (String filePath:
-             filePaths) {
 
-            XML_Methods xmlMethods = new XML_Methods();
-            xmlMethods.setWord(textField.getText());
-            xmlMethods.setFilepath(filePath);
-
-            xmlMethodsArrayList.add(xmlMethods);
-
-            Thread thread = new Thread(xmlMethods);
-            thread.start();
-            threads.add(thread);
-
-        }
-
-        try {
-            for (Thread t: threads) {
-                t.join();
-                System.out.println(t.getName());
-            }
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-
-        StringBuilder value = new StringBuilder();
-        int meaningNumber = 0;
-
-        for (XML_Methods xmlClass:
-             xmlMethodsArrayList) {
-
-            if (xmlClass.getFoundEntries().size()>0) {
-                for (int i = 0; i < xmlClass.getFoundEntries().size(); i++) {
-                    System.out.println(xmlClass.getFoundEntries().get(i).getTextContent());
-                    value.append(xmlClass.getFoundEntries().get(i).getTextContent()).append("\n");
-                }
-
-                textBody.add(String.valueOf(value));
-                value = new StringBuilder();
-                meaningNumber++;
-                System.out.println(meaningNumber);
-            }
-
-        }
-
-
-        BorderPane borderPane = new BorderPane();
-
-        MenuBar mainMenuBar = new MenuBar();
-        Menu mHelp = new Menu("Help");
-        Menu mAdd = new Menu("Add a word");
-        mainMenuBar.getMenus().addAll(mHelp, mAdd);
-
-        MenuItem mAddItem = new MenuItem("Add");
-        mAdd.getItems().add(mAddItem);
-
-        mAddItem.setOnAction(e -> popupMenu(stage, scene) );
-
-        borderPane.setTop(mainMenuBar);
-
-
-        VBox searchMeaningBox = new VBox();
-        HBox textWithButton = new HBox();
-
-        textWithButton.setAlignment(Pos.TOP_CENTER);
-
-
-        TextField searchingText = new TextField(textField.getText());
-        searchingText.setPrefWidth(400);
-        searchingText.setMaxWidth(700);
-        VBox.setMargin(textWithButton, new Insets(80,0,80,100));
-        searchingText.minWidth(600);
-
-        Button searchButton = new Button("Search");
-        HBox.setMargin(searchButton, new Insets(0,40,0,40));
-        searchButton.setOnAction(event -> firstSearchScene(stage, searchingText, scene));
-
-        searchMeaningBox.getChildren().add(textWithButton);
-
-
-        for (int i = 0; i < meaningNumber; i++) {
-            HBox meaningButtonBox = new HBox();
-            meaningButtonBox.setAlignment(Pos.TOP_CENTER);
-            HBox.setHgrow(meaningButtonBox,Priority.ALWAYS);
-
-            TextArea meaning = new TextArea(textBody.get(i));
-            meaning.setEditable(false);
-            HBox.setMargin(meaning, new Insets(0, 20, 0, 60));
-            meaning.setPrefHeight(80);
-            meaning.setPrefWidth(500);
-            meaning.setMaxWidth(630);
-            meaning.setWrapText(true);
-
-            Button meaningButton = new Button("<--");
-            HBox.setMargin(meaningButton, new Insets(25, 10, 0, 0));
-            meaningButton.setOnAction(event -> choosingLanguage(textField,stage, scene));
-
-            meaningButtonBox.getChildren().addAll(meaning, meaningButton);
-
-            searchMeaningBox.getChildren().add( meaningButtonBox);
-
-        }
-
-
-        textWithButton.getChildren().addAll(searchingText, searchButton);
-
-        borderPane.setCenter(searchMeaningBox);
-
-        HBox lastBox = new HBox();
-        lastBox.setAlignment(Pos.CENTER);
-        Label chooseLabel = new Label("Please choose the meaning of the language you want.");
-        chooseLabel.setPadding(new Insets(0,300,0,0));
-        Button backButton = new Button("Back");
-        HBox.setMargin(backButton, new Insets(0,20,5,5));
-        backButton.setOnAction(event -> {
-            try {
-                backToMainScreen(stage, scene);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-        lastBox.getChildren().addAll(backButton, chooseLabel);
-        borderPane.setBottom(lastBox);
-
-        scene.setRoot(borderPane);
-        stage.setTitle("Team 6");
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    public void choosingLanguage (TextField textField, Stage stage, Scene scene){
+    public void choosingLanguage (TextField textField, Stage stage, Scene scene, String string){
         BorderPane borderPane = new BorderPane();
 
         MenuBar mainMenuBar = new MenuBar();
@@ -381,10 +250,12 @@ public class GUI_Actions {
         HBox.setMargin(searchButton, new Insets(0,40,0,40));
         searchButton.setOnAction(event -> firstSearchScene(stage, searchingText, scene));
 
-        Label chosenLanguageLabel = new Label(language1 + " meanings: ");
-        chosenLanguageLabel.setPadding(new Insets(0,480,0,0));
+        Label chosenLanguageLabel = new Label("Meanings: ");
+        chosenLanguageLabel.setPadding(new Insets(0,520,0,0));
 
         TextArea meaningsArea = new TextArea();
+        meaningsArea.setFont(new Font(15));
+        meaningsArea.setWrapText(true);
         meaningsArea.setEditable(false);
         VBox.setMargin(meaningsArea, new Insets(0, 40, 80, 40));
         meaningsArea.setPrefWidth(500);
@@ -399,16 +270,9 @@ public class GUI_Actions {
         lastBox.setAlignment(Pos.CENTER);
         Button backButton = new Button("Back");
         HBox.setMargin(backButton, new Insets(0,605,5,5));
-        backButton.setOnAction(event -> {
-            try {
-                backToMainScreen(stage, scene);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
+        backButton.setOnAction(event -> firstSearchScene(stage, textField, scene));
         lastBox.getChildren().addAll(backButton);
         borderPane.setBottom(lastBox);
-
 
         borderPane.setCenter(searchMeaningBox);
 
