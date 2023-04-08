@@ -1,6 +1,7 @@
 package ce;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -16,6 +17,8 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -62,6 +65,17 @@ public class App extends Application {
         searchingText.setMaxWidth(700);
         VBox.setMargin(textWithButton, new Insets(80,0,40,80));
         searchingText.minWidth(600);
+
+        searchingText.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getCode().equals(KeyCode.ENTER))
+                {
+                    actions.searchThreads(searchingText.getText());
+                    actions.firstSearchScene(stage,searchingText,scene);
+                }
+            }
+        });
 
         Button searchButton = new Button("Search");
         HBox.setMargin(searchButton, new Insets(0,40,0,40));

@@ -1,10 +1,13 @@
 package ce;
 
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -154,6 +157,17 @@ public class GUI_Actions {
         VBox.setMargin(textWithButton, new Insets(80,0,30,80));
         searchingText.minWidth(600);
 
+        searchingText.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getCode().equals(KeyCode.ENTER))
+                {
+                    searchThreads(searchingText.getText());
+                    firstSearchScene(stage,searchingText,scene);
+                }
+            }
+        });
+
         Button searchButton = new Button("Search");
         HBox.setMargin(searchButton, new Insets(0,40,0,40));
         searchButton.setOnAction(event -> {
@@ -247,8 +261,19 @@ public class GUI_Actions {
         TextField searchingText = new TextField(textField.getText());
         searchingText.setPrefWidth(400);
         searchingText.setMaxWidth(700);
-        VBox.setMargin(textWithButton, new Insets(80,20,80,60));
+        VBox.setMargin(textWithButton, new Insets(80,20,30,60));
         searchingText.minWidth(600);
+
+        searchingText.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getCode().equals(KeyCode.ENTER))
+                {
+                    searchThreads(searchingText.getText());
+                    firstSearchScene(stage,searchingText,scene);
+                }
+            }
+        });
 
         Button searchButton = new Button("Search");
         HBox.setMargin(searchButton, new Insets(0,40,0,40));
@@ -258,7 +283,8 @@ public class GUI_Actions {
         });
 
         Label chosenLanguageLabel = new Label("Meanings: ");
-        chosenLanguageLabel.setPadding(new Insets(0,520,0,0));
+        chosenLanguageLabel.setFont(new Font(20));
+        chosenLanguageLabel.setPadding(new Insets(0,0,30,0));
 
         TextArea meaningsArea = new TextArea(String.valueOf(buildText));// TODO: buraya çıkarılacak anlamlar
         meaningsArea.setFont(new Font(15));
@@ -266,8 +292,10 @@ public class GUI_Actions {
         meaningsArea.setEditable(false);
         VBox.setMargin(meaningsArea, new Insets(0, 40, 80, 40));
         meaningsArea.setPrefWidth(500);
-        meaningsArea.setMaxWidth(630);
+        meaningsArea.setMaxWidth(1200);
+        meaningsArea.setMaxHeight(1000);
         meaningsArea.setPrefHeight(400);
+
 
 
         textWithButton.getChildren().addAll(searchingText,searchButton);
