@@ -246,7 +246,7 @@ public class XML_Methods implements Runnable {
                 meaningTextContent.append("--------\n");
                 //System.out.println("Ali");
             }
-            meaningTextContent.append("+++++++++++++++++++++++++++++++\n");
+            meaningTextContent.append("______________________________________\n");
         }
 
     }
