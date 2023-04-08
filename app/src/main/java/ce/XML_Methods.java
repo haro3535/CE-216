@@ -64,7 +64,7 @@ public class XML_Methods implements Runnable {
                         Element child = (Element) senseChildNodes.item(k);
 
                         // Çocuğu kontrol etmek için
-                        if (child.getTagName().equals("cit")) {
+                        if (child.getTagName().equals("cit") && !child.getAttribute("type").equals("example")) {
 
                             // cit in varsa birden fazla quote unu almak için
                             NodeList citChildren = child.getChildNodes();
