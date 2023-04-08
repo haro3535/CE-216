@@ -60,7 +60,7 @@ public class App extends Application {
         TextField searchingText = new TextField();
         searchingText.setPrefWidth(400);
         searchingText.setMaxWidth(700);
-        VBox.setMargin(textWithButton, new Insets(80,0,80,80));
+        VBox.setMargin(textWithButton, new Insets(80,0,40,80));
         searchingText.minWidth(600);
 
         Button searchButton = new Button("Search");
@@ -70,10 +70,10 @@ public class App extends Application {
         VBox imageBox = new VBox();
         VBox.setVgrow(imageBox, Priority.ALWAYS);
         imageBox.setAlignment(Pos.CENTER);
-        VBox.setMargin(imageBox, new Insets(0,0,120,40));
+        VBox.setMargin(imageBox, new Insets(0,0,120,0));
 
         // To find absolute path of img file
-        File file = new File("Team64.png");
+        File file = new File("Team6_400.png");
 
         Image image = new Image(new FileInputStream(file.getAbsolutePath()));
         ImageView imageView = new ImageView(image);
