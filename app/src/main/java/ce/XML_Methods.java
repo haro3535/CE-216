@@ -233,6 +233,8 @@ public class XML_Methods implements Runnable {
 
         if (getMeanings().size()>0) {
 
+            meaningTextContent.append(foundIn).append("\n");
+
             for (LinkedList<String> linkedList:
                     getMeanings()) {
                 int meaningCounter = 1;

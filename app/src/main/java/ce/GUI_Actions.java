@@ -157,7 +157,7 @@ public class GUI_Actions {
         Button searchButton = new Button("Search");
         HBox.setMargin(searchButton, new Insets(0,40,0,40));
         searchButton.setOnAction(event -> {
-            searchThreads(textField.getText());
+            searchThreads(searchingText.getText());
             firstSearchScene(stage,searchingText,scene);
         });
 
@@ -186,8 +186,10 @@ public class GUI_Actions {
 
         Button selectButton = new Button("Select");
         VBox.setMargin(selectButton, new Insets(20,585,0,0));
-        selectButton.setOnAction(event -> choosingLanguage(textField, stage, scene,
-                selectedLanguage[0]));
+        selectButton.setOnAction(event -> {
+            buildTextBody(selectedLanguage[0]);
+            choosingLanguage(textField, stage, scene, selectedLanguage[0]);
+        });
 
 
         textWithButton.getChildren().addAll(searchingText, searchButton);
@@ -251,7 +253,7 @@ public class GUI_Actions {
         Button searchButton = new Button("Search");
         HBox.setMargin(searchButton, new Insets(0,40,0,40));
         searchButton.setOnAction(event -> {
-            searchThreads(textField.getText());
+            searchThreads(searchingText.getText());
             firstSearchScene(stage, searchingText, scene);
         });
 
@@ -467,12 +469,15 @@ public class GUI_Actions {
 
     }
 
-    public void buildTextBody(){
+    public void buildTextBody(String lang){
+        buildText = new StringBuilder();
         for (XML_Methods objects:
              xmlMethodsArrayList) {
 
             if (objects.meaningTextContent != null) {
-                buildText.append(objects.meaningTextContent);
+                if (objects.getSearchIn().equals(lang)) {
+                    buildText.append(objects.meaningTextContent);
+                }
             }
         }
     }
@@ -482,6 +487,7 @@ public class GUI_Actions {
         xmlMethodsArrayList.clear();
         threads.clear();
         buildText = new StringBuilder();
+        languageAndWord.clear();
 
         for (String filepath:
              filePaths) {
@@ -507,8 +513,6 @@ public class GUI_Actions {
         }
 
         languagesSearchedIn();
-        buildTextBody();
-
 
     }
 
