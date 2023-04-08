@@ -43,7 +43,7 @@ public class GUI_Actions {
     private final ArrayList<Node> nodeeeeesss  = new ArrayList<>();
     private final List<Thread> threads = new ArrayList<>();
     private final ArrayList<String> textBody = new ArrayList<>();
-    StringBuilder meaningTextContent = new StringBuilder();
+    StringBuilder buildText = new StringBuilder();
 
     public void popupMenu (Stage stage, Scene scene){
 
@@ -217,7 +217,7 @@ public class GUI_Actions {
 
     public void choosingLanguage (TextField textField, Stage stage, Scene scene, String string){
 
-        searchThreads("-aktig");
+        searchThreads("book");
 
         BorderPane borderPane = new BorderPane();
 
@@ -252,7 +252,7 @@ public class GUI_Actions {
         Label chosenLanguageLabel = new Label("Meanings: ");
         chosenLanguageLabel.setPadding(new Insets(0,520,0,0));
 
-        TextArea meaningsArea = new TextArea(nodeeeeesss.get(1).getTextContent());
+        TextArea meaningsArea = new TextArea(String.valueOf(buildText));// TODO: buraya çıkarılacak anlamlar
         meaningsArea.setFont(new Font(15));
         meaningsArea.setWrapText(true);
         meaningsArea.setEditable(false);
@@ -461,6 +461,16 @@ public class GUI_Actions {
 
     }
 
+    public void buildTextBody(){
+        for (XML_Methods objects:
+             xmlMethodsArrayList) {
+
+            if (objects.meaningTextContent != null) {
+                buildText.append(objects.meaningTextContent);
+            }
+        }
+    }
+
     public void searchThreads(String word){
 
         for (String filepath:
@@ -486,38 +496,8 @@ public class GUI_Actions {
             e.printStackTrace();
         }
 
-        mergeMeanings();
+        buildTextBody();
 
-    }
-
-    public void mergeMeanings(){
-
-        System.out.println("Oğuz");
-
-        for (XML_Methods xmlClass:
-             xmlMethodsArrayList) {
-
-            if (xmlClass.getMeanings().size()>0) {
-
-
-                nodeeeeesss.add(xmlClass.getFoundEntries());
-
-                for (LinkedList<String> linkedList:
-                        xmlClass.getMeanings()) {
-                    int meaningCounter = 1;
-                    for (String meaning:
-                         linkedList) {
-                        meaningTextContent.append(meaningCounter).append(". ").append(meaning);
-                        meaningTextContent.append("\n");
-                        System.out.println("Berke");
-                        meaningCounter++;
-                    }
-                    meaningTextContent.append("--------\n");
-                    System.out.println("Ali");
-                }
-                meaningTextContent.append("+++++++++++++++++++++++++++++++\n");
-            }
-        }
     }
 
     public void searchAll(){

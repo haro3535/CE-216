@@ -31,19 +31,24 @@ public class XML_Methods implements Runnable {
     private final ArrayList<LinkedList<String>> meanings = new ArrayList<>();
     private String filepath;
     private String word;
+    StringBuilder meaningTextContent = new StringBuilder();
 
     public void arrangeEntriesTextContents(){
 
+        //TODO: Bazı <sense> tagının içinde yine bir <sense> tagı var dikkat et
+
         // To arrange each entry that we found in xml file.
+
         if (foundEntries != null) {
             NodeList entries = foundEntries.getChildNodes();
 
             for (int i = 0; i < entries.getLength(); i++) {
                 Element entry = (Element) entries.item(i);
-
+                System.out.println(entry.getTextContent());
 
                 // Some XML files have more than one <sense> tag, so if he encounters such a situation, so that there are no problems.
                 NodeList senses = entry.getElementsByTagName("sense");
+                //System.out.println(senses.getLength());
 
 
                 // Eş sesli kelimeler için
@@ -51,6 +56,7 @@ public class XML_Methods implements Runnable {
 
                 for (int j = 0; j < senses.getLength(); j++) {
                     // Some XML dictionaries also have multiple <cit> tags or <def> tag inside the <sense> tag.
+                    // Also, some of has multiple <quote> tag inside <cit> tag
                     // For that reason, we take them all and
                     Element currentSense = (Element) senses.item(j);
 
@@ -58,9 +64,30 @@ public class XML_Methods implements Runnable {
 
 
                     for (int k = 0; k < senseChildNodes.getLength(); k++) {
+                        // her sense çoçuğunu elemente çevirme
                         Element child = (Element) senseChildNodes.item(k);
-                        if (child.getTagName().equals("cit") && child.getAttribute("type").equals("trans")) {
-                            meanings.get(meanings.size()-1).add(child.getElementsByTagName("quote").item(0).getTextContent());
+
+                        // Çocuğu kontrol etmek için
+                        if (child.getTagName().equals("cit")) {
+
+                            // cit in varsa birden fazla quote unu almak için
+                            NodeList citChildren = child.getChildNodes();
+
+                            // Şu an için aynı cit in içinde bulundan birden fazla quote u yan yana yazdırmak için
+                            StringBuilder multipleQuotes = new StringBuilder();
+                            for (int z = 0; z < citChildren.getLength(); z++) {
+                                Element citChild = (Element) citChildren.item(z);
+                                if (citChild.getTagName().equals("quote")){
+                                    multipleQuotes.append(citChild.getTextContent());
+                                }
+                                if ((z+1) < citChildren.getLength()) {
+                                    Element nextCitChild = (Element) citChildren.item((z+1));
+                                    if (nextCitChild.getTagName().equals("quote")) {
+                                        multipleQuotes.append(", ");
+                                    }
+                                }
+                            }
+                            meanings.get(meanings.size()-1).add(String.valueOf(multipleQuotes));
                         }
                         else if (child.getTagName().equals("def")) {
                             meanings.get(meanings.size()-1).add(child.getTextContent());
@@ -69,67 +96,6 @@ public class XML_Methods implements Runnable {
                 }
             }
         }
-
-
-             /*
-
-
-            String[] mainTags = {"form","gramGrp","sense"};
-
-
-
-            NodeList children = entry.getChildNodes();
-
-            for (int i = 0; i < children.getLength(); i++) {
-                Element child = (Element) children.item(i);
-
-                switch (child.getTagName()){
-                    case "form":
-                        Element form = (Element) child.getElementsByTagName("form").item(0);
-
-                        Element orth = (Element) form.getElementsByTagName("orth").item(0);
-
-
-
-
-                    case "gramGrp":
-                    case "sense":
-                }
-            }
-
-             */
-    }
-
-    public void findWord() {
-
-        File file = new File(filepath);
-
-        // These three lines of code below for parsing the xml file.
-        DocumentBuilderFactory fac = DocumentBuilderFactory.newInstance();
-
-
-        try {
-            DocumentBuilder builder = fac.newDocumentBuilder();
-            Document doc = builder.parse(file);
-
-            // It is not necessary but recommended for parsing
-            doc.getDocumentElement().normalize();
-
-            NodeList nodeL = doc.getElementsByTagName("entry");
-            for (int i=0;i<nodeL.getLength();i++){
-                Element element = (Element) nodeL.item(i);
-                if (element.getElementsByTagName("orth").item(0).getTextContent().equals(word)){
-                    System.out.println("Word found!");
-
-                    // It saves the found entry so as not to search the file again later.
-                    //foundEntries.add(nodeL.item(i));
-                }
-            }
-        } catch (ParserConfigurationException | IOException | SAXException e) {
-            e.printStackTrace();
-        }
-
-
     }
 
     protected void findEntries(){
@@ -144,86 +110,93 @@ public class XML_Methods implements Runnable {
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.newDocument();
 
-            Node rootNode = doc.createElement("entry");
+            Node rootNode = doc.createElement("body");
 
             ArrayList<String> tagQueue = new ArrayList<>();
             String currentTextValue = "";
 
             boolean isInsideTheEntry = false;
             boolean isItCorrectEntry = true;
-            while (xmlEventReader.hasNext()){
+            boolean isAllFound = false;
+            while (xmlEventReader.hasNext() && !isAllFound){
 
                 XMLEvent nextEvent = xmlEventReader.nextEvent();
 
-                if (nextEvent.isStartElement() && isItCorrectEntry) {
+                if (isItCorrectEntry) {
+                    if (nextEvent.isStartElement()) {
 
-                    StartElement startElement = nextEvent.asStartElement();
+                        StartElement startElement = nextEvent.asStartElement();
 
-
-                    if (startElement.getName().getLocalPart().equals("entry") && !isInsideTheEntry) {
-                        isInsideTheEntry = true;
-                        continue;
-                    }else if (isInsideTheEntry){
-                        tagQueue.add(startElement.getName().getLocalPart());
-                        Element currentNode = doc.createElement(startElement.getName().getLocalPart());
-                        if (tagQueue.size() == 1){
-                            // Direkt entry ye ekliyor
-                            rootNode.appendChild(currentNode);
+                        // entry nin içinde olup olmadığını anlamak için
+                        if (startElement.getName().getLocalPart().equals("entry") && !isInsideTheEntry) {
+                            isInsideTheEntry = true;
                         }
-                        if (tagQueue.size() > 1) {
-                            Node parentE = rootNode;
-                            Node childE = parentE.getLastChild();
 
-                            for (int i = 0; i < (tagQueue.size()-1); i++) {
-                                parentE = childE;
-                                // Son eleman daha eklenmediği için atlama yaptırıyorum
-                                if ((i+1) != (tagQueue.size()-1)) {
-                                    childE = parentE.getLastChild();
+                        if (isInsideTheEntry){
+                            tagQueue.add(startElement.getName().getLocalPart());
+                            Element currentNode = doc.createElement(startElement.getName().getLocalPart());
+                            if (tagQueue.size() == 1){
+                                // Direkt entry ye ekliyor
+                                rootNode.appendChild(currentNode);
+                            }
+                            if (tagQueue.size() > 1) {
+                                Node parentE = rootNode;
+                                Node childE = parentE.getLastChild();
+
+                                for (int i = 0; i < (tagQueue.size()-1); i++) {
+                                    parentE = childE;
+                                    // Son eleman daha eklenmediği için atlama yaptırıyorum
+                                    if ((i+1) != (tagQueue.size()-1)) {
+                                        childE = parentE.getLastChild();
+                                    }
+                                }
+
+
+                                if (startElement.getAttributes().hasNext()) {
+                                    Attribute attribute = startElement.getAttributes().next();
+                                    currentNode.setAttribute(attribute.getName().getLocalPart(),attribute.getValue());
+                                    //System.out.println(attribute.getName().getLocalPart() + " - " + attribute.getValue());
+                                }
+
+                                parentE.appendChild(currentNode);
+                            }
+                        }
+                    }
+
+                    if (nextEvent.isCharacters()) {
+                        if (!nextEvent.asCharacters().getData().equals("") && isInsideTheEntry
+                                && !nextEvent.asCharacters().getData().contains("\n")) {
+                            currentTextValue = nextEvent.asCharacters().getData();
+                        }
+                        if (!tagQueue.isEmpty()) {
+                            // Burada entry nin bizim istedğimiz entry olup olmadığına bakıyor
+                            if (tagQueue.get(tagQueue.size()-1).equals("orth")) {
+                                if(!target.equals(nextEvent.asCharacters().getData())){
+                                    isItCorrectEntry = false;
+                                    if (rootNode.getChildNodes().getLength() > 0 ) {
+                                        rootNode.removeChild(rootNode.getLastChild());
+                                    }
+                                    if (rootNode.getChildNodes().getLength() > 1 ) {
+                                        isAllFound = true;
+                                    }
+                                    continue;
                                 }
                             }
-
-
-                            if (startElement.getAttributes().hasNext()) {
-                                Attribute attribute = startElement.getAttributes().next();
-                                currentNode.setAttribute(attribute.getName().getLocalPart(),attribute.getValue());
-                                System.out.println(attribute.getName().getLocalPart() + " - " + attribute.getValue());
-                            }
-
-                            parentE.appendChild(currentNode);
                         }
                     }
                 }
 
-                if (nextEvent.isCharacters()) {
-                    if (!nextEvent.asCharacters().getData().equals("") && isInsideTheEntry
-                            && !nextEvent.asCharacters().getData().contains("\n")) {
-                        currentTextValue = nextEvent.asCharacters().getData();
-                    }
-                    if (!tagQueue.isEmpty()) {
-                        // Burada entry nin bizim istedğimiz entry olup olmadığına bakıyor
-                        if (tagQueue.get(tagQueue.size()-1).equals("orth")) {
-                            if(!target.equals(nextEvent.asCharacters().getData())){
-                                isItCorrectEntry = false;
-                                rootNode = null;
-                            }
-                        }
-                    }
-                }
 
                 if (nextEvent.isEndElement()) {
                     EndElement endElement = nextEvent.asEndElement();
 
                     if (endElement.getName().getLocalPart().equals("entry")) {
-                        if (rootNode != null) {
-                            setFoundEntries(rootNode);
-                        }else {
-                            tagQueue.clear();
-                            rootNode = doc.createElement("entry");
-                        }
                         isItCorrectEntry = true;
+                        tagQueue.clear();
                         continue;
                     }
 
+                    // Eğer doğru entry değil ise devam ediyor
                     if (!endElement.getName().getLocalPart().equals("entry") && !isItCorrectEntry){
                         continue;
                     }
@@ -249,11 +222,37 @@ public class XML_Methods implements Runnable {
                 }
             }
 
-
+            // Bulduğumuz entryleri bir <body> inin içine ekleyip foundEntriese ekliyoruz
+            setFoundEntries(rootNode);
+            System.out.println(rootNode.getChildNodes().getLength());
 
         } catch (FileNotFoundException | XMLStreamException | ParserConfigurationException e) {
             e.printStackTrace();
         }
+    }
+
+    public void mergeMeanings(){
+
+        //System.out.println("Oğuz");
+
+        if (getMeanings().size()>0) {
+
+            for (LinkedList<String> linkedList:
+                    getMeanings()) {
+                int meaningCounter = 1;
+                for (String meaning:
+                        linkedList) {
+                    meaningTextContent.append(meaningCounter).append(". ").append(meaning);
+                    meaningTextContent.append("\n");
+                    //System.out.println("Berke");
+                    meaningCounter++;
+                }
+                meaningTextContent.append("--------\n");
+                //System.out.println("Ali");
+            }
+            meaningTextContent.append("+++++++++++++++++++++++++++++++\n");
+        }
+
     }
 
     @Override
@@ -261,6 +260,7 @@ public class XML_Methods implements Runnable {
 
         findEntries();
         arrangeEntriesTextContents();
+        mergeMeanings();
         //searchMeaning();
     }
 
@@ -290,5 +290,9 @@ public class XML_Methods implements Runnable {
 
     public ArrayList<LinkedList<String>> getMeanings() {
         return meanings;
+    }
+
+    public StringBuilder getMeaningTextContent() {
+        return meaningTextContent;
     }
 }
