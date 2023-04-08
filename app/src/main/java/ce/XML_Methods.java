@@ -35,8 +35,6 @@ public class XML_Methods implements Runnable {
 
     public void arrangeEntriesTextContents(){
 
-        //TODO: Bazı <sense> tagının içinde yine bir <sense> tagı var dikkat et
-
         // To arrange each entry that we found in xml file.
 
         if (foundEntries != null) {
@@ -44,7 +42,7 @@ public class XML_Methods implements Runnable {
 
             for (int i = 0; i < entries.getLength(); i++) {
                 Element entry = (Element) entries.item(i);
-                System.out.println(entry.getTextContent());
+                //System.out.println(entry.getTextContent());
 
                 // Some XML files have more than one <sense> tag, so if he encounters such a situation, so that there are no problems.
                 NodeList senses = entry.getElementsByTagName("sense");
@@ -224,7 +222,7 @@ public class XML_Methods implements Runnable {
 
             // Bulduğumuz entryleri bir <body> inin içine ekleyip foundEntriese ekliyoruz
             setFoundEntries(rootNode);
-            System.out.println(rootNode.getChildNodes().getLength());
+            //System.out.println(rootNode.getChildNodes().getLength());
 
         } catch (FileNotFoundException | XMLStreamException | ParserConfigurationException e) {
             e.printStackTrace();
