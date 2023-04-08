@@ -40,9 +40,8 @@ public class GUI_Actions {
     public boolean isFilesFound = false;
     private final ArrayList<String> filePaths = new ArrayList<>();
     private final ArrayList<XML_Methods> xmlMethodsArrayList = new ArrayList<>();
-    private final ArrayList<Node> nodeeeeesss  = new ArrayList<>();
     private final List<Thread> threads = new ArrayList<>();
-    private final ArrayList<String> textBody = new ArrayList<>();
+    private final ArrayList<LinkedList<String>> languageAndWord = new ArrayList<>();
     StringBuilder buildText = new StringBuilder();
 
     public void popupMenu (Stage stage, Scene scene){
@@ -128,9 +127,6 @@ public class GUI_Actions {
 
     public void firstSearchScene (Stage stage, TextField textField, Scene scene){
 
-        searchThreads(textField.getText());
-
-        int meanNumber = 2;
         BorderPane borderPane = new BorderPane();
 
 
@@ -160,7 +156,10 @@ public class GUI_Actions {
 
         Button searchButton = new Button("Search");
         HBox.setMargin(searchButton, new Insets(0,40,0,40));
-        searchButton.setOnAction(event -> firstSearchScene(stage,searchingText,scene));
+        searchButton.setOnAction(event -> {
+            searchThreads(textField.getText());
+            firstSearchScene(stage,searchingText,scene);
+        });
 
 
 
@@ -251,7 +250,10 @@ public class GUI_Actions {
 
         Button searchButton = new Button("Search");
         HBox.setMargin(searchButton, new Insets(0,40,0,40));
-        searchButton.setOnAction(event -> firstSearchScene(stage, searchingText, scene));
+        searchButton.setOnAction(event -> {
+            searchThreads(textField.getText());
+            firstSearchScene(stage, searchingText, scene);
+        });
 
         Label chosenLanguageLabel = new Label("Meanings: ");
         chosenLanguageLabel.setPadding(new Insets(0,520,0,0));
@@ -477,6 +479,10 @@ public class GUI_Actions {
 
     public void searchThreads(String word){
 
+        xmlMethodsArrayList.clear();
+        threads.clear();
+        buildText = new StringBuilder();
+
         for (String filepath:
              filePaths) {
 
@@ -505,8 +511,6 @@ public class GUI_Actions {
 
 
     }
-
-    private final ArrayList<LinkedList<String>> languageAndWord = new ArrayList<>();
 
     protected void languagesSearchedIn(){
 
