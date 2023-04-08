@@ -4,7 +4,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -16,24 +15,23 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.regex.Pattern;
 
 public class XML_Methods implements Runnable {
 
     private Node foundEntries;
     private final ArrayList<LinkedList<String>> meanings = new ArrayList<>();
     private String filepath;
+    private String searchIn;
+    private String foundIn;
     private String word;
     StringBuilder meaningTextContent = new StringBuilder();
 
-    public void arrangeEntriesTextContents(){
+    protected void arrangeEntriesTextContents(){
 
         // To arrange each entry that we found in xml file.
 
@@ -229,7 +227,7 @@ public class XML_Methods implements Runnable {
         }
     }
 
-    public void mergeMeanings(){
+    protected void mergeMeanings(){
 
         //System.out.println("Oğuz");
 
@@ -253,9 +251,28 @@ public class XML_Methods implements Runnable {
 
     }
 
+    protected void splitFileName(){
+
+        String fileName = filepath;
+        char separator = '\\';
+        String[] str_arr= fileName.replaceAll(Pattern.quote(String.valueOf(separator)), "\\\\").split("\\\\");
+        String baseName = str_arr[1];
+        String[] tokens = baseName.split("[-.]");
+        setSearchIn(tokens[0]);
+        setFoundIn(tokens[1]);
+
+        // Bu aşağıdakiler farklı yerde kullanılcak
+        String firstFileName = tokens[0].concat("-eng").concat(".xml");
+        String secondFileName = "eng-".concat(tokens[1]).concat(".xml");
+        System.out.println(firstFileName);
+        System.out.println(secondFileName);
+
+    }
+
     @Override
     public void run() {
 
+        splitFileName();
         findEntries();
         arrangeEntriesTextContents();
         mergeMeanings();
@@ -276,6 +293,22 @@ public class XML_Methods implements Runnable {
 
     public void setFilepath(String filepath) {
         this.filepath = filepath;
+    }
+
+    public String getSearchIn() {
+        return searchIn;
+    }
+
+    public void setSearchIn(String searchIn) {
+        this.searchIn = searchIn;
+    }
+
+    public String getFoundIn() {
+        return foundIn;
+    }
+
+    public void setFoundIn(String foundIn) {
+        this.foundIn = foundIn;
     }
 
     public Node getFoundEntries() {

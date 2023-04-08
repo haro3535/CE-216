@@ -128,6 +128,8 @@ public class GUI_Actions {
 
     public void firstSearchScene (Stage stage, TextField textField, Scene scene){
 
+        searchThreads(textField.getText());
+
         int meanNumber = 2;
         BorderPane borderPane = new BorderPane();
 
@@ -161,9 +163,13 @@ public class GUI_Actions {
         searchButton.setOnAction(event -> firstSearchScene(stage,searchingText,scene));
 
 
-        String[] languageList = {"Modern Greece", "Turkish ", "fr"};
+
         ListView<String> myListView = new ListView<>();
-        myListView.getItems().addAll(languageList);
+        for (LinkedList<String> lang:
+             languageAndWord) {
+            myListView.getItems().add(lang.get(0));
+
+        }
         myListView.setPrefHeight(250);
         myListView.setPrefWidth(630);
         myListView.setMaxWidth(630);
@@ -216,8 +222,6 @@ public class GUI_Actions {
 
 
     public void choosingLanguage (TextField textField, Stage stage, Scene scene, String string){
-
-        searchThreads("book");
 
         BorderPane borderPane = new BorderPane();
 
@@ -496,8 +500,40 @@ public class GUI_Actions {
             e.printStackTrace();
         }
 
+        languagesSearchedIn();
         buildTextBody();
 
+
+    }
+
+    private final ArrayList<LinkedList<String>> languageAndWord = new ArrayList<>();
+
+    protected void languagesSearchedIn(){
+
+        for (XML_Methods xmlClass:
+             xmlMethodsArrayList) {
+
+            if (xmlClass.getMeanings().size() > 0) {
+
+                boolean isLanguageExistInArray = false;
+                for (LinkedList<String> strings : languageAndWord) {
+                    if (strings.contains(xmlClass.getSearchIn())) {
+                        isLanguageExistInArray = true;
+                        break;
+                    }
+                }
+
+                if (!isLanguageExistInArray) {
+                    LinkedList<String> lw = new LinkedList<>();
+                    lw.add(xmlClass.getSearchIn());
+                    lw.add(xmlClass.getWord());
+                    languageAndWord.add(lw);
+                }
+
+            }
+        }
+
+        System.out.println(languageAndWord.size());
     }
 
     public void searchAll(){
