@@ -263,12 +263,6 @@ public class XML_Methods implements Runnable {
         setSearchIn(tokens[0]);
         setFoundIn(tokens[1]);
 
-        // Bu aşağıdakiler farklı yerde kullanılcak
-        String firstFileName = tokens[0].concat("-eng").concat(".xml");
-        String secondFileName = "eng-".concat(tokens[1]).concat(".xml");
-        System.out.println(firstFileName);
-        System.out.println(secondFileName);
-
     }
 
     @Override

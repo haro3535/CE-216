@@ -12,6 +12,8 @@ import javafx.scene.image.ImageView;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -34,7 +36,7 @@ public class App extends Application {
     public void start(Stage stage) throws FileNotFoundException {
 
         GUI_Actions actions = new GUI_Actions();
-        actions.searchAll();
+        actions.isFilesFound = isFilesFound;
 
 
         BorderPane borderPane = new BorderPane();
@@ -69,7 +71,7 @@ public class App extends Application {
         searchingText.setOnKeyPressed(event -> {
             if (event.getCode().equals(KeyCode.ENTER))
             {
-                actions.searchThreads(searchingText.getText());
+                actions.searchThreads(searchingText.getText(),"",filePaths,false);
                 actions.firstSearchScene(stage,searchingText,scene);
             }
         });
@@ -77,7 +79,7 @@ public class App extends Application {
         Button searchButton = new Button("Search");
         HBox.setMargin(searchButton, new Insets(0,40,0,40));
         searchButton.setOnAction(event -> {
-            actions.searchThreads(searchingText.getText());
+            actions.searchThreads(searchingText.getText(),"",filePaths,false);
             actions.firstSearchScene(stage,searchingText,scene);
         });
 
@@ -106,7 +108,33 @@ public class App extends Application {
 
     }
 
+    private static final ArrayList<String> filePaths = new ArrayList<>();
+    private static boolean isFilesFound;
+
+    public static void searchAll(){
+
+        // To read
+        File folder = new File("Dictionary");
+
+        // To take all file inside Dictionary directory
+        File[] files = folder.listFiles(File::isFile);
+
+        if (files != null) {
+
+            System.out.println(files.length + " File Found!");
+
+            for (File file:
+                    files) {
+                if (file.getName().contains(".xml")) {
+                    filePaths.add(file.getPath());
+                }
+            }
+            isFilesFound = true;
+        }
+    }
+
     public static void main(String[] args) {
+        searchAll();
         launch(args);
     }
 }

@@ -19,6 +19,7 @@ import org.w3c.dom.Node;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -40,6 +41,7 @@ public class GUI_Actions {
     public String language5 = "Modern Greek";
     public String language6 = "French";
     public String language7 = "Swedish";
+    String[] dictionaryLanguages = {"deu","ell","eng","fra","ita","swe","tur"};
     public boolean isFilesFound = false;
     private final ArrayList<String> filePaths = new ArrayList<>();
     private final ArrayList<XML_Methods> xmlMethodsArrayList = new ArrayList<>();
@@ -160,7 +162,10 @@ public class GUI_Actions {
         searchingText.setOnKeyPressed(event -> {
             if (event.getCode().equals(KeyCode.ENTER))
             {
-                searchThreads(searchingText.getText());
+                xmlMethodsArrayList.clear();
+                buildText = new StringBuilder();
+                languageAndWord.clear();
+                searchThreads(searchingText.getText(),"",filePaths,false);
                 firstSearchScene(stage,searchingText,scene);
             }
         });
@@ -168,7 +173,10 @@ public class GUI_Actions {
         Button searchButton = new Button("Search");
         HBox.setMargin(searchButton, new Insets(0,40,0,40));
         searchButton.setOnAction(event -> {
-            searchThreads(searchingText.getText());
+            xmlMethodsArrayList.clear();
+            buildText = new StringBuilder();
+            languageAndWord.clear();
+            searchThreads(searchingText.getText(),"",filePaths,false);
             firstSearchScene(stage,searchingText,scene);
         });
 
@@ -177,7 +185,8 @@ public class GUI_Actions {
         ListView<String> myListView = new ListView<>();
         for (LinkedList<String> lang:
              languageAndWord) {
-            myListView.getItems().add(lang.get(0));
+            myListView.getItems().add(lang.getFirst().toUpperCase());
+            //myListView.getItems().add(lang.getFirst().toUpperCase() + " : " + lang.getLast());
 
         }
         myListView.setPrefHeight(250);
@@ -198,7 +207,9 @@ public class GUI_Actions {
         Button selectButton = new Button("Select");
         VBox.setMargin(selectButton, new Insets(20,585,0,0));
         selectButton.setOnAction(event -> {
-            buildTextBody(selectedLanguage[0]);// TODO: ingilizce için burayı değiştiricen
+            // TODO: ingilizce için burayı değiştiricen
+            buildText = new StringBuilder();
+            findMeaningOverEnglish(selectedLanguage[0].toLowerCase(),searchingText.getText());
             choosingLanguage(textField, stage, scene, selectedLanguage[0]);
         });
 
@@ -264,7 +275,10 @@ public class GUI_Actions {
         searchingText.setOnKeyPressed(event -> {
             if (event.getCode().equals(KeyCode.ENTER))
             {
-                searchThreads(searchingText.getText());
+                xmlMethodsArrayList.clear();
+                buildText = new StringBuilder();
+                languageAndWord.clear();
+                searchThreads(searchingText.getText(),"",filePaths,false);
                 firstSearchScene(stage,searchingText,scene);
             }
         });
@@ -272,7 +286,10 @@ public class GUI_Actions {
         Button searchButton = new Button("Search");
         HBox.setMargin(searchButton, new Insets(0,40,0,40));
         searchButton.setOnAction(event -> {
-            searchThreads(searchingText.getText());
+            xmlMethodsArrayList.clear();
+            buildText = new StringBuilder();
+            languageAndWord.clear();
+            searchThreads(searchingText.getText(),"",filePaths,false);
             firstSearchScene(stage, searchingText, scene);
         });
 
@@ -491,8 +508,8 @@ public class GUI_Actions {
 
     }
 
-    public void buildTextBody(String lang){
-        buildText = new StringBuilder();
+    public void buildTextBody(String lang, ArrayList<String> missingLanguages){
+
         for (XML_Methods objects:
              xmlMethodsArrayList) {
 
@@ -500,45 +517,115 @@ public class GUI_Actions {
                 if (objects.getSearchIn().equals(lang)) {
                     buildText.append(objects.meaningTextContent);
                 }
+                if (objects.getSearchIn().equals("eng") && missingLanguages.contains(objects.getFoundIn())) {
+                    buildText.append(objects.meaningTextContent);
+                }
             }
         }
     }
 
-    public void searchThreads(String word){
+    protected void findMeaningOverEnglish(String lang,String word){
 
-        xmlMethodsArrayList.clear();
-        threads.clear();
-        buildText = new StringBuilder();
-        languageAndWord.clear();
+        ArrayList<String> missingLanguages = new ArrayList<>(Arrays.asList(dictionaryLanguages));
+        missingLanguages.remove(lang);
 
-        for (String filepath:
-             filePaths) {
-
-            XML_Methods xmlMethod = new XML_Methods();
-            xmlMethod.setWord(word);
-            xmlMethod.setFilepath(filepath);
-            xmlMethodsArrayList.add(xmlMethod);
-
-            Thread thread = new Thread(xmlMethod);
-            thread.start();
-            threads.add(thread);
-        }
-
-        try {
-            for (Thread thread:
-                    threads) {
-
-                thread.join();
+        for (XML_Methods objects:
+             xmlMethodsArrayList) {
+            System.out.println(objects.getFoundIn());
+            if (objects.getSearchIn().equals(lang) && objects.getMeanings().size() > 0) {
+                missingLanguages.remove(objects.getFoundIn());
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
 
-        languagesSearchedIn();
+
+        ArrayList<String> missingFilePaths = new ArrayList<>();
+        for (String rightL:
+             missingLanguages) {
+            missingFilePaths.add("Dictionary\\eng-".concat(rightL).concat(".xml"));
+        }
+
+
+        searchThreads(word,lang,missingFilePaths,true);
+        buildTextBody(lang, missingLanguages);
+
+    }
+
+    public void searchThreads(String word,String lang,ArrayList<String> filePaths, boolean isOverEnglish){
+
+        if (isOverEnglish) {
+            ArrayList<LinkedList<String>> englishMeanings = new ArrayList<>();
+            for (XML_Methods xmlMethods:
+                 xmlMethodsArrayList) {
+                if (xmlMethods.getSearchIn().equals(lang) && xmlMethods.getFoundIn().equals("eng") && xmlMethods.getMeanings().size() > 0) {
+                    englishMeanings = xmlMethods.getMeanings();
+
+                }
+            }
+
+            if (englishMeanings.size() > 0) {
+                for (String paths:
+                        filePaths) {
+                    XML_Methods xmlMethods = new XML_Methods();
+                    xmlMethods.setFilepath(paths);
+                    xmlMethods.setWord(englishMeanings.get(0).get(0));
+                    xmlMethodsArrayList.add(xmlMethods);
+                    System.out.println(englishMeanings.get(0).get(0));
+                    System.out.println("Oğuz");
+
+                    Thread thread = new Thread(xmlMethods);
+                    thread.start();
+                    threads.add(thread);
+                }
+
+                try {
+                    for (Thread t:
+                         threads) {
+                        t.join();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        else {
+
+            for (String filepath:
+                    filePaths) {
+
+                XML_Methods xmlMethod = new XML_Methods();
+                xmlMethod.setWord(word);
+                xmlMethod.setFilepath(filepath);
+                xmlMethodsArrayList.add(xmlMethod);
+
+                Thread thread = new Thread(xmlMethod);
+                thread.start();
+                threads.add(thread);
+            }
+
+            try {
+                for (Thread thread:
+                        threads) {
+
+                    thread.join();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+
+        threads.clear();
+
+        if (!isOverEnglish) {
+            languagesSearchedIn();
+        }
 
     }
 
     protected void languagesSearchedIn(){
+
+        // burada tekrar kendi değierini alıp üstüne gerekirse ekleme yapıcak
 
         for (XML_Methods xmlClass:
              xmlMethodsArrayList) {
@@ -555,7 +642,11 @@ public class GUI_Actions {
 
                 if (!isLanguageExistInArray) {
                     LinkedList<String> lw = new LinkedList<>();
+                    // First, we are adding word's language
                     lw.add(xmlClass.getSearchIn());
+                    // Then, we are adding meaning's language
+                    lw.add(xmlClass.getFoundIn());
+                    // Finally, we are adding the word itself
                     lw.add(xmlClass.getWord());
                     languageAndWord.add(lw);
                 }
@@ -564,28 +655,6 @@ public class GUI_Actions {
         }
 
         System.out.println(languageAndWord.size());
-    }
-
-    public void searchAll(){
-
-        // To read
-        File folder = new File("Dictionary");
-
-        // To take all file inside Dictionary directory
-        File[] files = folder.listFiles(File::isFile);
-
-        if (files != null) {
-
-            System.out.println(files.length + " File Found!");
-
-            for (File file:
-                    files) {
-                if (file.getName().contains(".xml")) {
-                    filePaths.add(file.getPath());
-                }
-            }
-            isFilesFound = true;
-        }
     }
 
     public double getSceneWidth() {
