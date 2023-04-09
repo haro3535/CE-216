@@ -229,8 +229,6 @@ public class XML_Methods implements Runnable {
 
     protected void mergeMeanings(){
 
-        //System.out.println("Oğuz");
-
         if (getMeanings().size()>0) {
 
             meaningTextContent.append(foundIn).append("\n");
@@ -242,11 +240,9 @@ public class XML_Methods implements Runnable {
                         linkedList) {
                     meaningTextContent.append(meaningCounter).append(". ").append(meaning);
                     meaningTextContent.append("\n");
-                    //System.out.println("Berke");
                     meaningCounter++;
                 }
                 meaningTextContent.append("--------\n");
-                //System.out.println("Ali");
             }
             meaningTextContent.append("______________________________________\n");
         }

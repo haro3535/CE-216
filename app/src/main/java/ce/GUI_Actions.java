@@ -625,8 +625,6 @@ public class GUI_Actions {
 
     protected void languagesSearchedIn(){
 
-        // burada tekrar kendi değierini alıp üstüne gerekirse ekleme yapıcak
-
         for (XML_Methods xmlClass:
              xmlMethodsArrayList) {
 
