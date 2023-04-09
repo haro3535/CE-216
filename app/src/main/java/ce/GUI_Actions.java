@@ -18,11 +18,7 @@ import org.w3c.dom.Node;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-
+import java.util.*;
 
 
 public class GUI_Actions {
@@ -43,8 +39,9 @@ public class GUI_Actions {
     public String language7 = "Swedish";
     String[] dictionaryLanguages = {"deu","ell","eng","fra","ita","swe","tur"};
     public boolean isFilesFound = false;
-    private final ArrayList<String> filePaths = new ArrayList<>();
+    private ArrayList<String> filePaths = new ArrayList<>();
     private final ArrayList<XML_Methods> xmlMethodsArrayList = new ArrayList<>();
+    private final ArrayList<XML_Methods> xmlMethodsOverEnglish = new ArrayList<>();
     private final List<Thread> threads = new ArrayList<>();
     private final ArrayList<LinkedList<String>> languageAndWord = new ArrayList<>();
     StringBuilder buildText = new StringBuilder();
@@ -165,7 +162,7 @@ public class GUI_Actions {
                 xmlMethodsArrayList.clear();
                 buildText = new StringBuilder();
                 languageAndWord.clear();
-                searchThreads(searchingText.getText(),"",filePaths,false);
+                searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
                 firstSearchScene(stage,searchingText,scene);
             }
         });
@@ -176,7 +173,7 @@ public class GUI_Actions {
             xmlMethodsArrayList.clear();
             buildText = new StringBuilder();
             languageAndWord.clear();
-            searchThreads(searchingText.getText(),"",filePaths,false);
+            searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
             firstSearchScene(stage,searchingText,scene);
         });
 
@@ -185,7 +182,7 @@ public class GUI_Actions {
         ListView<String> myListView = new ListView<>();
         for (LinkedList<String> lang:
              languageAndWord) {
-            myListView.getItems().add(lang.getFirst().toUpperCase());
+            myListView.getItems().add(lang.getFirst().toUpperCase(Locale.ENGLISH));
             //myListView.getItems().add(lang.getFirst().toUpperCase() + " : " + lang.getLast());
 
         }
@@ -209,7 +206,7 @@ public class GUI_Actions {
         selectButton.setOnAction(event -> {
             // TODO: ingilizce için burayı değiştiricen
             buildText = new StringBuilder();
-            findMeaningOverEnglish(selectedLanguage[0].toLowerCase(),searchingText.getText());
+            findMeaningOverEnglish(selectedLanguage[0].toLowerCase(Locale.ENGLISH),searchingText.getText().toLowerCase(Locale.ENGLISH));
             choosingLanguage(textField, stage, scene, selectedLanguage[0]);
         });
 
@@ -278,7 +275,7 @@ public class GUI_Actions {
                 xmlMethodsArrayList.clear();
                 buildText = new StringBuilder();
                 languageAndWord.clear();
-                searchThreads(searchingText.getText(),"",filePaths,false);
+                searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
                 firstSearchScene(stage,searchingText,scene);
             }
         });
@@ -289,7 +286,7 @@ public class GUI_Actions {
             xmlMethodsArrayList.clear();
             buildText = new StringBuilder();
             languageAndWord.clear();
-            searchThreads(searchingText.getText(),"",filePaths,false);
+            searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
             firstSearchScene(stage, searchingText, scene);
         });
 
@@ -517,21 +514,26 @@ public class GUI_Actions {
                 if (objects.getSearchIn().equals(lang)) {
                     buildText.append(objects.meaningTextContent);
                 }
-                if (objects.getSearchIn().equals("eng") && missingLanguages.contains(objects.getFoundIn())) {
-                    buildText.append(objects.meaningTextContent);
-                }
+            }
+        }
+
+        for (XML_Methods overEnglish:
+             xmlMethodsOverEnglish) {
+            if (overEnglish.getSearchIn().equals("eng") && missingLanguages.contains(overEnglish.getFoundIn())) {
+                buildText.append(overEnglish.meaningTextContent);
             }
         }
     }
 
     protected void findMeaningOverEnglish(String lang,String word){
 
+        xmlMethodsOverEnglish.clear();
+
         ArrayList<String> missingLanguages = new ArrayList<>(Arrays.asList(dictionaryLanguages));
         missingLanguages.remove(lang);
 
         for (XML_Methods objects:
              xmlMethodsArrayList) {
-            System.out.println(objects.getFoundIn());
             if (objects.getSearchIn().equals(lang) && objects.getMeanings().size() > 0) {
                 missingLanguages.remove(objects.getFoundIn());
             }
@@ -568,9 +570,7 @@ public class GUI_Actions {
                     XML_Methods xmlMethods = new XML_Methods();
                     xmlMethods.setFilepath(paths);
                     xmlMethods.setWord(englishMeanings.get(0).get(0));
-                    xmlMethodsArrayList.add(xmlMethods);
-                    System.out.println(englishMeanings.get(0).get(0));
-                    System.out.println("Oğuz");
+                    xmlMethodsOverEnglish.add(xmlMethods);
 
                     Thread thread = new Thread(xmlMethods);
                     thread.start();
@@ -652,7 +652,7 @@ public class GUI_Actions {
             }
         }
 
-        System.out.println(languageAndWord.size());
+        //System.out.println(languageAndWord.size());
     }
 
     public double getSceneWidth() {
@@ -669,5 +669,13 @@ public class GUI_Actions {
 
     public void setSceneHeight(double sceneHeight) {
         this.sceneHeight = sceneHeight;
+    }
+
+    public ArrayList<String> getFilePaths() {
+        return filePaths;
+    }
+
+    public void setFilePaths(ArrayList<String> filePaths) {
+        this.filePaths = filePaths;
     }
 }

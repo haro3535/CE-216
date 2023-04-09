@@ -19,6 +19,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 public class XML_Methods implements Runnable {
@@ -167,7 +168,7 @@ public class XML_Methods implements Runnable {
                         if (!tagQueue.isEmpty()) {
                             // Burada entry nin bizim istedğimiz entry olup olmadığına bakıyor
                             if (tagQueue.get(tagQueue.size()-1).equals("orth")) {
-                                if(!target.equals(nextEvent.asCharacters().getData())){
+                                if(!target.equals(nextEvent.asCharacters().getData().toLowerCase(Locale.ENGLISH))){
                                     isItCorrectEntry = false;
                                     if (rootNode.getChildNodes().getLength() > 0 ) {
                                         rootNode.removeChild(rootNode.getLastChild());

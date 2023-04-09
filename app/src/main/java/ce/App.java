@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
@@ -37,6 +38,7 @@ public class App extends Application {
 
         GUI_Actions actions = new GUI_Actions();
         actions.isFilesFound = isFilesFound;
+        actions.setFilePaths(filePaths);
 
 
         BorderPane borderPane = new BorderPane();
@@ -71,7 +73,7 @@ public class App extends Application {
         searchingText.setOnKeyPressed(event -> {
             if (event.getCode().equals(KeyCode.ENTER))
             {
-                actions.searchThreads(searchingText.getText(),"",filePaths,false);
+                actions.searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
                 actions.firstSearchScene(stage,searchingText,scene);
             }
         });
@@ -79,7 +81,7 @@ public class App extends Application {
         Button searchButton = new Button("Search");
         HBox.setMargin(searchButton, new Insets(0,40,0,40));
         searchButton.setOnAction(event -> {
-            actions.searchThreads(searchingText.getText(),"",filePaths,false);
+            actions.searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
             actions.firstSearchScene(stage,searchingText,scene);
         });
 
