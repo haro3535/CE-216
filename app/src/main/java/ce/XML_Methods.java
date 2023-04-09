@@ -278,7 +278,6 @@ public class XML_Methods implements Runnable {
         findEntries();
         arrangeEntriesTextContents();
         mergeMeanings();
-        //searchMeaning();
     }
 
     public String getWord() {

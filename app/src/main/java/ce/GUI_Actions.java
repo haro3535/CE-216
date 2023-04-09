@@ -157,14 +157,11 @@ public class GUI_Actions {
         VBox.setMargin(textWithButton, new Insets(80,0,30,80));
         searchingText.minWidth(600);
 
-        searchingText.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                if (event.getCode().equals(KeyCode.ENTER))
-                {
-                    searchThreads(searchingText.getText());
-                    firstSearchScene(stage,searchingText,scene);
-                }
+        searchingText.setOnKeyPressed(event -> {
+            if (event.getCode().equals(KeyCode.ENTER))
+            {
+                searchThreads(searchingText.getText());
+                firstSearchScene(stage,searchingText,scene);
             }
         });
 
@@ -201,7 +198,7 @@ public class GUI_Actions {
         Button selectButton = new Button("Select");
         VBox.setMargin(selectButton, new Insets(20,585,0,0));
         selectButton.setOnAction(event -> {
-            buildTextBody(selectedLanguage[0]);
+            buildTextBody(selectedLanguage[0]);// TODO: ingilizce için burayı değiştiricen
             choosingLanguage(textField, stage, scene, selectedLanguage[0]);
         });
 
@@ -264,14 +261,11 @@ public class GUI_Actions {
         VBox.setMargin(textWithButton, new Insets(80,20,30,60));
         searchingText.minWidth(600);
 
-        searchingText.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                if (event.getCode().equals(KeyCode.ENTER))
-                {
-                    searchThreads(searchingText.getText());
-                    firstSearchScene(stage,searchingText,scene);
-                }
+        searchingText.setOnKeyPressed(event -> {
+            if (event.getCode().equals(KeyCode.ENTER))
+            {
+                searchThreads(searchingText.getText());
+                firstSearchScene(stage,searchingText,scene);
             }
         });
 

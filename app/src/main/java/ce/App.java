@@ -66,14 +66,11 @@ public class App extends Application {
         VBox.setMargin(textWithButton, new Insets(80,0,40,80));
         searchingText.minWidth(600);
 
-        searchingText.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                if (event.getCode().equals(KeyCode.ENTER))
-                {
-                    actions.searchThreads(searchingText.getText());
-                    actions.firstSearchScene(stage,searchingText,scene);
-                }
+        searchingText.setOnKeyPressed(event -> {
+            if (event.getCode().equals(KeyCode.ENTER))
+            {
+                actions.searchThreads(searchingText.getText());
+                actions.firstSearchScene(stage,searchingText,scene);
             }
         });
 
