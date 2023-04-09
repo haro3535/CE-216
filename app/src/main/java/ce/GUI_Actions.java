@@ -648,7 +648,6 @@ public class GUI_Actions {
                     lw.add(xmlClass.getWord());
                     languageAndWord.add(lw);
                 }
-
             }
         }
 
