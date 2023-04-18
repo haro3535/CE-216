@@ -176,6 +176,10 @@ public class XML_Methods implements Runnable {
                                     if (rootNode.getChildNodes().getLength() > 1 ) {
                                         isAllFound = true;
                                     }
+                                    int checkFirstChar = Character.compare(target.charAt(0),nextEvent.asCharacters().getData().charAt(0));
+                                    if (checkFirstChar < 0) {
+                                        break;
+                                    }
                                     continue;
                                 }
                             }
