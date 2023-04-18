@@ -177,12 +177,16 @@ public class XML_Methods implements Runnable {
                                         isAllFound = true;
                                     }
                                     // TODO Got bug here.
+                                    /*
                                     int checkFirstChar = Character.compare(target.charAt(0),nextEvent.asCharacters().getData().toLowerCase(Locale.ENGLISH).charAt(0));
                                     if (checkFirstChar < 0) {
                                         System.out.println(filepath);
                                         System.out.println(target + " < " + nextEvent.asCharacters().getData());
+                                        System.out.println(meanings.size());
                                         break;
                                     }
+
+                                     */
                                     continue;
                                 }
                             }
