@@ -97,7 +97,7 @@ public class XML_Methods implements Runnable {
 
     protected void findEntries(){
 
-        String target = getWord();
+        String target = getWord().toLowerCase(Locale.ENGLISH);
 
         XMLInputFactory xmlInputFactory = XMLInputFactory.newDefaultFactory();
         DocumentBuilderFactory factory = DocumentBuilderFactory.newDefaultInstance();
@@ -176,10 +176,15 @@ public class XML_Methods implements Runnable {
                                     if (rootNode.getChildNodes().getLength() > 1 ) {
                                         isAllFound = true;
                                     }
-                                    int checkFirstChar = Character.compare(target.charAt(0),nextEvent.asCharacters().getData().charAt(0));
+                                    /*
+                                    int checkFirstChar = Character.compare(target.charAt(0),nextEvent.asCharacters().getData().toLowerCase(Locale.ENGLISH).charAt(0));
                                     if (checkFirstChar < 0) {
+                                        System.out.println(filepath);
+                                        System.out.println(target + " < " + nextEvent.asCharacters().getData());
                                         break;
                                     }
+
+                                     */
                                     continue;
                                 }
                             }
