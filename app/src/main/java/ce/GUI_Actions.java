@@ -641,7 +641,7 @@ public class GUI_Actions {
                 }
 
                 if (!isLanguageExistInArray) {
-                    System.out.println("Found in: " + xmlClass.getSearchIn());
+                    //System.out.println("Found in: " + xmlClass.getSearchIn());
                     LinkedList<String> lw = new LinkedList<>();
                     // First, we are adding word's language
                     lw.add(xmlClass.getSearchIn());
@@ -654,7 +654,7 @@ public class GUI_Actions {
             }
         }
 
-        System.out.println(languageAndWord.size());
+        //System.out.println(languageAndWord.size());
     }
 
     public double getSceneWidth() {
