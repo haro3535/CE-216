@@ -17,9 +17,11 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Locale;
+import java.util.Scanner;
 import java.util.regex.Pattern;
 
 public class XML_Methods implements Runnable {
@@ -95,7 +97,74 @@ public class XML_Methods implements Runnable {
         }
     }
 
+    protected void searchWord(){
+
+        String target = getWord().toLowerCase(Locale.ENGLISH);
+
+        try {
+
+            FileReader fileReader = new FileReader(filepath);
+            Scanner reader = new Scanner(fileReader);
+
+            ArrayList<String> foundWords = new ArrayList<>();
+
+            int goAFewLine = 0;
+            boolean isFound = false;
+            while (reader.hasNext()){
+                String data = reader.nextLine();
+
+                //  data.split(";")[0] -> Word that we are looking for
+                if (data.split(";")[0].toLowerCase(Locale.ENGLISH).equals(target)) {
+                    foundWords.add(data);
+                    isFound = true;
+                }
+                if (isFound) {
+                    goAFewLine++;
+                    if (goAFewLine > 5) {
+                        break;
+                    }
+                }
+            }
+
+            mergeMeanings2(foundWords);
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected void mergeMeanings2(ArrayList<String> foundWords){
+
+        int meaningCounter = 1;
+        for (int i = 0; i < foundWords.size(); i++) {
+
+            /*
+                - foundWords.get(i).split(";")[0] -> Word that we are looking for
+                - foundWords.get(i).split(";")[1] -> Meanings of the Word
+                - foundWords.get(i).split(";")[2] -> Synonyms of the Word
+            */
+
+            String[] graphParts = foundWords.get(i).split(";");
+
+            meaningTextContent.append(foundIn.toUpperCase(Locale.ENGLISH)).append("\n");
+
+            String[] meanings = graphParts[1].split("&");
+
+            for (String meaning : meanings) {
+                meaningTextContent.append(meaningCounter).append(". ").append(meaning).append("\n");
+                meaningCounter++;
+            }
+
+            // TODO: buraya synonyms leri ekle
+
+            if (foundWords.size() != (i+1)) {
+                meaningTextContent.append("--------\n");
+            }
+        }
+        meaningTextContent.append("______________________________________\n");
+    }
     protected void findEntries(){
+        /*
 
         String target = getWord().toLowerCase(Locale.ENGLISH);
 
@@ -186,7 +255,7 @@ public class XML_Methods implements Runnable {
                                         break;
                                     }
 
-                                     */
+
                                     continue;
                                 }
                             }
@@ -237,6 +306,8 @@ public class XML_Methods implements Runnable {
         } catch (FileNotFoundException | XMLStreamException | ParserConfigurationException e) {
             e.printStackTrace();
         }
+
+         */
     }
 
     protected void mergeMeanings(){

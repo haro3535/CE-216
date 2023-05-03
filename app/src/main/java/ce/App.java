@@ -116,7 +116,7 @@ public class App extends Application {
     public static void searchAll(){
 
         // To read
-        File folder = new File("Dictionary");
+        File folder = new File("GraphFiles");
 
         // To take all file inside Dictionary directory
         File[] files = folder.listFiles(File::isFile);
@@ -127,9 +127,7 @@ public class App extends Application {
 
             for (File file:
                     files) {
-                if (file.getName().contains(".xml")) {
-                    filePaths.add(file.getPath());
-                }
+                filePaths.add(file.getPath());
             }
             isFilesFound = true;
         }
