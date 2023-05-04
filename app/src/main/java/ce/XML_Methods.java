@@ -18,6 +18,8 @@ import javax.xml.stream.events.XMLEvent;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Locale;
@@ -103,7 +105,7 @@ public class XML_Methods implements Runnable {
 
         try {
 
-            FileReader fileReader = new FileReader(filepath);
+            FileReader fileReader = new FileReader(filepath, StandardCharsets.UTF_8);
             Scanner reader = new Scanner(fileReader);
 
             ArrayList<String> foundWords = new ArrayList<>();
@@ -126,10 +128,28 @@ public class XML_Methods implements Runnable {
                 }
             }
 
+            parseMeanings(foundWords);
             mergeMeanings2(foundWords);
 
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void parseMeanings(ArrayList<String> foundWords){
+
+        for (String data:
+             foundWords) {
+
+            String meaningPart = data.split(";")[1];
+
+            String[] meanings = meaningPart.split("&");
+
+            getMeanings().add(new LinkedList<>());
+            for (String meaning:
+                 meanings) {
+                getMeanings().get(getMeanings().size()-1).add(meaning);
+            }
         }
     }
 
@@ -348,9 +368,10 @@ public class XML_Methods implements Runnable {
     public void run() {
 
         splitFileName();
-        findEntries();
-        arrangeEntriesTextContents();
-        mergeMeanings();
+        //findEntries();
+        //arrangeEntriesTextContents();
+        //mergeMeanings();
+        searchWord();
     }
 
     public String getWord() {

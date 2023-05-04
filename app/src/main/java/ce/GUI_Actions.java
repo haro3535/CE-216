@@ -917,7 +917,7 @@ public class GUI_Actions {
         ArrayList<String> missingFilePaths = new ArrayList<>();
         for (String rightL:
              missingLanguages) {
-            missingFilePaths.add("Dictionary\\eng-".concat(rightL).concat(".xml"));
+            missingFilePaths.add("GraphFiles\\eng-".concat(rightL).concat(".txt")); // Burayı değiştirddim
         }
 
 
