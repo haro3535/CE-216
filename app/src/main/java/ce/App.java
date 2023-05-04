@@ -1,7 +1,6 @@
 package ce;
 
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -21,7 +20,6 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -49,13 +47,31 @@ public class App extends Application {
 
         MenuBar mainMenuBar = new MenuBar();
         Menu mHelp = new Menu("Help");
-        Menu mAdd = new Menu("Add a word");
+        Menu mAdd = new Menu("Actions");
         mainMenuBar.getMenus().addAll(mHelp, mAdd);
 
-        MenuItem mAddItem = new MenuItem("Add");
-        mAdd.getItems().add(mAddItem);
-
+        MenuItem mAddItem = new MenuItem("Add a word");
         mAddItem.setOnAction(e -> actions.popupMenu(stage, scene) );
+
+        MenuItem mEditItem = new MenuItem("Edit Meaning");
+        mEditItem.setOnAction(event -> {
+            try {
+                actions.editMeaning(stage,scene);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+
+        MenuItem mFindSynonym = new MenuItem("Find Synonym");
+        mFindSynonym.setOnAction(event -> {
+            try {
+                actions.findSynonym(stage, scene);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+
+        mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
 
         borderPane.setTop(mainMenuBar);
 

@@ -1,22 +1,25 @@
 package ce;
 
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import org.w3c.dom.Node;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
@@ -52,13 +55,31 @@ public class GUI_Actions {
 
         MenuBar mainMenuBar = new MenuBar();
         Menu mHelp = new Menu("Help");
-        Menu mAdd = new Menu("Add a word");
+        Menu mAdd = new Menu("Actions");
         mainMenuBar.getMenus().addAll(mHelp, mAdd);
 
-        MenuItem mAddItem = new MenuItem("Add");
-        mAdd.getItems().add(mAddItem);
-
+        MenuItem mAddItem = new MenuItem("Add a word");
         mAddItem.setOnAction(e -> popupMenu(stage, scene) );
+
+        MenuItem mEditItem = new MenuItem("Edit Meaning");
+        mEditItem.setOnAction(event -> {
+            try {
+                editMeaning(stage, scene);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+
+        MenuItem mFindSynonym = new MenuItem("Find Synonym");
+        mFindSynonym.setOnAction(event -> {
+            try {
+                findSynonym(stage, scene);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+
+        mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
 
         borderPane.setTop(mainMenuBar);
 
@@ -122,7 +143,7 @@ public class GUI_Actions {
         borderPane.setBottom(buttonsBox);
 
         scene.setRoot(borderPane);
-        stage.setTitle("Add a word");
+        stage.setTitle("Team 6 - Add a word");
         stage.setScene(scene);
         stage.show();
     }
@@ -134,13 +155,31 @@ public class GUI_Actions {
 
         MenuBar mainMenuBar = new MenuBar();
         Menu mHelp = new Menu("Help");
-        Menu mAdd = new Menu("Add a word");
+        Menu mAdd = new Menu("Actions");
         mainMenuBar.getMenus().addAll(mHelp, mAdd);
 
-        MenuItem mAddItem = new MenuItem("Add");
-        mAdd.getItems().add(mAddItem);
-
+        MenuItem mAddItem = new MenuItem("Add a word");
         mAddItem.setOnAction(e -> popupMenu(stage, scene) );
+
+        MenuItem mEditItem = new MenuItem("Edit Meaning");
+        mEditItem.setOnAction(event -> {
+            try {
+                editMeaning(stage, scene);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+
+        MenuItem mFindSynonym = new MenuItem("Find Synonym");
+        mFindSynonym.setOnAction(event -> {
+            try {
+                findSynonym(stage, scene);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+
+        mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
 
         borderPane.setTop(mainMenuBar);
 
@@ -247,13 +286,31 @@ public class GUI_Actions {
 
         MenuBar mainMenuBar = new MenuBar();
         Menu mHelp = new Menu("Help");
-        Menu mAdd = new Menu("Add a word");
+        Menu mAdd = new Menu("Actions");
         mainMenuBar.getMenus().addAll(mHelp, mAdd);
 
-        MenuItem mAddItem = new MenuItem("Add");
-        mAdd.getItems().add(mAddItem);
-
+        MenuItem mAddItem = new MenuItem("Add a word");
         mAddItem.setOnAction(e -> popupMenu(stage, scene) );
+
+        MenuItem mEditItem = new MenuItem("Edit Meaning");
+        mEditItem.setOnAction(event -> {
+            try {
+                editMeaning(stage, scene);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+
+        MenuItem mFindSynonym = new MenuItem("Find Synonym");
+        mFindSynonym.setOnAction(event -> {
+            try {
+                findSynonym(stage, scene);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+
+        mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
 
         borderPane.setTop(mainMenuBar);
 
@@ -333,13 +390,31 @@ public class GUI_Actions {
 
         MenuBar mainMenuBar = new MenuBar();
         Menu mHelp = new Menu("Help");
-        Menu mAdd = new Menu("Add a word");
+        Menu mAdd = new Menu("Actions");
         mainMenuBar.getMenus().addAll(mHelp, mAdd);
 
-        MenuItem mAddItem = new MenuItem("Add");
-        mAdd.getItems().add(mAddItem);
+        MenuItem mAddItem = new MenuItem("Add a word");
+        mAddItem.setOnAction(e -> popupMenu(stage, scene) );
 
-        mAddItem.setOnAction(e -> popupMenu(stage, scene));
+        MenuItem mEditItem = new MenuItem("Edit Meaning");
+        mEditItem.setOnAction(event -> {
+            try {
+                editMeaning(stage, scene);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+
+        MenuItem mFindSynonym = new MenuItem("Find Synonym");
+        mFindSynonym.setOnAction(event -> {
+            try {
+                findSynonym(stage, scene);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+
+        mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
 
         borderPane.setTop(mainMenuBar);
 
@@ -356,7 +431,8 @@ public class GUI_Actions {
         usingAddWordLabel.setPrefHeight(90);
 
         Label chosenLanguageLabel1 = new Label( choiceBox1.getValue()+":");
-        chosenLanguageLabel1.setPadding(new Insets(10, 605, 0, 20));
+        chosenLanguageLabel1.setAlignment(Pos.CENTER);
+        chosenLanguageLabel1.setPadding(new Insets(10, 545, 0, 20));
 
         TextArea ftextA = new TextArea(textArea1.getText());
         VBox.setMargin(ftextA, new Insets(20, 20, 0, 20));
@@ -365,7 +441,8 @@ public class GUI_Actions {
         ftextA.setMaxWidth(610);
 
         Label chosenLanguageLabel2 = new Label(choiceBox2.getValue()+":");
-        chosenLanguageLabel2.setPadding(new Insets(10, 605, 0, 20));
+        chosenLanguageLabel2.setAlignment(Pos.CENTER);
+        chosenLanguageLabel2.setPadding(new Insets(10, 545, 0, 20));
 
         TextArea stextA = new TextArea(textArea2.getText());
         VBox.setMargin(stextA, new Insets(20, 20, 0, 20));
@@ -417,13 +494,31 @@ public class GUI_Actions {
 
         MenuBar mainMenuBar = new MenuBar();
         Menu mHelp = new Menu("Help");
-        Menu mAdd = new Menu("Add a word");
+        Menu mAdd = new Menu("Actions");
         mainMenuBar.getMenus().addAll(mHelp, mAdd);
 
-        MenuItem mAddItem = new MenuItem("Add");
-        mAdd.getItems().add(mAddItem);
+        MenuItem mAddItem = new MenuItem("Add a word");
+        mAddItem.setOnAction(e -> popupMenu(stage, scene) );
 
-        mAddItem.setOnAction(e -> popupMenu(stage, scene));
+        MenuItem mEditItem = new MenuItem("Edit Meaning");
+        mEditItem.setOnAction(event -> {
+            try {
+                editMeaning(stage, scene);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+
+        MenuItem mFindSynonym = new MenuItem("Find Synonym");
+        mFindSynonym.setOnAction(event -> {
+            try {
+                findSynonym(stage, scene);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+
+        mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
 
         borderPane.setTop(mainMenuBar);
 
@@ -440,7 +535,8 @@ public class GUI_Actions {
         usingAddWordLabel.setPrefHeight(90);
 
         Label chosenLanguageLabel1 = new Label( choiceBox1.getValue()+":");
-        chosenLanguageLabel1.setPadding(new Insets(10, 605, 0, 20));
+        chosenLanguageLabel1.setAlignment(Pos.CENTER);
+        chosenLanguageLabel1.setPadding(new Insets(10, 545, 0, 20));
 
         TextArea ftextA = new TextArea(textArea1.getText());
         VBox.setMargin(ftextA, new Insets(20, 20, 0, 20));
@@ -449,7 +545,8 @@ public class GUI_Actions {
         ftextA.setMaxWidth(610);
 
         Label chosenLanguageLabel2 = new Label( choiceBox2.getValue()+":");
-        chosenLanguageLabel2.setPadding(new Insets(10, 605, 0, 20));
+        chosenLanguageLabel2.setAlignment(Pos.CENTER);
+        chosenLanguageLabel2.setPadding(new Insets(10, 545, 0, 20));
 
         TextArea stextA = new TextArea(textArea2.getText());
         VBox.setMargin(stextA, new Insets(20, 20, 0, 20));
@@ -493,6 +590,283 @@ public class GUI_Actions {
 
         scene.setRoot(borderPane);
         stage.setTitle("Add a word");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public void editMeaning (Stage stage, Scene scene) throws FileNotFoundException {
+
+        BorderPane borderPane = new BorderPane();
+
+        MenuBar mainMenuBar = new MenuBar();
+        Menu mHelp = new Menu("Help");
+        Menu mAdd = new Menu("Actions");
+        mainMenuBar.getMenus().addAll(mHelp, mAdd);
+
+        MenuItem mAddItem = new MenuItem("Add a word");
+        mAddItem.setOnAction(e -> popupMenu(stage, scene) );
+
+        MenuItem mEditItem = new MenuItem("Edit Meaning");
+        mEditItem.setOnAction(event -> {
+            try {
+                editMeaning(stage, scene);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+
+        MenuItem mFindSynonym = new MenuItem("Find Synonym");
+        mFindSynonym.setOnAction(event -> {
+            try {
+                findSynonym(stage, scene);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+
+        mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
+
+        borderPane.setTop(mainMenuBar);
+
+
+        VBox typeBox = new VBox();
+        HBox textWithButton = new HBox();
+        typeBox.setAlignment(Pos.TOP_CENTER);
+        textWithButton.setAlignment(Pos.TOP_CENTER);
+
+        Label typeLabel = new Label("Type the word that you want to edit its meanings.");
+        typeLabel.setWrapText(true);
+        typeLabel.setPadding(new Insets(100,80,0,0));
+
+        TextField searchingText = new TextField();
+        searchingText.setPrefWidth(400);
+        searchingText.setMaxWidth(700);
+        VBox.setMargin(textWithButton, new Insets(30,0,0,80));
+        searchingText.minWidth(600);
+
+        searchingText.setOnKeyPressed(event -> {
+            if (event.getCode().equals(KeyCode.ENTER))
+            {
+                searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
+                synonyms(stage,scene, searchingText);
+            }
+        });
+
+        Button searchButton = new Button("Search");
+        HBox.setMargin(searchButton, new Insets(0,40,30,40));
+        searchButton.setOnAction(event -> {
+            searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
+            synonyms(stage,scene, searchingText);
+        });
+
+        // To find absolute path of img file
+        File file = new File("synonymImage.png");
+
+        Image image = new Image(new FileInputStream(file.getAbsolutePath()));
+        ImageView imageView = new ImageView(image);
+        imageView.setPreserveRatio(true);
+        Group imageGroup = new Group(imageView);
+
+        textWithButton.getChildren().addAll(searchingText, searchButton);
+        typeBox.getChildren().addAll(typeLabel, textWithButton, imageGroup);
+
+        borderPane.setCenter(typeBox);
+
+        HBox buttonsBox = new HBox();
+        Button addButton = new Button("Add");
+        HBox.setMargin(addButton, new Insets(0,5,5,5));
+        Button backButton = new Button("Back");
+        HBox.setMargin(addButton, new Insets(0,0,5,5));
+        buttonsBox.getChildren().addAll(addButton, backButton);
+
+        backButton.setOnAction(event -> {
+            try {
+                backToMainScreen(stage, scene);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        borderPane.setBottom(buttonsBox);
+
+        scene.setRoot(borderPane);
+        stage.setTitle("Team 6 - Edit Meaning");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public void findSynonym (Stage stage, Scene scene) throws FileNotFoundException {
+
+        BorderPane borderPane = new BorderPane();
+
+        MenuBar mainMenuBar = new MenuBar();
+        Menu mHelp = new Menu("Help");
+        Menu mAdd = new Menu("Actions");
+        mainMenuBar.getMenus().addAll(mHelp, mAdd);
+
+        MenuItem mAddItem = new MenuItem("Add a word");
+        mAddItem.setOnAction(e -> popupMenu(stage, scene) );
+
+        MenuItem mEditItem = new MenuItem("Edit Meaning");
+        mEditItem.setOnAction(event -> {
+            try {
+                editMeaning(stage, scene);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+
+        MenuItem mFindSynonym = new MenuItem("Find Synonym");
+        mFindSynonym.setOnAction(event -> {
+            try {
+                findSynonym(stage, scene);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+
+        mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
+
+        borderPane.setTop(mainMenuBar);
+
+
+        VBox typeBox = new VBox();
+        HBox textWithButton = new HBox();
+        typeBox.setAlignment(Pos.TOP_CENTER);
+        textWithButton.setAlignment(Pos.TOP_CENTER);
+
+        Label typeLabel = new Label("Type the word that you want to get synonyms.");
+        typeLabel.setWrapText(true);
+        typeLabel.setPadding(new Insets(100,80,0,0));
+
+        TextField searchingText = new TextField();
+        searchingText.setPrefWidth(400);
+        searchingText.setMaxWidth(700);
+        VBox.setMargin(textWithButton, new Insets(30,0,0,80));
+        searchingText.minWidth(600);
+
+        searchingText.setOnKeyPressed(event -> {
+            if (event.getCode().equals(KeyCode.ENTER))
+            {
+                searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
+                synonyms(stage,scene, searchingText);
+            }
+        });
+
+        Button searchButton = new Button("Search");
+        HBox.setMargin(searchButton, new Insets(0,40,30,40));
+        searchButton.setOnAction(event -> {
+            searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
+            synonyms(stage,scene, searchingText);
+        });
+
+        // To find absolute path of img file
+        File file = new File("synonymImage.png");
+
+        Image image = new Image(new FileInputStream(file.getAbsolutePath()));
+        ImageView imageView = new ImageView(image);
+        imageView.setPreserveRatio(true);
+        Group imageGroup = new Group(imageView);
+
+        textWithButton.getChildren().addAll(searchingText, searchButton);
+        typeBox.getChildren().addAll(typeLabel, textWithButton, imageGroup);
+
+        borderPane.setCenter(typeBox);
+
+        HBox buttonsBox = new HBox();
+        Button addButton = new Button("Add");
+        HBox.setMargin(addButton, new Insets(0,5,5,5));
+        Button backButton = new Button("Back");
+        HBox.setMargin(addButton, new Insets(0,0,5,5));
+        buttonsBox.getChildren().addAll(addButton, backButton);
+
+        backButton.setOnAction(event -> {
+            try {
+                backToMainScreen(stage, scene);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        borderPane.setBottom(buttonsBox);
+
+        scene.setRoot(borderPane);
+        stage.setTitle("Team 6 - Find Synonym");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public void synonyms (Stage stage, Scene scene, TextField textField){
+        BorderPane borderPane = new BorderPane();
+
+        MenuBar mainMenuBar = new MenuBar();
+        Menu mHelp = new Menu("Help");
+        Menu mAdd = new Menu("Actions");
+        mainMenuBar.getMenus().addAll(mHelp, mAdd);
+
+        MenuItem mAddItem = new MenuItem("Add a word");
+        mAddItem.setOnAction(e -> popupMenu(stage, scene) );
+
+        MenuItem mEditItem = new MenuItem("Edit Meaning");
+        mEditItem.setOnAction(event -> {
+            try {
+                editMeaning(stage, scene);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+
+        MenuItem mFindSynonym = new MenuItem("Find Synonym");
+        mFindSynonym.setOnAction(event -> {
+            try {
+                findSynonym(stage, scene);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+
+        mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
+
+        borderPane.setTop(mainMenuBar);
+
+        VBox mainBox = new VBox();
+        mainBox.setAlignment(Pos.TOP_CENTER);
+
+        Label expLabel = new Label("Here are the synonyms of "+ textField.getText()+ " :");
+        expLabel.setPadding(new Insets(50,0,0,0));
+
+        TextArea synonymsArea = new TextArea(String.valueOf(buildText));// TODO: buraya eş anlamlar çıkarılacak
+        synonymsArea.setFont(new Font(15));
+        synonymsArea.setWrapText(true);
+        synonymsArea.setEditable(false);
+        VBox.setMargin(synonymsArea, new Insets(20, 40, 20, 40));
+        synonymsArea.setPrefWidth(300);
+        synonymsArea.setMaxWidth(800);
+        synonymsArea.setMaxHeight(1000);
+        synonymsArea.setPrefHeight(400);
+
+        mainBox.getChildren().addAll(expLabel,synonymsArea);
+        borderPane.setCenter(mainBox);
+
+        HBox buttonsBox = new HBox();
+        Button addButton = new Button("Add");
+        HBox.setMargin(addButton, new Insets(0,5,5,5));
+        Button backButton = new Button("Back");
+        HBox.setMargin(addButton, new Insets(0,0,5,5));
+        buttonsBox.getChildren().addAll(addButton, backButton);
+
+        backButton.setOnAction(event -> {
+            try {
+                findSynonym(stage, scene);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        borderPane.setBottom(buttonsBox);
+
+        scene.setRoot(borderPane);
+        stage.setTitle("Team 6 - Find Synonym");
         stage.setScene(scene);
         stage.show();
     }
