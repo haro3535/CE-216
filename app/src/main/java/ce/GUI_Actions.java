@@ -11,7 +11,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -43,8 +42,8 @@ public class GUI_Actions {
     String[] dictionaryLanguages = {"deu","ell","eng","fra","ita","swe","tur"};
     public boolean isFilesFound = false;
     private ArrayList<String> filePaths = new ArrayList<>();
-    private final ArrayList<XML_Methods> xmlMethodsArrayList = new ArrayList<>();
-    private final ArrayList<XML_Methods> xmlMethodsOverEnglish = new ArrayList<>();
+    private final ArrayList<Functions> xmlMethodsArrayList = new ArrayList<>();
+    private final ArrayList<Functions> xmlMethodsOverEnglish = new ArrayList<>();
     private final List<Thread> threads = new ArrayList<>();
     private final ArrayList<LinkedList<String>> languageAndWord = new ArrayList<>();
     StringBuilder buildText = new StringBuilder();
@@ -881,7 +880,7 @@ public class GUI_Actions {
 
     public void buildTextBody(String lang, ArrayList<String> missingLanguages){
 
-        for (XML_Methods objects:
+        for (Functions objects:
              xmlMethodsArrayList) {
 
             if (objects.meaningTextContent != null) {
@@ -891,7 +890,7 @@ public class GUI_Actions {
             }
         }
 
-        for (XML_Methods overEnglish:
+        for (Functions overEnglish:
              xmlMethodsOverEnglish) {
             if (overEnglish.getSearchIn().equals("eng") && missingLanguages.contains(overEnglish.getFoundIn())) {
                 buildText.append(overEnglish.meaningTextContent);
@@ -906,7 +905,7 @@ public class GUI_Actions {
         ArrayList<String> missingLanguages = new ArrayList<>(Arrays.asList(dictionaryLanguages));
         missingLanguages.remove(lang);
 
-        for (XML_Methods objects:
+        for (Functions objects:
              xmlMethodsArrayList) {
             if (objects.getSearchIn().equals(lang) && objects.getMeanings().size() > 0) {
                 missingLanguages.remove(objects.getFoundIn());
@@ -930,7 +929,7 @@ public class GUI_Actions {
 
         if (isOverEnglish) {
             ArrayList<LinkedList<String>> englishMeanings = new ArrayList<>();
-            for (XML_Methods xmlMethods:
+            for (Functions xmlMethods:
                  xmlMethodsArrayList) {
                 if (xmlMethods.getSearchIn().equals(lang) && xmlMethods.getFoundIn().equals("eng") && xmlMethods.getMeanings().size() > 0) {
                     englishMeanings = xmlMethods.getMeanings();
@@ -941,7 +940,7 @@ public class GUI_Actions {
             if (englishMeanings.size() > 0) {
                 for (String paths:
                         filePaths) {
-                    XML_Methods xmlMethods = new XML_Methods();
+                    Functions xmlMethods = new Functions();
                     xmlMethods.setFilepath(paths);
                     xmlMethods.setWord(englishMeanings.get(0).get(0));
                     xmlMethodsOverEnglish.add(xmlMethods);
@@ -966,7 +965,7 @@ public class GUI_Actions {
             for (String filepath:
                     filePaths) {
 
-                XML_Methods xmlMethod = new XML_Methods();
+                Functions xmlMethod = new Functions();
                 xmlMethod.setWord(word);
                 xmlMethod.setFilepath(filepath);
                 xmlMethodsArrayList.add(xmlMethod);
@@ -999,7 +998,7 @@ public class GUI_Actions {
 
     protected void languagesSearchedIn(){
 
-        for (XML_Methods xmlClass:
+        for (Functions xmlClass:
              xmlMethodsArrayList) {
 
             if (xmlClass.getMeanings().size() > 0) {

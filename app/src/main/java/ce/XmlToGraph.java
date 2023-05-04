@@ -5,6 +5,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -92,6 +93,7 @@ public class XmlToGraph {
             boolean isOrthValue = false;
             boolean isTranslateValue = false;
             boolean isSynonymValue = false;
+            boolean isCitTrans = false;
 
             while (xmlEventReader.hasNext()){
 
@@ -104,6 +106,11 @@ public class XmlToGraph {
                     switch (startElement.getName().getLocalPart()) {
                         case "orth" -> {
                             isOrthValue = true;
+                        }
+                        case "cit" -> {
+                            if (startElement.getAttributeByName(QName.valueOf("type")).getValue().equals("trans")) {
+                                isCitTrans = true;
+                            }
                         }
                         case "quote" -> {
                             isQuoteExist = true;
@@ -129,7 +136,7 @@ public class XmlToGraph {
                         word = nextEvent.asCharacters().getData();
                     }
 
-                    if (isTranslateValue && isQuoteExist) {
+                    if (isTranslateValue && isQuoteExist && isCitTrans) {
                         // eğer quote tagı varsa gördüğüm kadarıyla def tagı çevirme değil tanım olarak kullanılıyor
                         meanings.add(nextEvent.asCharacters().getData());
                     }
@@ -150,6 +157,9 @@ public class XmlToGraph {
                     switch (endElement.getName().getLocalPart()) {
                         case "orth" -> {
                             isOrthValue = false;
+                        }
+                        case "cit" -> {
+                            isCitTrans = false;
                         }
                         case "quote" -> {
                             isTranslateValue = false;
