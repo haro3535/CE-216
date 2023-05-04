@@ -116,6 +116,7 @@ public class XML_Methods implements Runnable {
                 String data = reader.nextLine();
 
                 //  data.split(";")[0] -> Word that we are looking for
+                // TODO: Burayla ilgili bir sıkıntı var hallet
                 if (data.split(";")[0].toLowerCase(Locale.ENGLISH).equals(target)) {
                     foundWords.add(data);
                     isFound = true;
