@@ -472,7 +472,7 @@ public class GUI_Actions {
             if (event.getCode().equals(KeyCode.ENTER))
             {
                 searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
-                synonyms(stage,scene, searchingText);
+                showingMeanings(stage,scene,searchingText.getText(),languageBox.getValue());
             }
         });
 
@@ -754,29 +754,33 @@ public class GUI_Actions {
         typeBox.setAlignment(Pos.TOP_CENTER);
         textWithButton.setAlignment(Pos.TOP_CENTER);
 
-        Label typeLabel = new Label("Type the word that you want to get synonyms.");
+        Label typeLabel = new Label("Choose the language and type the word that you want to get synonyms.");
         typeLabel.setWrapText(true);
-        typeLabel.setPadding(new Insets(100,80,0,0));
+        typeLabel.setPadding(new Insets(100,0,0,0));
+
+        ChoiceBox<String> languageBox = new ChoiceBox<>();
+        languageBox.getItems().addAll(dictionaryLanguages);
+        HBox.setMargin(languageBox, new Insets(0,30,0,40));
 
         TextField searchingText = new TextField();
         searchingText.setPrefWidth(400);
         searchingText.setMaxWidth(700);
-        VBox.setMargin(textWithButton, new Insets(30,0,0,80));
+        VBox.setMargin(textWithButton, new Insets(30,0,0,0));
         searchingText.minWidth(600);
 
         searchingText.setOnKeyPressed(event -> {
             if (event.getCode().equals(KeyCode.ENTER))
             {
                 searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
-                synonyms(stage,scene, searchingText);
+                synonyms(stage,scene, searchingText,languageBox.getValue());
             }
         });
 
         Button searchButton = new Button("Search");
-        HBox.setMargin(searchButton, new Insets(0,40,30,40));
+        HBox.setMargin(searchButton, new Insets(0,40,30,30));
         searchButton.setOnAction(event -> {
             searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
-            synonyms(stage,scene, searchingText);
+            showingMeanings(stage,scene, searchingText.getText(), languageBox.getValue());
         });
 
         // To find absolute path of img file
@@ -787,7 +791,7 @@ public class GUI_Actions {
         imageView.setPreserveRatio(true);
         Group imageGroup = new Group(imageView);
 
-        textWithButton.getChildren().addAll(searchingText, searchButton);
+        textWithButton.getChildren().addAll(languageBox, searchingText, searchButton);
         typeBox.getChildren().addAll(typeLabel, textWithButton, imageGroup);
 
         borderPane.setCenter(typeBox);
@@ -814,7 +818,7 @@ public class GUI_Actions {
         stage.show();
     }
 
-    public void synonyms (Stage stage, Scene scene, TextField textField){
+    public void synonyms (Stage stage, Scene scene, TextField textField, String language){
         BorderPane borderPane = new BorderPane();
 
         MenuBar mainMenuBar = new MenuBar();
