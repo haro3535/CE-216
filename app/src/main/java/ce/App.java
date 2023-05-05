@@ -50,6 +50,9 @@ public class App extends Application {
         Menu mAdd = new Menu("Actions");
         mainMenuBar.getMenus().addAll(mHelp, mAdd);
 
+        MenuItem mHelpItem = new MenuItem("Help");
+        mHelpItem.setOnAction(event -> actions.helpMenu(stage,scene,"dsffhvgjkhj"));
+
         MenuItem mAddItem = new MenuItem("Add a word");
         mAddItem.setOnAction(e -> actions.popupMenu(stage, scene) );
 
@@ -71,6 +74,7 @@ public class App extends Application {
             }
         });
 
+        mHelp.getItems().add(mHelpItem);
         mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
 
         borderPane.setTop(mainMenuBar);

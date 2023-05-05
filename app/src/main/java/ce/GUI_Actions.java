@@ -28,17 +28,6 @@ public class GUI_Actions {
     App mainApp = new App();
     private double sceneWidth = 650;
     private double sceneHeight = 600;
-    public MenuItem firstChosenLanguage;
-    public MenuItem secondChosenLanguage;
-    public String fChosenLanguage;
-    public String sChosenLanguage;
-    public String language1 = "Turkish";
-    public String language2 = "English";
-    public String language3 = "German";
-    public String language4 = "Italian";
-    public String language5 = "Modern Greek";
-    public String language6 = "French";
-    public String language7 = "Swedish";
     String[] dictionaryLanguages = {"deu","ell","eng","fra","ita","swe","tur"};
     public boolean isFilesFound = false;
     private ArrayList<String> filePaths = new ArrayList<>();
@@ -46,6 +35,7 @@ public class GUI_Actions {
     private final ArrayList<Functions> xmlMethodsOverEnglish = new ArrayList<>();
     private final List<Thread> threads = new ArrayList<>();
     private final ArrayList<LinkedList<String>> languageAndWord = new ArrayList<>();
+    private final ArrayList<LinkedList<String>> meaningsOfWord = new ArrayList<>();
     StringBuilder buildText = new StringBuilder();
 
     public void popupMenu (Stage stage, Scene scene){
@@ -88,16 +78,16 @@ public class GUI_Actions {
 
         Label usingAddWordLabel = new Label("In the first selection box, select the language of the word you wants " +
                 "to enter and write this word in the space below. In the second selection box, select the language of the " +
-                "meaning you want to enter and enter the meaning in thes space below. If you want to add more meaning, press " +
-                "the \"Add meaning\"s button at the bottom. You can add up to 3 meanings at once.");
+                "meaning you want to enter and enter the meaning in the space below. If you want to add more meaning, write " +
+                "line by line.");
         usingAddWordLabel.setWrapText(true);
         usingAddWordLabel.setPadding(new Insets(20,20,0,20));
         usingAddWordLabel.setPrefWidth(1000);
         usingAddWordLabel.setPrefHeight(90);
 
         ChoiceBox<String> languageChoiceBox1 = new ChoiceBox<>();
-        VBox.setMargin(languageChoiceBox1, new Insets(10, 520, 0, 20));
-        languageChoiceBox1.getItems().addAll(language1, language2, language3, language4, language5, language6, language7);
+        VBox.setMargin(languageChoiceBox1, new Insets(10, 550, 0, 0));
+        languageChoiceBox1.getItems().addAll(dictionaryLanguages);
 
         TextArea ftextA = new TextArea();
         VBox.setMargin(ftextA, new Insets(20, 20, 0, 20));
@@ -106,27 +96,24 @@ public class GUI_Actions {
         ftextA.setMaxWidth(610);
 
         ChoiceBox<String> languageChoiceBox2 = new ChoiceBox<>();
-        VBox.setMargin(languageChoiceBox2, new Insets(10, 520, 0, 20));
-        languageChoiceBox2.getItems().addAll(language1, language2, language3, language4, language5, language6, language7);
+        VBox.setMargin(languageChoiceBox2, new Insets(10, 550, 0, 0));
+        languageChoiceBox2.getItems().addAll(dictionaryLanguages);
 
         TextArea stextA = new TextArea();
         VBox.setMargin(stextA, new Insets(20, 20, 0, 20));
-        stextA.setPrefHeight(80);
+        stextA.setPrefHeight(200);
         stextA.setPrefWidth(500);
         stextA.setMaxWidth(610);
 
-        Button addMeaningButton = new Button("Add Meaning");
-        VBox.setMargin(addMeaningButton, new Insets(10,20,0, 540));
-        addMeaningButton.setOnAction(event -> addMeaning(ftextA,stextA,languageChoiceBox1,languageChoiceBox2,stage, scene) );
-
+        Button addMeaningButton = new Button("Add");
+        VBox.setMargin(addMeaningButton, new Insets(10,20,0, 590));
 
 
         HBox buttonsBox = new HBox();
-        Button addButton = new Button("Add");
-        HBox.setMargin(addButton, new Insets(0,5,5,5));
+        buttonsBox.setAlignment(Pos.CENTER);
         Button backButton = new Button("Back");
-        HBox.setMargin(addButton, new Insets(0,0,5,5));
-        buttonsBox.getChildren().addAll(addButton, backButton);
+        HBox.setMargin(backButton, new Insets(0,605,5,5));
+        buttonsBox.getChildren().add( backButton);
 
         backButton.setOnAction(event -> {
             try {
@@ -222,7 +209,6 @@ public class GUI_Actions {
              languageAndWord) {
             myListView.getItems().add(lang.getFirst().toUpperCase(Locale.ENGLISH));
             //myListView.getItems().add(lang.getFirst().toUpperCase() + " : " + lang.getLast());
-
         }
         myListView.setPrefHeight(250);
         myListView.setPrefWidth(630);
@@ -277,7 +263,6 @@ public class GUI_Actions {
         stage.setScene(scene);
         stage.show();
     }
-
 
     public void choosingLanguage (TextField textField, Stage stage, Scene scene, String string){
 
@@ -383,216 +368,6 @@ public class GUI_Actions {
 
     }
 
-    public void addMeaning (TextArea textArea1, TextArea textArea2, ChoiceBox<String> choiceBox1,ChoiceBox<String> choiceBox2,
-                            Stage stage, Scene scene) {
-        BorderPane borderPane = new BorderPane();
-
-        MenuBar mainMenuBar = new MenuBar();
-        Menu mHelp = new Menu("Help");
-        Menu mAdd = new Menu("Actions");
-        mainMenuBar.getMenus().addAll(mHelp, mAdd);
-
-        MenuItem mAddItem = new MenuItem("Add a word");
-        mAddItem.setOnAction(e -> popupMenu(stage, scene) );
-
-        MenuItem mEditItem = new MenuItem("Edit Meaning");
-        mEditItem.setOnAction(event -> {
-            try {
-                editMeaning(stage, scene);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        });
-
-        MenuItem mFindSynonym = new MenuItem("Find Synonym");
-        mFindSynonym.setOnAction(event -> {
-            try {
-                findSynonym(stage, scene);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        });
-
-        mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
-
-        borderPane.setTop(mainMenuBar);
-
-        VBox mainBox = new VBox();
-        mainBox.setAlignment(Pos.TOP_CENTER);
-
-        Label usingAddWordLabel = new Label("In the first selection box, select the language of the word you wants " +
-                "to enter and write this word in the space below. In the second selection box, select the language of the " +
-                "meaning you want to enter and enter the meaning in thes space below. If you want to add more meaning, press " +
-                "the \"Add meaning\"s button at the bottom. You can add up to 3 meanings at once.");
-        usingAddWordLabel.setWrapText(true);
-        usingAddWordLabel.setPadding(new Insets(20,20,0,20));
-        usingAddWordLabel.setPrefWidth(1000);
-        usingAddWordLabel.setPrefHeight(90);
-
-        Label chosenLanguageLabel1 = new Label( choiceBox1.getValue()+":");
-        chosenLanguageLabel1.setAlignment(Pos.CENTER);
-        chosenLanguageLabel1.setPadding(new Insets(10, 545, 0, 20));
-
-        TextArea ftextA = new TextArea(textArea1.getText());
-        VBox.setMargin(ftextA, new Insets(20, 20, 0, 20));
-        ftextA.setPrefHeight(80);
-        ftextA.setPrefWidth(500);
-        ftextA.setMaxWidth(610);
-
-        Label chosenLanguageLabel2 = new Label(choiceBox2.getValue()+":");
-        chosenLanguageLabel2.setAlignment(Pos.CENTER);
-        chosenLanguageLabel2.setPadding(new Insets(10, 545, 0, 20));
-
-        TextArea stextA = new TextArea(textArea2.getText());
-        VBox.setMargin(stextA, new Insets(20, 20, 0, 20));
-        stextA.setPrefHeight(80);
-        stextA.setPrefWidth(500);
-        stextA.setMaxWidth(610);
-
-        TextArea ttextA = new TextArea();
-        VBox.setMargin(ttextA, new Insets(0, 20, 0, 20));
-        ttextA.setPrefHeight(80);
-        ttextA.setPrefWidth(500);
-        ttextA.setMaxWidth(610);
-
-
-        Button addMeaningButton = new Button("Add Meaning");
-        addMeaningButton.setOnAction(event -> addMeaningAgain(textArea1,textArea2, ttextA,choiceBox1,choiceBox2,stage, scene));
-        VBox.setMargin(addMeaningButton, new Insets(10, 20, 0, 540));
-
-
-        HBox buttonsBox = new HBox();
-        Button addButton = new Button("Add");
-        HBox.setMargin(addButton, new Insets(0, 5, 5, 5));
-        Button backButton = new Button("Back");
-        HBox.setMargin(addButton, new Insets(0, 0, 5, 5));
-        buttonsBox.getChildren().addAll(addButton, backButton);
-
-        backButton.setOnAction(event -> {
-            try {
-                backToMainScreen(stage, scene);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-
-        mainBox.getChildren().addAll(usingAddWordLabel, chosenLanguageLabel1, ftextA, chosenLanguageLabel2, stextA, ttextA,addMeaningButton);
-        borderPane.setCenter(mainBox);
-
-        borderPane.setBottom(buttonsBox);
-
-        scene.setRoot(borderPane);
-        stage.setTitle("Add a word");
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    public void addMeaningAgain (TextArea textArea1, TextArea textArea2, TextArea textArea3,ChoiceBox<String> choiceBox1,
-                                 ChoiceBox<String> choiceBox2, Stage stage, Scene scene){
-        BorderPane borderPane = new BorderPane();
-
-        MenuBar mainMenuBar = new MenuBar();
-        Menu mHelp = new Menu("Help");
-        Menu mAdd = new Menu("Actions");
-        mainMenuBar.getMenus().addAll(mHelp, mAdd);
-
-        MenuItem mAddItem = new MenuItem("Add a word");
-        mAddItem.setOnAction(e -> popupMenu(stage, scene) );
-
-        MenuItem mEditItem = new MenuItem("Edit Meaning");
-        mEditItem.setOnAction(event -> {
-            try {
-                editMeaning(stage, scene);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        });
-
-        MenuItem mFindSynonym = new MenuItem("Find Synonym");
-        mFindSynonym.setOnAction(event -> {
-            try {
-                findSynonym(stage, scene);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        });
-
-        mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
-
-        borderPane.setTop(mainMenuBar);
-
-        VBox mainBox = new VBox();
-        mainBox.setAlignment(Pos.TOP_CENTER);
-
-        Label usingAddWordLabel = new Label("In the first selection box, select the language of the word you wants " +
-                "to enter and write this word in the space below. In the second selection box, select the language of the " +
-                "meaning you want to enter and enter the meaning in thes space below. If you want to add more meaning, press " +
-                "the \"Add meaning\"s button at the bottom. You can add up to 3 meanings at once.");
-        usingAddWordLabel.setWrapText(true);
-        usingAddWordLabel.setPadding(new Insets(20,20,0,20));
-        usingAddWordLabel.setPrefWidth(1000);
-        usingAddWordLabel.setPrefHeight(90);
-
-        Label chosenLanguageLabel1 = new Label( choiceBox1.getValue()+":");
-        chosenLanguageLabel1.setAlignment(Pos.CENTER);
-        chosenLanguageLabel1.setPadding(new Insets(10, 545, 0, 20));
-
-        TextArea ftextA = new TextArea(textArea1.getText());
-        VBox.setMargin(ftextA, new Insets(20, 20, 0, 20));
-        ftextA.setPrefHeight(80);
-        ftextA.setPrefWidth(500);
-        ftextA.setMaxWidth(610);
-
-        Label chosenLanguageLabel2 = new Label( choiceBox2.getValue()+":");
-        chosenLanguageLabel2.setAlignment(Pos.CENTER);
-        chosenLanguageLabel2.setPadding(new Insets(10, 545, 0, 20));
-
-        TextArea stextA = new TextArea(textArea2.getText());
-        VBox.setMargin(stextA, new Insets(20, 20, 0, 20));
-        stextA.setPrefHeight(80);
-        stextA.setPrefWidth(500);
-        stextA.setMaxWidth(610);
-
-        TextArea ttextA = new TextArea(textArea3.getText());
-        VBox.setMargin(ttextA, new Insets(0, 20, 0, 20));
-        ttextA.setPrefHeight(80);
-        ttextA.setPrefWidth(500);
-        ttextA.setMaxWidth(610);
-
-        TextArea fotextA = new TextArea();
-        VBox.setMargin(fotextA, new Insets(0, 20, 0, 20));
-        fotextA.setPrefHeight(80);
-        fotextA.setPrefWidth(500);
-        fotextA.setMaxWidth(610);
-
-
-
-        HBox buttonsBox = new HBox();
-        Button addButton = new Button("Add");
-        HBox.setMargin(addButton, new Insets(0, 5, 5, 5));
-        Button backButton = new Button("Back");
-        HBox.setMargin(addButton, new Insets(0, 0, 5, 5));
-        buttonsBox.getChildren().addAll(addButton, backButton);
-
-        backButton.setOnAction(event -> {
-            try {
-                backToMainScreen(stage, scene);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-
-        mainBox.getChildren().addAll(usingAddWordLabel, chosenLanguageLabel1, ftextA, chosenLanguageLabel2, stextA, ttextA,fotextA);
-        borderPane.setCenter(mainBox);
-
-        borderPane.setBottom(buttonsBox);
-
-        scene.setRoot(borderPane);
-        stage.setTitle("Add a word");
-        stage.setScene(scene);
-        stage.show();
-    }
-
     public void editMeaning (Stage stage, Scene scene) throws FileNotFoundException {
 
         BorderPane borderPane = new BorderPane();
@@ -633,14 +408,18 @@ public class GUI_Actions {
         typeBox.setAlignment(Pos.TOP_CENTER);
         textWithButton.setAlignment(Pos.TOP_CENTER);
 
-        Label typeLabel = new Label("Type the word that you want to edit its meanings.");
+        Label typeLabel = new Label("Choose the language and type the word that you want to edit its meanings.");
         typeLabel.setWrapText(true);
-        typeLabel.setPadding(new Insets(100,80,0,0));
+        typeLabel.setPadding(new Insets(100,0,0,0));
+
+        ChoiceBox<String> languageBox = new ChoiceBox<>();
+        languageBox.getItems().addAll(dictionaryLanguages);
+        HBox.setMargin(languageBox, new Insets(0,30,0,40));
 
         TextField searchingText = new TextField();
         searchingText.setPrefWidth(400);
         searchingText.setMaxWidth(700);
-        VBox.setMargin(textWithButton, new Insets(30,0,0,80));
+        VBox.setMargin(textWithButton, new Insets(30,0,0,0));
         searchingText.minWidth(600);
 
         searchingText.setOnKeyPressed(event -> {
@@ -652,10 +431,10 @@ public class GUI_Actions {
         });
 
         Button searchButton = new Button("Search");
-        HBox.setMargin(searchButton, new Insets(0,40,30,40));
+        HBox.setMargin(searchButton, new Insets(0,40,30,30));
         searchButton.setOnAction(event -> {
             searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
-            synonyms(stage,scene, searchingText);
+            showingMeanings(stage,scene, searchingText.getText(), languageBox.getValue());
         });
 
         // To find absolute path of img file
@@ -666,17 +445,16 @@ public class GUI_Actions {
         imageView.setPreserveRatio(true);
         Group imageGroup = new Group(imageView);
 
-        textWithButton.getChildren().addAll(searchingText, searchButton);
+        textWithButton.getChildren().addAll(languageBox, searchingText, searchButton);
         typeBox.getChildren().addAll(typeLabel, textWithButton, imageGroup);
 
         borderPane.setCenter(typeBox);
 
         HBox buttonsBox = new HBox();
-        Button addButton = new Button("Add");
-        HBox.setMargin(addButton, new Insets(0,5,5,5));
+        buttonsBox.setAlignment(Pos.CENTER);
         Button backButton = new Button("Back");
-        HBox.setMargin(addButton, new Insets(0,0,5,5));
-        buttonsBox.getChildren().addAll(addButton, backButton);
+        HBox.setMargin(backButton, new Insets(0,605,5,5));
+        buttonsBox.getChildren().add( backButton);
 
         backButton.setOnAction(event -> {
             try {
@@ -687,6 +465,181 @@ public class GUI_Actions {
         });
 
         borderPane.setBottom(buttonsBox);
+
+        scene.setRoot(borderPane);
+        stage.setTitle("Team 6 - Edit Meaning");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public void showingMeanings (Stage stage, Scene scene, String word, String language){
+        BorderPane borderPane = new BorderPane();
+
+
+        MenuBar mainMenuBar = new MenuBar();
+        Menu mHelp = new Menu("Help");
+        Menu mAdd = new Menu("Actions");
+        mainMenuBar.getMenus().addAll(mHelp, mAdd);
+
+        MenuItem mAddItem = new MenuItem("Add a word");
+        mAddItem.setOnAction(e -> popupMenu(stage, scene) );
+
+        MenuItem mEditItem = new MenuItem("Edit Meaning");
+        mEditItem.setOnAction(event -> {
+            try {
+                editMeaning(stage, scene);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+
+        MenuItem mFindSynonym = new MenuItem("Find Synonym");
+        mFindSynonym.setOnAction(event -> {
+            try {
+                findSynonym(stage, scene);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+
+        mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
+
+        borderPane.setTop(mainMenuBar);
+
+        VBox listBox = new VBox();
+        listBox.setAlignment(Pos.TOP_CENTER);
+
+        ListView<String> myListView = new ListView<>();
+        myListView.getItems().add("New meaning");
+        for (LinkedList<String> lang:
+                languageAndWord) {
+            myListView.getItems().add(lang.getFirst().toUpperCase(Locale.ENGLISH));
+            //myListView.getItems().add(lang.getFirst().toUpperCase() + " : " + lang.getLast());
+        }
+        myListView.setPrefHeight(350);
+        myListView.setPrefWidth(630);
+        myListView.setMaxWidth(630);
+
+        Label selectMeaningLabel = new Label();
+        VBox.setMargin(selectMeaningLabel, new Insets(40,0,30,0));
+        selectMeaningLabel.setFont(new Font(20));
+
+        String[] selectedMeaning = new String[1];
+        myListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            selectedMeaning[0] = myListView.getSelectionModel().getSelectedItem();
+            selectMeaningLabel.setText(selectedMeaning[0]);
+        });
+
+        Button selectButton = new Button("Select");
+        VBox.setMargin(selectButton, new Insets(20,585,0,0));
+        selectButton.setOnAction(event -> {
+            // TODO: meaning için bura değişecek
+            buildText = new StringBuilder();
+            editingChosenMeaning(stage,scene,word,selectedMeaning[0],language);
+        });
+
+        listBox.getChildren().addAll(selectMeaningLabel,myListView, selectButton);
+
+
+
+        borderPane.setCenter(listBox);
+
+        HBox lastBox = new HBox();
+        lastBox.setAlignment(Pos.CENTER);
+        Label chooseLabel = new Label("Please choose the meaning you want edit. If you want add meaning choose 'New Meaning'.");
+        chooseLabel.setPadding(new Insets(0,100,0,0));
+        Button backButton = new Button("Back");
+        HBox.setMargin(backButton, new Insets(0,20,5,5));
+        backButton.setOnAction(event -> {
+            try {
+                editMeaning(stage, scene);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+        lastBox.getChildren().addAll(backButton, chooseLabel);
+        borderPane.setBottom(lastBox);
+
+        scene.setRoot(borderPane);
+        stage.setTitle("Team 6 - Edit Meaning");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public void editingChosenMeaning (Stage stage, Scene scene, String word, String meaning, String language){
+        BorderPane borderPane = new BorderPane();
+
+
+        MenuBar mainMenuBar = new MenuBar();
+        Menu mHelp = new Menu("Help");
+        Menu mAdd = new Menu("Actions");
+        mainMenuBar.getMenus().addAll(mHelp, mAdd);
+
+        MenuItem mAddItem = new MenuItem("Add a word");
+        mAddItem.setOnAction(e -> popupMenu(stage, scene) );
+
+        MenuItem mEditItem = new MenuItem("Edit Meaning");
+        mEditItem.setOnAction(event -> {
+            try {
+                editMeaning(stage, scene);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+
+        MenuItem mFindSynonym = new MenuItem("Find Synonym");
+        mFindSynonym.setOnAction(event -> {
+            try {
+                findSynonym(stage, scene);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+
+        mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
+
+        borderPane.setTop(mainMenuBar);
+
+        VBox mainBox = new VBox();
+        mainBox.setAlignment(Pos.TOP_CENTER);
+        HBox textAndButtonBox = new HBox();
+        textAndButtonBox.setAlignment(Pos.TOP_CENTER);
+        VBox buttonsBox = new VBox();
+        buttonsBox.setAlignment(Pos.TOP_CENTER);
+
+        Label noteLabel = new Label("Add - Adding a new meaning.\n" +
+                "Edit - Editing chosen meaning.\n" +
+                "Remove - Removing chosen meaning.\n" +
+                "Note: If you want to add more meaning write line by line.");
+        noteLabel.setPadding(new Insets(50,40,50,0));
+
+        TextArea textArea = new TextArea();
+        textArea.setPrefHeight(300);
+        if(!meaning.equals("New Meaning"))
+            textArea.setText(meaning);
+
+        Button addButton = new Button("Add");
+        VBox.setMargin(addButton,new Insets(80,0,0,0));
+        Button editButton = new Button("Edit");
+        VBox.setMargin(editButton,new Insets(30,0,30,0));
+        Button removeButton = new Button("Remove");
+
+        HBox.setMargin(buttonsBox,new Insets(0,0,0,30));
+
+        buttonsBox.getChildren().addAll(addButton,editButton,removeButton);
+        textAndButtonBox.getChildren().addAll(textArea,buttonsBox);
+        mainBox.getChildren().addAll(noteLabel,textAndButtonBox);
+        borderPane.setCenter(mainBox);
+
+        HBox buttonBox = new HBox();
+        buttonBox.setAlignment(Pos.CENTER);
+        Button backButton = new Button("Back");
+        HBox.setMargin(backButton, new Insets(0,605,5,5));
+        buttonBox.getChildren().add( backButton);
+
+        backButton.setOnAction(event -> showingMeanings(stage, scene, word,language));
+
+        borderPane.setBottom(buttonBox);
 
         scene.setRoot(borderPane);
         stage.setTitle("Team 6 - Edit Meaning");
@@ -773,11 +726,10 @@ public class GUI_Actions {
         borderPane.setCenter(typeBox);
 
         HBox buttonsBox = new HBox();
-        Button addButton = new Button("Add");
-        HBox.setMargin(addButton, new Insets(0,5,5,5));
+        buttonsBox.setAlignment(Pos.CENTER);
         Button backButton = new Button("Back");
-        HBox.setMargin(addButton, new Insets(0,0,5,5));
-        buttonsBox.getChildren().addAll(addButton, backButton);
+        HBox.setMargin(backButton, new Insets(0,605,5,5));
+        buttonsBox.getChildren().add( backButton);
 
         backButton.setOnAction(event -> {
             try {
@@ -848,11 +800,10 @@ public class GUI_Actions {
         borderPane.setCenter(mainBox);
 
         HBox buttonsBox = new HBox();
-        Button addButton = new Button("Add");
-        HBox.setMargin(addButton, new Insets(0,5,5,5));
+        buttonsBox.setAlignment(Pos.CENTER);
         Button backButton = new Button("Back");
-        HBox.setMargin(addButton, new Insets(0,0,5,5));
-        buttonsBox.getChildren().addAll(addButton, backButton);
+        HBox.setMargin(backButton, new Insets(0,605,5,5));
+        buttonsBox.getChildren().add( backButton);
 
         backButton.setOnAction(event -> {
             try {
@@ -868,6 +819,78 @@ public class GUI_Actions {
         stage.setTitle("Team 6 - Find Synonym");
         stage.setScene(scene);
         stage.show();
+    }
+
+    public void helpMenu (Stage stage, Scene  scene, String string){
+        BorderPane borderPane = new BorderPane();
+
+        MenuBar mainMenuBar = new MenuBar();
+        Menu mHelp = new Menu("Help");
+        Menu mAdd = new Menu("Actions");
+        mainMenuBar.getMenus().addAll(mHelp, mAdd);
+
+        MenuItem mAddItem = new MenuItem("Add a word");
+        mAddItem.setOnAction(e -> popupMenu(stage, scene) );
+
+        MenuItem mEditItem = new MenuItem("Edit Meaning");
+        mEditItem.setOnAction(event -> {
+            try {
+                editMeaning(stage, scene);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+
+        MenuItem mFindSynonym = new MenuItem("Find Synonym");
+        mFindSynonym.setOnAction(event -> {
+            try {
+                findSynonym(stage, scene);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+
+        mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
+
+        borderPane.setTop(mainMenuBar);
+
+        VBox mainBox = new VBox();
+        mainBox.setAlignment(Pos.TOP_CENTER);
+
+        TextArea textArea = new TextArea(string);// TODO: buraya eş anlamlar çıkarılacak
+        textArea.setFont(new Font(15));
+        textArea.setWrapText(true);
+        textArea.setEditable(false);
+        VBox.setMargin(textArea, new Insets(70, 40, 0, 40));
+        textArea.setPrefWidth(300);
+        textArea.setMaxWidth(800);
+        textArea.setMaxHeight(1000);
+        textArea.setPrefHeight(400);
+
+        mainBox.getChildren().add(textArea);
+        borderPane.setCenter(mainBox);
+
+        HBox buttonsBox = new HBox();
+        buttonsBox.setAlignment(Pos.CENTER);
+        Button backButton = new Button("Back");
+        HBox.setMargin(backButton, new Insets(0,605,5,5));
+        buttonsBox.getChildren().add( backButton);
+
+        backButton.setOnAction(event -> {
+            try {
+                backToMainScreen(stage,scene);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        borderPane.setBottom(buttonsBox);
+
+        scene.setRoot(borderPane);
+        stage.setTitle("Team 6 - Help");
+        stage.setScene(scene);
+        stage.show();
+
     }
 
     public void backToMainScreen (Stage stage, Scene scene) throws IOException {
