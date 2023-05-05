@@ -17,6 +17,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -972,8 +973,13 @@ public class GUI_Actions {
 
         String values = getSynonyms().toString();
         values = values.substring(1, values.length() - 1); // remove the square brackets
-        values = values.replace(", ", "\n"); // replace commas and spaces with newline characters
-        TextArea synonymsArea = new TextArea(values);// TODO: buraya eş anlamlar çıkarılacak
+        values = values.replace(", ", "\n");// replace commas and spaces with newline characters
+        try {
+            values = new String(values.getBytes("ISO-8859-1"), "UTF-8"); // encode the string using UTF-8
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        TextArea synonymsArea = new TextArea(values);
         synonymsArea.setFont(new Font(15));
         synonymsArea.setWrapText(true);
         synonymsArea.setEditable(false);
