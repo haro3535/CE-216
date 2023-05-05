@@ -96,12 +96,11 @@ public class GUI_Actions {
         VBox.setMargin(languageChoiceBox1, new Insets(10, 550, 0, 0));
         languageChoiceBox1.getItems().addAll(dictionaryLanguages);
 
-
-
-
+        Label wordLabel = new Label("Word:");
+        wordLabel.setPadding(new Insets(10,575,0,0));
 
         TextArea ftextA = new TextArea();
-        VBox.setMargin(ftextA, new Insets(20, 20, 0, 20));
+        VBox.setMargin(ftextA, new Insets(0, 20, 0, 20));
         ftextA.setPrefHeight(80);
         ftextA.setPrefWidth(500);
         ftextA.setMaxWidth(610);
@@ -120,8 +119,11 @@ public class GUI_Actions {
         VBox.setMargin(languageChoiceBox2, new Insets(30, 550, 0, 0));
         languageChoiceBox2.getItems().addAll(dictionaryLanguages);
 
+        Label meaningsLabel = new Label("Meanings:");
+        meaningsLabel.setPadding(new Insets(10,550,0,0));
+
         TextArea ttextA = new TextArea();
-        VBox.setMargin(ttextA, new Insets(20, 20, 0, 20));
+        VBox.setMargin(ttextA, new Insets(0, 20, 0, 20));
         ttextA.setPrefHeight(80);
         ttextA.setPrefWidth(500);
         ttextA.setMaxWidth(610);
@@ -145,8 +147,8 @@ public class GUI_Actions {
             }
         });
 
-        mainBox.getChildren().addAll(usingAddWordLabel, languageChoiceBox1 ,ftextA, synonymLabel,stextA,
-                languageChoiceBox2, ttextA, addMeaningButton);
+        mainBox.getChildren().addAll(usingAddWordLabel, languageChoiceBox1 , wordLabel,ftextA, synonymLabel,stextA,
+                languageChoiceBox2, meaningsLabel, ttextA, addMeaningButton);
         borderPane.setCenter(mainBox);
 
         borderPane.setBottom(buttonsBox);
