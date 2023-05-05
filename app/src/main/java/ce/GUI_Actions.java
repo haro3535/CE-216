@@ -16,10 +16,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 
@@ -37,6 +36,7 @@ public class GUI_Actions {
     private final ArrayList<LinkedList<String>> languageAndWord = new ArrayList<>();
     private final ArrayList<LinkedList<String>> meaningsOfWord = new ArrayList<>();
     StringBuilder buildText = new StringBuilder();
+    private ArrayList<String> synonyms = new ArrayList<>();
 
     public void popupMenu (Stage stage, Scene scene){
 
@@ -131,6 +131,7 @@ public class GUI_Actions {
 
         Button addMeaningButton = new Button("Add");
         VBox.setMargin(addMeaningButton, new Insets(10,20,0, 590));
+        addMeaningButton.setOnAction(event -> addAWordtoTxt(languageChoiceBox1.getValue(),languageChoiceBox2.getValue(),ftextA.getText(),stextA,ttextA));
 
 
         HBox buttonsBox = new HBox();
@@ -779,8 +780,12 @@ public class GUI_Actions {
         Button searchButton = new Button("Search");
         HBox.setMargin(searchButton, new Insets(0,40,30,30));
         searchButton.setOnAction(event -> {
-            searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
-            showingMeanings(stage,scene, searchingText.getText(), languageBox.getValue());
+            try {
+                findWordSynonym(languageBox.getValue(), searchingText.getText());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            synonyms(stage,scene,searchingText,languageBox.getValue());
         });
 
         // To find absolute path of img file
@@ -864,7 +869,11 @@ public class GUI_Actions {
         Label expLabel = new Label("Here are the synonyms of "+ textField.getText()+ " :");
         expLabel.setPadding(new Insets(50,0,0,0));
 
-        TextArea synonymsArea = new TextArea(String.valueOf(buildText));// TODO: buraya eş anlamlar çıkarılacak
+
+        String values = getSynonyms().toString();
+        values = values.substring(1, values.length() - 1); // remove the square brackets
+        values = values.replace(", ", "\n"); // replace commas and spaces with newline characters
+        TextArea synonymsArea = new TextArea(values);// TODO: buraya eş anlamlar çıkarılacak
         synonymsArea.setFont(new Font(15));
         synonymsArea.setWrapText(true);
         synonymsArea.setEditable(false);
@@ -1144,6 +1153,132 @@ public class GUI_Actions {
         //System.out.println(languageAndWord.size());
     }
 
+    protected void addAWordtoTxt(String language1, String language2, String aWord, TextArea textArea1, TextArea textArea2) {
+        String wLanguage = language1;
+        String mLanguage = language2;
+        String filePath = "GraphFiles/" + wLanguage + "-" + mLanguage + ".txt";
+        String word = aWord; // the new word you want to add
+        String[] meanings = textArea2.getText().split("\\n"); // the meanings of the new word
+        String[] synonyms =  textArea1.getText().split("\\n"); // the synonyms of the new word
+
+        try (RandomAccessFile rFile = new RandomAccessFile(filePath, "rw")) {
+            StringBuilder newLine = new StringBuilder(word + ";");
+            for (int i = 0; i < meanings.length; i++) {
+                newLine.append(meanings[i]);
+                if (i < meanings.length - 1) {
+                    newLine.append("&");}
+            }
+            newLine.append(";");
+            for (int j = 0; j < synonyms.length; j++){
+                newLine.append(synonyms[j]);
+                if (j< synonyms.length - 1){
+                    newLine.append("&");
+                }
+            }
+            newLine.append(";\n");
+
+            String line;
+            long lastLinePos = 0;
+            while ((line = rFile.readLine()) != null) {
+                if (line.compareTo(newLine.toString()) > 0) {
+                    break;
+                }
+                lastLinePos = rFile.getFilePointer();
+            }
+
+            byte[] remainingBytes = new byte[(int) (rFile.length() - lastLinePos)];
+            rFile.seek(lastLinePos);
+            rFile.readFully(remainingBytes);
+            rFile.seek(lastLinePos);
+            rFile.writeBytes(newLine.toString());
+            rFile.write(remainingBytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    protected void findWordSynonym(String wLanguage, String sWord) throws IOException {
+        String filePath;
+        String searchWord = sWord;
+        String language = wLanguage;
+        ArrayList<String> synonymList = new ArrayList<>();
+        Set<String> addedSynonyms = new HashSet<>();
+        if (language.equals("deu")) {
+            filePath = "GraphFiles/deu-eng.txt";
+            String content = new String(Files.readAllBytes(Paths.get(filePath)));
+            String[] lines = content.split("\n");
+            for (String line : lines) {
+                String[] parts = line.split(";");
+                String word = parts[0];
+                if (word.equals(searchWord)) {
+                    String[] synonyms = parts[2].split("&");
+                    for (String synonym : synonyms) {
+                        if (!addedSynonyms.contains(synonym)) {
+                            synonymList.add(synonym);
+                            System.out.println(synonym);
+                            addedSynonyms.add(synonym);
+                        }
+                    }
+                }
+            }
+        } else if (language.equals("eng")) {
+            filePath = "GraphFiles/eng-deu.txt";
+            String content = new String(Files.readAllBytes(Paths.get(filePath)));
+            String[] lines = content.split("\n");
+            for (String line : lines) {
+                String[] parts = line.split(";");
+                String word = parts[0];
+                if (word.equals(searchWord)) {
+                    String[] synonyms = parts[2].split("&");
+                    for (String synonym : synonyms) {
+                        if (!addedSynonyms.contains(synonym)) {
+                            synonymList.add(synonym);
+                            System.out.println(synonym);
+                            addedSynonyms.add(synonym);
+                        }
+                    }
+                }
+            }
+        } else if (!language.equals("eng") && !language.equals("deu")) {
+            filePath = "GraphFiles/" + language + "-eng.txt";
+            Set<String> searchWordMeanings = new HashSet<>();
+            String content = new String(Files.readAllBytes(Paths.get(filePath)));
+            String[] lines = content.split("\n");
+            for (String line : lines) {
+                String[] parts = line.split(";");
+                String word = parts[0];
+                if (word.equals(searchWord)) {
+                    String[] meanings = parts[1].split("&");
+                    for (String meaning : meanings) {
+                        searchWordMeanings.add(meaning);
+                    }
+                }
+            }
+            System.out.println("Words with the same meanings as " + searchWord + ":");
+            for (String line : lines) {
+                String[] parts = line.split(";");
+                String word = parts[0];
+                if (!word.equals(searchWord)) {
+                    String[] meanings = parts[1].split("&");
+                    for (String meaning : meanings) {
+                        if (searchWordMeanings.contains(meaning)) {
+                            if (searchWordMeanings.contains(meaning)) {
+                                if (!addedSynonyms.contains(word)) {
+                                    synonymList.add(word);
+                                    System.out.println(word);
+                                    addedSynonyms.add(word);
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        setSynonyms(synonymList);
+    }
+
     public double getSceneWidth() {
         return sceneWidth;
     }
@@ -1166,5 +1301,13 @@ public class GUI_Actions {
 
     public void setFilePaths(ArrayList<String> filePaths) {
         this.filePaths = filePaths;
+    }
+
+    public ArrayList<String> getSynonyms() {
+        return synonyms;
+    }
+
+    public void setSynonyms(ArrayList<String> synonyms) {
+        this.synonyms = synonyms;
     }
 }
