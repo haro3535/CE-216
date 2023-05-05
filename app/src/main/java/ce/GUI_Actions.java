@@ -47,6 +47,12 @@ public class GUI_Actions {
         Menu mAdd = new Menu("Actions");
         mainMenuBar.getMenus().addAll(mHelp, mAdd);
 
+        MenuItem mManualItem = new MenuItem("User Manual");
+        mManualItem.setOnAction(event -> helpMenu(stage,scene,1));
+
+        MenuItem mContactItem = new MenuItem("Contacts");
+        mContactItem.setOnAction(event -> helpMenu(stage,scene,2));
+
         MenuItem mAddItem = new MenuItem("Add a word");
         mAddItem.setOnAction(e -> popupMenu(stage, scene) );
 
@@ -68,6 +74,7 @@ public class GUI_Actions {
             }
         });
 
+        mHelp.getItems().addAll(mManualItem,mContactItem);
         mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
 
         borderPane.setTop(mainMenuBar);
@@ -77,9 +84,9 @@ public class GUI_Actions {
 
 
         Label usingAddWordLabel = new Label("In the first selection box, select the language of the word you wants " +
-                "to enter and write this word in the space below. In the second selection box, select the language of the " +
-                "meaning you want to enter and enter the meaning in the space below. If you want to add more meaning, write " +
-                "line by line.");
+                "to enter and write this word in the space below. In the second selection box, write synonyms of the" +
+                " word line by line if there are. In the second selection box, select the language of the meaning you" +
+                " want to enter and enter the meaning in the space below. If you want to add more meaning, write line by line.");
         usingAddWordLabel.setWrapText(true);
         usingAddWordLabel.setPadding(new Insets(20,20,0,20));
         usingAddWordLabel.setPrefWidth(1000);
@@ -89,21 +96,36 @@ public class GUI_Actions {
         VBox.setMargin(languageChoiceBox1, new Insets(10, 550, 0, 0));
         languageChoiceBox1.getItems().addAll(dictionaryLanguages);
 
+
+
+
+
         TextArea ftextA = new TextArea();
         VBox.setMargin(ftextA, new Insets(20, 20, 0, 20));
         ftextA.setPrefHeight(80);
         ftextA.setPrefWidth(500);
         ftextA.setMaxWidth(610);
 
-        ChoiceBox<String> languageChoiceBox2 = new ChoiceBox<>();
-        VBox.setMargin(languageChoiceBox2, new Insets(10, 550, 0, 0));
-        languageChoiceBox2.getItems().addAll(dictionaryLanguages);
+        Label synonymLabel = new Label("Synonyms:");
+        synonymLabel.setPadding(new Insets(20,550,0,0));
 
         TextArea stextA = new TextArea();
-        VBox.setMargin(stextA, new Insets(20, 20, 0, 20));
-        stextA.setPrefHeight(200);
+        VBox.setMargin(stextA, new Insets(0, 20, 0, 20));
+        stextA.setPrefHeight(80);
         stextA.setPrefWidth(500);
         stextA.setMaxWidth(610);
+
+
+        ChoiceBox<String> languageChoiceBox2 = new ChoiceBox<>();
+        VBox.setMargin(languageChoiceBox2, new Insets(30, 550, 0, 0));
+        languageChoiceBox2.getItems().addAll(dictionaryLanguages);
+
+        TextArea ttextA = new TextArea();
+        VBox.setMargin(ttextA, new Insets(20, 20, 0, 20));
+        ttextA.setPrefHeight(80);
+        ttextA.setPrefWidth(500);
+        ttextA.setMaxWidth(610);
+
 
         Button addMeaningButton = new Button("Add");
         VBox.setMargin(addMeaningButton, new Insets(10,20,0, 590));
@@ -123,7 +145,8 @@ public class GUI_Actions {
             }
         });
 
-        mainBox.getChildren().addAll(usingAddWordLabel, languageChoiceBox1 ,ftextA, languageChoiceBox2, stextA, addMeaningButton);
+        mainBox.getChildren().addAll(usingAddWordLabel, languageChoiceBox1 ,ftextA, synonymLabel,stextA,
+                languageChoiceBox2, ttextA, addMeaningButton);
         borderPane.setCenter(mainBox);
 
         borderPane.setBottom(buttonsBox);
@@ -144,6 +167,12 @@ public class GUI_Actions {
         Menu mAdd = new Menu("Actions");
         mainMenuBar.getMenus().addAll(mHelp, mAdd);
 
+        MenuItem mManualItem = new MenuItem("User Manual");
+        mManualItem.setOnAction(event -> helpMenu(stage,scene,1));
+
+        MenuItem mContactItem = new MenuItem("Contacts");
+        mContactItem.setOnAction(event -> helpMenu(stage,scene,2));
+
         MenuItem mAddItem = new MenuItem("Add a word");
         mAddItem.setOnAction(e -> popupMenu(stage, scene) );
 
@@ -165,6 +194,7 @@ public class GUI_Actions {
             }
         });
 
+        mHelp.getItems().addAll(mManualItem,mContactItem);
         mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
 
         borderPane.setTop(mainMenuBar);
@@ -273,6 +303,12 @@ public class GUI_Actions {
         Menu mAdd = new Menu("Actions");
         mainMenuBar.getMenus().addAll(mHelp, mAdd);
 
+        MenuItem mManualItem = new MenuItem("User Manual");
+        mManualItem.setOnAction(event -> helpMenu(stage,scene,1));
+
+        MenuItem mContactItem = new MenuItem("Contacts");
+        mContactItem.setOnAction(event -> helpMenu(stage,scene,2));
+
         MenuItem mAddItem = new MenuItem("Add a word");
         mAddItem.setOnAction(e -> popupMenu(stage, scene) );
 
@@ -294,6 +330,7 @@ public class GUI_Actions {
             }
         });
 
+        mHelp.getItems().addAll(mManualItem,mContactItem);
         mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
 
         borderPane.setTop(mainMenuBar);
@@ -377,6 +414,12 @@ public class GUI_Actions {
         Menu mAdd = new Menu("Actions");
         mainMenuBar.getMenus().addAll(mHelp, mAdd);
 
+        MenuItem mManualItem = new MenuItem("User Manual");
+        mManualItem.setOnAction(event -> helpMenu(stage,scene,1));
+
+        MenuItem mContactItem = new MenuItem("Contacts");
+        mContactItem.setOnAction(event -> helpMenu(stage,scene,2));
+
         MenuItem mAddItem = new MenuItem("Add a word");
         mAddItem.setOnAction(e -> popupMenu(stage, scene) );
 
@@ -398,6 +441,7 @@ public class GUI_Actions {
             }
         });
 
+        mHelp.getItems().addAll(mManualItem,mContactItem);
         mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
 
         borderPane.setTop(mainMenuBar);
@@ -481,6 +525,12 @@ public class GUI_Actions {
         Menu mAdd = new Menu("Actions");
         mainMenuBar.getMenus().addAll(mHelp, mAdd);
 
+        MenuItem mManualItem = new MenuItem("User Manual");
+        mManualItem.setOnAction(event -> helpMenu(stage,scene,1));
+
+        MenuItem mContactItem = new MenuItem("Contacts");
+        mContactItem.setOnAction(event -> helpMenu(stage,scene,2));
+
         MenuItem mAddItem = new MenuItem("Add a word");
         mAddItem.setOnAction(e -> popupMenu(stage, scene) );
 
@@ -502,6 +552,7 @@ public class GUI_Actions {
             }
         });
 
+        mHelp.getItems().addAll(mManualItem,mContactItem);
         mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
 
         borderPane.setTop(mainMenuBar);
@@ -575,6 +626,12 @@ public class GUI_Actions {
         Menu mAdd = new Menu("Actions");
         mainMenuBar.getMenus().addAll(mHelp, mAdd);
 
+        MenuItem mManualItem = new MenuItem("User Manual");
+        mManualItem.setOnAction(event -> helpMenu(stage,scene,1));
+
+        MenuItem mContactItem = new MenuItem("Contacts");
+        mContactItem.setOnAction(event -> helpMenu(stage,scene,2));
+
         MenuItem mAddItem = new MenuItem("Add a word");
         mAddItem.setOnAction(e -> popupMenu(stage, scene) );
 
@@ -596,6 +653,7 @@ public class GUI_Actions {
             }
         });
 
+        mHelp.getItems().addAll(mManualItem,mContactItem);
         mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
 
         borderPane.setTop(mainMenuBar);
@@ -656,6 +714,12 @@ public class GUI_Actions {
         Menu mAdd = new Menu("Actions");
         mainMenuBar.getMenus().addAll(mHelp, mAdd);
 
+        MenuItem mManualItem = new MenuItem("User Manual");
+        mManualItem.setOnAction(event -> helpMenu(stage,scene,1));
+
+        MenuItem mContactItem = new MenuItem("Contacts");
+        mContactItem.setOnAction(event -> helpMenu(stage,scene,2));
+
         MenuItem mAddItem = new MenuItem("Add a word");
         mAddItem.setOnAction(e -> popupMenu(stage, scene) );
 
@@ -677,6 +741,7 @@ public class GUI_Actions {
             }
         });
 
+        mHelp.getItems().addAll(mManualItem,mContactItem);
         mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
 
         borderPane.setTop(mainMenuBar);
@@ -755,6 +820,12 @@ public class GUI_Actions {
         Menu mAdd = new Menu("Actions");
         mainMenuBar.getMenus().addAll(mHelp, mAdd);
 
+        MenuItem mManualItem = new MenuItem("User Manual");
+        mManualItem.setOnAction(event -> helpMenu(stage,scene,1));
+
+        MenuItem mContactItem = new MenuItem("Contacts");
+        mContactItem.setOnAction(event -> helpMenu(stage,scene,2));
+
         MenuItem mAddItem = new MenuItem("Add a word");
         mAddItem.setOnAction(e -> popupMenu(stage, scene) );
 
@@ -776,6 +847,7 @@ public class GUI_Actions {
             }
         });
 
+        mHelp.getItems().addAll(mManualItem,mContactItem);
         mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
 
         borderPane.setTop(mainMenuBar);
@@ -821,13 +893,19 @@ public class GUI_Actions {
         stage.show();
     }
 
-    public void helpMenu (Stage stage, Scene  scene, String string){
+    public void helpMenu (Stage stage, Scene  scene, Integer integer){
         BorderPane borderPane = new BorderPane();
 
         MenuBar mainMenuBar = new MenuBar();
         Menu mHelp = new Menu("Help");
         Menu mAdd = new Menu("Actions");
         mainMenuBar.getMenus().addAll(mHelp, mAdd);
+
+        MenuItem mManualItem = new MenuItem("User Manual");
+        mManualItem.setOnAction(event -> helpMenu(stage,scene,1));
+
+        MenuItem mContactItem = new MenuItem("Contacts");
+        mContactItem.setOnAction(event -> helpMenu(stage,scene,2));
 
         MenuItem mAddItem = new MenuItem("Add a word");
         mAddItem.setOnAction(e -> popupMenu(stage, scene) );
@@ -850,6 +928,7 @@ public class GUI_Actions {
             }
         });
 
+        mHelp.getItems().addAll(mManualItem,mContactItem);
         mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
 
         borderPane.setTop(mainMenuBar);
@@ -857,7 +936,13 @@ public class GUI_Actions {
         VBox mainBox = new VBox();
         mainBox.setAlignment(Pos.TOP_CENTER);
 
-        TextArea textArea = new TextArea(string);// TODO: buraya eş anlamlar çıkarılacak
+
+
+        TextArea textArea = new TextArea();// TODO: buraya eş anlamlar çıkarılacak
+        if (integer == 1)
+            textArea.setText("asdfhjgkhl");
+        else
+            textArea.setText("https://www.instagram.com/oguz_tavur/");
         textArea.setFont(new Font(15));
         textArea.setWrapText(true);
         textArea.setEditable(false);
