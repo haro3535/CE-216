@@ -473,7 +473,7 @@ public class GUI_Actions {
             if (event.getCode().equals(KeyCode.ENTER))
             {
                 searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
-                showingMeanings(stage,scene,searchingText.getText(),languageBox.getValue());
+                editChosingLanguage(stage,scene,searchingText.getText(),languageBox.getValue());
             }
         });
 
@@ -481,7 +481,7 @@ public class GUI_Actions {
         HBox.setMargin(searchButton, new Insets(0,40,30,30));
         searchButton.setOnAction(event -> {
             searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
-            showingMeanings(stage,scene, searchingText.getText(), languageBox.getValue());
+            editChosingLanguage(stage,scene, searchingText.getText(), languageBox.getValue());
         });
 
         // To find absolute path of img file
@@ -519,7 +519,107 @@ public class GUI_Actions {
         stage.show();
     }
 
-    public void showingMeanings (Stage stage, Scene scene, String word, String language){
+    public void editChosingLanguage (Stage stage, Scene scene, String word, String language1){
+        BorderPane borderPane = new BorderPane();
+
+
+        MenuBar mainMenuBar = new MenuBar();
+        Menu mHelp = new Menu("Help");
+        Menu mAdd = new Menu("Actions");
+        mainMenuBar.getMenus().addAll(mHelp, mAdd);
+
+        MenuItem mManualItem = new MenuItem("User Manual");
+        mManualItem.setOnAction(event -> helpMenu(stage,scene,1));
+
+        MenuItem mContactItem = new MenuItem("Contacts");
+        mContactItem.setOnAction(event -> helpMenu(stage,scene,2));
+
+        MenuItem mAddItem = new MenuItem("Add a word");
+        mAddItem.setOnAction(e -> popupMenu(stage, scene) );
+
+        MenuItem mEditItem = new MenuItem("Edit Meaning");
+        mEditItem.setOnAction(event -> {
+            try {
+                editMeaning(stage, scene);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+
+        MenuItem mFindSynonym = new MenuItem("Find Synonym");
+        mFindSynonym.setOnAction(event -> {
+            try {
+                findSynonym(stage, scene);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+
+        mHelp.getItems().addAll(mManualItem,mContactItem);
+        mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
+
+        borderPane.setTop(mainMenuBar);
+
+        VBox listBox = new VBox();
+        listBox.setAlignment(Pos.TOP_CENTER);
+
+        ListView<String> myListView = new ListView<>();
+        for (LinkedList<String> lang:
+                languageAndWord) {
+            myListView.getItems().add(lang.getFirst().toUpperCase(Locale.ENGLISH));
+            //myListView.getItems().add(lang.getFirst().toUpperCase() + " : " + lang.getLast());
+        }
+        myListView.setPrefHeight(350);
+        myListView.setPrefWidth(630);
+        myListView.setMaxWidth(630);
+
+        Label selectMeaningLabel = new Label();
+        VBox.setMargin(selectMeaningLabel, new Insets(40,0,30,0));
+        selectMeaningLabel.setFont(new Font(20));
+
+        String[] selectedLanguage = new String[1];
+        myListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            selectedLanguage[0] = myListView.getSelectionModel().getSelectedItem();
+            selectMeaningLabel.setText(selectedLanguage[0]);
+        });
+
+        Button selectButton = new Button("Select");
+        VBox.setMargin(selectButton, new Insets(20,585,0,0));
+        selectButton.setOnAction(event -> {
+            // TODO: meaning için bura değişecek
+            buildText = new StringBuilder();
+            showingMeanings(stage,scene,word,language1,selectedLanguage[0]);
+        });
+
+        listBox.getChildren().addAll(selectMeaningLabel,myListView, selectButton);
+
+
+
+        borderPane.setCenter(listBox);
+
+        HBox lastBox = new HBox();
+        lastBox.setAlignment(Pos.CENTER);
+        Label chooseLabel = new Label("Please select the language in which you want to edit the meanings of the word.");
+        chooseLabel.setPadding(new Insets(0,165,0,0));
+        Button backButton = new Button("Back");
+        HBox.setMargin(backButton, new Insets(0,20,5,5));
+        backButton.setOnAction(event -> {
+            try {
+                editMeaning(stage, scene);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+        lastBox.getChildren().addAll(backButton, chooseLabel);
+        borderPane.setBottom(lastBox);
+
+        scene.setRoot(borderPane);
+        stage.setTitle("Team 6 - Edit Meaning");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public void showingMeanings (Stage stage, Scene scene, String word, String language1, String language2){
         BorderPane borderPane = new BorderPane();
 
 
@@ -589,7 +689,7 @@ public class GUI_Actions {
         selectButton.setOnAction(event -> {
             // TODO: meaning için bura değişecek
             buildText = new StringBuilder();
-            editingChosenMeaning(stage,scene,word,selectedMeaning[0],language);
+            editingChosenMeaning(stage,scene,word,selectedMeaning[0],language1,language2);
         });
 
         listBox.getChildren().addAll(selectMeaningLabel,myListView, selectButton);
@@ -620,7 +720,7 @@ public class GUI_Actions {
         stage.show();
     }
 
-    public void editingChosenMeaning (Stage stage, Scene scene, String word, String meaning, String language){
+    public void editingChosenMeaning (Stage stage, Scene scene, String word, String meaning, String language1, String language2){
         BorderPane borderPane = new BorderPane();
 
 
@@ -698,7 +798,7 @@ public class GUI_Actions {
         HBox.setMargin(backButton, new Insets(0,605,5,5));
         buttonBox.getChildren().add( backButton);
 
-        backButton.setOnAction(event -> showingMeanings(stage, scene, word,language));
+        backButton.setOnAction(event -> showingMeanings(stage, scene, word,language1, language2));
 
         borderPane.setBottom(buttonBox);
 
