@@ -1364,7 +1364,6 @@ public class GUI_Actions {
                     break;
                 }
             }
-            System.out.println(tempIsFound);
             if (tempIsFound){
                 filePath=tempFileName;
                 String content = new String(Files.readAllBytes(Paths.get(filePath)));
