@@ -672,8 +672,17 @@ public class GUI_Actions {
 
         ObservableList<String> list = FXCollections.observableArrayList();
 
-        list.addAll(meaningsToEdit);
         ListView<String> myListView = new ListView<>();
+        for (int i=0;i<meaningsToEdit.size();i++){
+            String value = meaningsToEdit.get(i).toString();
+            value = value.replace(", ", "\n");// replace commas and spaces with newline characters
+            try {
+                value = new String(value.getBytes("ISO_8859_1"), StandardCharsets.UTF_8); // encode the string using UTF-8
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            list.add(value);
+        }
         myListView.getItems().add("New meaning");
         myListView.getItems().addAll(list);
         myListView.setPrefHeight(350);
@@ -683,6 +692,7 @@ public class GUI_Actions {
         Label selectMeaningLabel = new Label();
         VBox.setMargin(selectMeaningLabel, new Insets(40,0,30,0));
         selectMeaningLabel.setFont(new Font(20));
+        selectMeaningLabel.setWrapText(true);
 
         String[] selectedMeaning = new String[1];
         myListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -790,6 +800,7 @@ public class GUI_Actions {
         VBox.setMargin(addButton,new Insets(80,0,0,0));
         Button editButton = new Button("Edit");
         VBox.setMargin(editButton,new Insets(30,0,30,0));
+        editButton.setOnAction(event -> editWordMeaning(language1,language2,word,meaning,textArea.getText()));
         Button removeButton = new Button("Remove");
 
         HBox.setMargin(buttonsBox,new Insets(0,0,0,30));
@@ -1446,50 +1457,95 @@ public class GUI_Actions {
     protected void editWordMeaning(String language1, String language2,String word, String oMeaning, String nMeaning){
         String wLanguage = language1;
         String mLanguage = language2;
-        String filePath = wLanguage + "-" + mLanguage + ".txt";
+        String filePath = "GraphFiles/" + wLanguage + "-" + mLanguage + ".txt";
         String cWord = word; // the word whose meanings you want to change
         String oldMeaning = oMeaning;
         String newMeaning = nMeaning; // the new meanings of the word
+        int position = 1; // specify the position where you want to add the new meaning
 
-        try (RandomAccessFile rFile = new RandomAccessFile(filePath, "rw")) {
-            String line;
-            long lineStart = 0;
-            while ((line = rFile.readLine()) != null) {
-                if (line.startsWith(cWord)) {
-                    String[] parts = line.split(";", -1);
-                    for (int i = 1; i < parts.length - 1; i++) {
-                        String[] meanings = parts[i].split("&");
-                        for (int j = 0; j < meanings.length; j++) {
-                            if (meanings[j].equals(oldMeaning)) {
-                                meanings[j] = newMeaning;
+        if (oldMeaning.equals("New meaning")){
+            try {
+                RandomAccessFile file = new RandomAccessFile(filePath, "rw");
+                String line;
+                long lastLineEnd = 0;
+                while ((line = file.readLine()) != null) {
+                    if (line.startsWith(cWord + ";")) {
+                        int firstSemicolonIndex = line.indexOf(";");
+                        file.seek(lastLineEnd + firstSemicolonIndex + 1);
+                        String remainingLine = file.readLine();
+                        String[] meanings = remainingLine.split("&");
+                        StringBuilder sb = new StringBuilder();
+                        for (int i = 0; i < meanings.length; i++) {
+                            if (i == position - 1) {
+                                sb.append(newMeaning).append("&");
                             }
+                            sb.append(meanings[i]).append("&");
                         }
-                        parts[i] = String.join("&", meanings);
+                        if (position > meanings.length) {
+                            sb.append(newMeaning).append("&");
+                        }
+                        sb.setLength(sb.length() - 1);
+                        file.seek(lastLineEnd + firstSemicolonIndex + 1);
+                        file.writeBytes(sb.toString());
+                        long pointerLocation = file.getFilePointer();
+                        StringBuilder remainingFileContent = new StringBuilder();
+                        while ((line = file.readLine()) != null) {
+                            remainingFileContent.append("\n").append(line);
+                        }
+                        file.setLength(pointerLocation);
+                        file.seek(pointerLocation);
+                        file.writeBytes(remainingFileContent.toString());
+                        break;
                     }
-                    String newLine = String.join(";", parts);
-
-                    // Check if the new line is longer than the original line
-                    if (newLine.length() > line.length()) {
-                        // Read all subsequent content in the file into memory
-                        long currentPosition = rFile.getFilePointer();
-                        byte[] remainingContent = new byte[(int) (rFile.length() - currentPosition)];
-                        rFile.readFully(remainingContent);
-
-                        // Write the new line followed by the remaining content
-                        rFile.seek(lineStart);
-                        rFile.writeBytes(newLine + "\n");
-                        rFile.write(remainingContent);
-                    } else {
-                        // Write the new line at the same position as the original line
-                        rFile.seek(lineStart);
-                        rFile.writeBytes(newLine);
-                    }
-                    break;
+                    lastLineEnd = file.getFilePointer();
                 }
-                lineStart = rFile.getFilePointer();
+                file.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        }
+
+        else {
+            try (RandomAccessFile rFile = new RandomAccessFile(filePath, "rw")) {
+                String line;
+                long lineStart = 0;
+                while ((line = rFile.readLine()) != null) {
+                    if (line.startsWith(cWord)) {
+                        String[] parts = line.split(";", -1);
+                        for (int i = 1; i < parts.length - 1; i++) {
+                            String[] meanings = parts[i].split("&");
+                            for (int j = 0; j < meanings.length; j++) {
+                                if (meanings[j].equals(oldMeaning)) {
+                                    meanings[j] = newMeaning;
+                                }
+                            }
+                            parts[i] = String.join("&", meanings);
+                        }
+                        String newLine = String.join(";", parts);
+
+                        // Check if the new line is longer than the original line
+                        if (newLine.length() > line.length()) {
+                            // Read all subsequent content in the file into memory
+                            long currentPosition = rFile.getFilePointer();
+                            byte[] remainingContent = new byte[(int) (rFile.length() - currentPosition)];
+                            rFile.readFully(remainingContent);
+
+                            // Write the new line followed by the remaining content
+                            rFile.seek(lineStart);
+                            rFile.writeBytes(newLine + "\n");
+                            rFile.write(remainingContent);
+                        } else {
+                            // Write the new line at the same position as the original line
+                            rFile.seek(lineStart);
+                            rFile.writeBytes(newLine);
+                        }
+                        break;
+                    }
+                    lineStart = rFile.getFilePointer();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -1519,8 +1575,8 @@ public class GUI_Actions {
         }
         for (String fileName : foundInFiles) {
             String[] splitName = fileName.split("\\.");
-            String[] sLanguageList = splitName[1].split("-");
-            foundLanguages.add(splitName[splitName.length - 2]);
+            String[] sLanguageList = splitName[0].split("-");
+            foundLanguages.add(sLanguageList[1]);
             setLanguagesOfMeanings(foundLanguages);
         }
     }
@@ -1528,12 +1584,11 @@ public class GUI_Actions {
     protected void meaningForEditMeaning(String language1, String language2, String word){
         String filePath = "GraphFiles/" + language1 + "-" + language2 + ".txt";
         String sWord = word;
-        ArrayList<String> meaningsfeMeaning = new ArrayList<String>();
+        ArrayList<String> meaningsfeMeaning = new ArrayList<>();
         try {
-            File file = new File(filePath);
-            Scanner scanner = new Scanner(file);
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
+            RandomAccessFile file = new RandomAccessFile(filePath, "r");
+            String line;
+            while ((line = file.readLine()) != null) {
                 if (line.startsWith(sWord + ";")) {
                     String[] splitLine = line.split(";");
                     String[] splitMeanings = splitLine[1].split("&");
@@ -1543,8 +1598,8 @@ public class GUI_Actions {
                     }
                 }
             }
-            scanner.close();
-        } catch (FileNotFoundException e) {
+            file.close();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
