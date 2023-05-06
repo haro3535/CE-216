@@ -1495,13 +1495,13 @@ public class GUI_Actions {
 
     protected void wordMeaningLanguages(String word,String language){
         String searchWord = word;
-        ArrayList<String> foundLanguages = new ArrayList<String>();
-        ArrayList<String> foundInFiles = new ArrayList<String>();
+        ArrayList<String> foundLanguages = new ArrayList<>();
+        ArrayList<String> foundInFiles = new ArrayList<>();
         File folder = new File("GraphFiles");
         File[] listOfFiles = folder.listFiles();
 
         for (File file : listOfFiles) {
-            if (file.isFile() && file.getName().matches(language + "-")) {
+            if (file.isFile() && file.getName().contains(language + "-")) {
                 try {
                     Scanner scanner = new Scanner(file);
                     while (scanner.hasNextLine()) {
@@ -1519,7 +1519,7 @@ public class GUI_Actions {
         }
         for (String fileName : foundInFiles) {
             String[] splitName = fileName.split("\\.");
-            System.out.println(splitName.length-2);
+            String[] sLanguageList = splitName[1].split("-");
             foundLanguages.add(splitName[splitName.length - 2]);
             setLanguagesOfMeanings(foundLanguages);
         }
