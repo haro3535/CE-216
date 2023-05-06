@@ -17,7 +17,6 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -132,7 +131,7 @@ public class GUI_Actions {
 
         Button addMeaningButton = new Button("Add");
         VBox.setMargin(addMeaningButton, new Insets(10,20,0, 590));
-        addMeaningButton.setOnAction(event -> addAWordtoTxt(languageChoiceBox1.getValue(),languageChoiceBox2.getValue(),ftextA.getText(),stextA,ttextA));
+        addMeaningButton.setOnAction(event -> addAWordToTxt(languageChoiceBox1.getValue(),languageChoiceBox2.getValue(),ftextA.getText(),stextA,ttextA));
 
 
         HBox buttonsBox = new HBox();
@@ -1259,7 +1258,7 @@ public class GUI_Actions {
         //System.out.println(languageAndWord.size());
     }
 
-    protected void addAWordtoTxt(String language1, String language2, String aWord, TextArea textArea1, TextArea textArea2) {
+    protected void addAWordToTxt(String language1, String language2, String aWord, TextArea textArea1, TextArea textArea2) {
         String wLanguage = language1;
         String mLanguage = language2;
         String filePath = "GraphFiles/" + wLanguage + "-" + mLanguage + ".txt";
@@ -1303,7 +1302,6 @@ public class GUI_Actions {
         }
     }
 
-
     protected void findWordSynonym(String wLanguage, String sWord) throws IOException {
         String filePath;
         String searchWord = sWord;
@@ -1322,7 +1320,6 @@ public class GUI_Actions {
                     for (String synonym : synonyms) {
                         if (!addedSynonyms.contains(synonym)) {
                             synonymList.add(synonym);
-                            System.out.println(synonym);
                             addedSynonyms.add(synonym);
                         }
                     }
@@ -1340,7 +1337,6 @@ public class GUI_Actions {
                     for (String synonym : synonyms) {
                         if (!addedSynonyms.contains(synonym)) {
                             synonymList.add(synonym);
-                            System.out.println(synonym);
                             addedSynonyms.add(synonym);
                         }
                     }
@@ -1372,7 +1368,6 @@ public class GUI_Actions {
                             if (searchWordMeanings.contains(meaning)) {
                                 if (!addedSynonyms.contains(word)) {
                                     synonymList.add(word);
-                                    System.out.println(word);
                                     addedSynonyms.add(word);
                                 }
                                 break;
