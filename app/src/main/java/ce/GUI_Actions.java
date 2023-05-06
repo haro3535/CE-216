@@ -25,8 +25,6 @@ import java.util.*;
 public class GUI_Actions {
 
     App mainApp = new App();
-    private double sceneWidth = 650;
-    private double sceneHeight = 600;
     String[] dictionaryLanguages = {"deu","ell","eng","fra","ita","swe","tur"};
     public boolean isFilesFound = false;
     private ArrayList<String> filePaths = new ArrayList<>();
@@ -1105,9 +1103,6 @@ public class GUI_Actions {
     }
 
     public void backToMainScreen (Stage stage, Scene scene) throws IOException {
-        setSceneWidth(scene.getWidth());
-        setSceneHeight(scene.getHeight());
-        System.out.println(getSceneHeight());
         mainApp.start(stage);
 
     }
@@ -1385,22 +1380,6 @@ public class GUI_Actions {
             }
         }
         setSynonyms(synonymList);
-    }
-
-    public double getSceneWidth() {
-        return sceneWidth;
-    }
-
-    public void setSceneWidth(double sceneWidth) {
-        this.sceneWidth = sceneWidth;
-    }
-
-    public double getSceneHeight() {
-        return sceneHeight;
-    }
-
-    public void setSceneHeight(double sceneHeight) {
-        this.sceneHeight = sceneHeight;
     }
 
     public ArrayList<String> getFilePaths() {

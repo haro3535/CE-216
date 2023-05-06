@@ -39,7 +39,7 @@ public class App extends Application {
         actions.setFilePaths(filePaths);
 
         BorderPane borderPane = new BorderPane();
-        Scene scene = new Scene(borderPane, actions.getSceneWidth(), actions.getSceneHeight());
+        Scene scene = new Scene(borderPane, 650, 600);
         stage.setTitle("Team 6");
         stage.setScene(scene);
         stage.show();
