@@ -17,6 +17,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -477,7 +478,7 @@ public class GUI_Actions {
             if (event.getCode().equals(KeyCode.ENTER))
             {
                 searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
-                editChosingLanguage(stage,scene,searchingText.getText(),languageBox.getValue());
+                editChoosingLanguage(stage,scene,searchingText.getText(),languageBox.getValue());
             }
         });
 
@@ -485,7 +486,7 @@ public class GUI_Actions {
         HBox.setMargin(searchButton, new Insets(0,40,30,30));
         searchButton.setOnAction(event -> {
             searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
-            editChosingLanguage(stage,scene, searchingText.getText(), languageBox.getValue());
+            editChoosingLanguage(stage,scene, searchingText.getText(), languageBox.getValue());
         });
 
         // To find absolute path of img file
@@ -523,7 +524,7 @@ public class GUI_Actions {
         stage.show();
     }
 
-    public void editChosingLanguage (Stage stage, Scene scene, String word, String language1){
+    public void editChoosingLanguage(Stage stage, Scene scene, String word, String language1){
         BorderPane borderPane = new BorderPane();
 
 
@@ -772,10 +773,11 @@ public class GUI_Actions {
         VBox buttonsBox = new VBox();
         buttonsBox.setAlignment(Pos.TOP_CENTER);
 
-        Label noteLabel = new Label("Add - Adding a new meaning.\n" +
-                "Edit - Editing chosen meaning.\n" +
-                "Remove - Removing chosen meaning.\n" +
-                "Note: If you want to add more meaning write line by line.");
+        Label noteLabel = new Label("""
+                Add - Adding a new meaning.
+                Edit - Editing chosen meaning.
+                Remove - Removing chosen meaning.
+                Note: If you want to add more meaning write line by line.""");
         noteLabel.setPadding(new Insets(50,40,50,0));
 
         TextArea textArea = new TextArea();
@@ -978,7 +980,7 @@ public class GUI_Actions {
         values = values.substring(1, values.length() - 1); // remove the square brackets
         values = values.replace(", ", "\n");// replace commas and spaces with newline characters
         try {
-            values = new String(values.getBytes("ISO-8859-1"), "UTF-8"); // encode the string using UTF-8
+            values = new String(values.getBytes("ISO_8859_1"), StandardCharsets.UTF_8); // encode the string using UTF-8
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -1308,6 +1310,8 @@ public class GUI_Actions {
         String filePath;
         String searchWord = sWord;
         String language = wLanguage;
+        String tempFileName = "";
+        boolean tempIsFound = false;
         ArrayList<String> synonymList = new ArrayList<>();
         Set<String> addedSynonyms = new HashSet<>();
         if (language.equals("deu")) {
@@ -1345,6 +1349,41 @@ public class GUI_Actions {
                 }
             }
         } else if (!language.equals("eng") && !language.equals("deu")) {
+            File file = new File("GraphFiles");
+            FilenameFilter filter = new FilenameFilter() {
+                public boolean accept(File dir, String name) {
+                    return name.endsWith(".txt") && name.contains(language + "-");
+                }
+            };
+
+            File[] files = file.listFiles(filter);
+            for (int i=0;i<files.length;i++){
+                tempFileName="GraphFiles/" + files[i].getName();
+                if (doesHaveSynonym(searchWord,tempFileName)){
+                    tempIsFound=true;
+                    break;
+                }
+            }
+            System.out.println(tempIsFound);
+            if (tempIsFound){
+                filePath=tempFileName;
+                String content = new String(Files.readAllBytes(Paths.get(filePath)));
+                String[] lines = content.split("\n");
+                for (String line : lines) {
+                    String[] parts = line.split(";");
+                    String word = parts[0];
+                    if (word.equals(searchWord)) {
+                        String[] synonyms = parts[2].split("&");
+                        for (String synonym : synonyms) {
+                            if (!addedSynonyms.contains(synonym)) {
+                                synonymList.add(synonym);
+                                addedSynonyms.add(synonym);
+                            }
+                        }
+                    }
+                }
+            }
+            else if (!tempIsFound){
             filePath = "GraphFiles/" + language + "-eng.txt";
             Set<String> searchWordMeanings = new HashSet<>();
             String content = new String(Files.readAllBytes(Paths.get(filePath)));
@@ -1359,7 +1398,6 @@ public class GUI_Actions {
                     }
                 }
             }
-            System.out.println("Words with the same meanings as " + searchWord + ":");
             for (String line : lines) {
                 String[] parts = line.split(";");
                 String word = parts[0];
@@ -1379,7 +1417,30 @@ public class GUI_Actions {
                 }
             }
         }
+        }
         setSynonyms(synonymList);
+    }
+
+    public static boolean doesHaveSynonym(String word, String filePath) {
+        try {
+            String content = new String(Files.readAllBytes(Paths.get(filePath)));
+            String[] lines = content.split("\n");
+            for (String line : lines) {
+                String[] parts = line.split(";");
+                if (parts[0].equals(word) && parts.length > 2 && !parts[2].isEmpty()) {
+                    String[] synonyms = parts[2].split("&");
+                    for (String synonym : synonyms) {
+                        if (!synonym.isEmpty()) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public ArrayList<String> getFilePaths() {
