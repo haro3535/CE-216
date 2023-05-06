@@ -131,7 +131,13 @@ public class GUI_Actions {
 
         Button addMeaningButton = new Button("Add");
         VBox.setMargin(addMeaningButton, new Insets(10,20,0, 590));
-        addMeaningButton.setOnAction(event -> addAWordToTxt(languageChoiceBox1.getValue(),languageChoiceBox2.getValue(),ftextA.getText(),stextA,ttextA));
+        addMeaningButton.setOnAction(event -> {
+            try {
+                addAWordToTxt(languageChoiceBox1.getValue(),languageChoiceBox2.getValue(),ftextA.getText(),stextA,ttextA, stage, scene);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
 
 
         HBox buttonsBox = new HBox();
@@ -1258,7 +1264,7 @@ public class GUI_Actions {
         //System.out.println(languageAndWord.size());
     }
 
-    protected void addAWordToTxt(String language1, String language2, String aWord, TextArea textArea1, TextArea textArea2) {
+    protected void addAWordToTxt(String language1, String language2, String aWord, TextArea textArea1, TextArea textArea2, Stage stage, Scene scene) throws IOException {
         String wLanguage = language1;
         String mLanguage = language2;
         String filePath = "GraphFiles/" + wLanguage + "-" + mLanguage + ".txt";
@@ -1300,6 +1306,7 @@ public class GUI_Actions {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        backToMainScreen(stage, scene);
     }
 
     protected void findWordSynonym(String wLanguage, String sWord) throws IOException {
