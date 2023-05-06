@@ -1,5 +1,7 @@
 package ce;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -33,7 +35,8 @@ public class GUI_Actions {
     private final ArrayList<Functions> xmlMethodsOverEnglish = new ArrayList<>();
     private final List<Thread> threads = new ArrayList<>();
     private final ArrayList<LinkedList<String>> languageAndWord = new ArrayList<>();
-    private final ArrayList<LinkedList<String>> meaningsOfWord = new ArrayList<>();
+    private ArrayList<String> languagesOfMeanings = new ArrayList<>();
+    private ArrayList<String> meaningsToEdit = new ArrayList<>();
     StringBuilder buildText = new StringBuilder();
     private ArrayList<String> synonyms = new ArrayList<>();
 
@@ -486,6 +489,7 @@ public class GUI_Actions {
         HBox.setMargin(searchButton, new Insets(0,40,30,30));
         searchButton.setOnAction(event -> {
             searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
+            wordMeaningLanguages(searchingText.getText(),languageBox.getValue());
             editChoosingLanguage(stage,scene, searchingText.getText(), languageBox.getValue());
         });
 
@@ -568,12 +572,13 @@ public class GUI_Actions {
         VBox listBox = new VBox();
         listBox.setAlignment(Pos.TOP_CENTER);
 
-        ListView<String> myListView = new ListView<>();
-        for (LinkedList<String> lang:
-                languageAndWord) {
-            myListView.getItems().add(lang.getFirst().toUpperCase(Locale.ENGLISH));
-            //myListView.getItems().add(lang.getFirst().toUpperCase() + " : " + lang.getLast());
+
+        ObservableList<String> list = FXCollections.observableArrayList();
+
+        for (String str : languagesOfMeanings) {
+            list.add(str);
         }
+        ListView<String> myListView = new ListView<>(list);
         myListView.setPrefHeight(350);
         myListView.setPrefWidth(630);
         myListView.setMaxWidth(630);
@@ -591,8 +596,8 @@ public class GUI_Actions {
         Button selectButton = new Button("Select");
         VBox.setMargin(selectButton, new Insets(20,585,0,0));
         selectButton.setOnAction(event -> {
-            // TODO: meaning için bura değişecek
             buildText = new StringBuilder();
+            meaningForEditMeaning(language1,selectedLanguage[0],word);
             showingMeanings(stage,scene,word,language1,selectedLanguage[0]);
         });
 
@@ -626,7 +631,6 @@ public class GUI_Actions {
 
     public void showingMeanings (Stage stage, Scene scene, String word, String language1, String language2){
         BorderPane borderPane = new BorderPane();
-
 
         MenuBar mainMenuBar = new MenuBar();
         Menu mHelp = new Menu("Help");
@@ -668,13 +672,14 @@ public class GUI_Actions {
         VBox listBox = new VBox();
         listBox.setAlignment(Pos.TOP_CENTER);
 
+        ObservableList<String> list = FXCollections.observableArrayList();
+
+        for (String str : meaningsToEdit) {
+            list.add(str);
+        }
         ListView<String> myListView = new ListView<>();
         myListView.getItems().add("New meaning");
-        for (LinkedList<String> lang:
-                languageAndWord) {
-            myListView.getItems().add(lang.getFirst().toUpperCase(Locale.ENGLISH));
-            //myListView.getItems().add(lang.getFirst().toUpperCase() + " : " + lang.getLast());
-        }
+        myListView.getItems().add(String.valueOf(list));
         myListView.setPrefHeight(350);
         myListView.setPrefWidth(630);
         myListView.setMaxWidth(630);
@@ -1440,6 +1445,125 @@ public class GUI_Actions {
             e.printStackTrace();
             return false;
         }
+    }
+
+    protected void editWordMeaning(String language1, String language2,String word, String oMeaning, String nMeaning){
+        String wLanguage = language1;
+        String mLanguage = language2;
+        String filePath = wLanguage + "-" + mLanguage + ".txt";
+        String cWord = word; // the word whose meanings you want to change
+        String oldMeaning = oMeaning;
+        String newMeaning = nMeaning; // the new meanings of the word
+
+        try (RandomAccessFile rFile = new RandomAccessFile(filePath, "rw")) {
+            String line;
+            long lineStart = 0;
+            while ((line = rFile.readLine()) != null) {
+                if (line.startsWith(cWord)) {
+                    String[] parts = line.split(";", -1);
+                    for (int i = 1; i < parts.length - 1; i++) {
+                        String[] meanings = parts[i].split("&");
+                        for (int j = 0; j < meanings.length; j++) {
+                            if (meanings[j].equals(oldMeaning)) {
+                                meanings[j] = newMeaning;
+                            }
+                        }
+                        parts[i] = String.join("&", meanings);
+                    }
+                    String newLine = String.join(";", parts);
+
+                    // Check if the new line is longer than the original line
+                    if (newLine.length() > line.length()) {
+                        // Read all subsequent content in the file into memory
+                        long currentPosition = rFile.getFilePointer();
+                        byte[] remainingContent = new byte[(int) (rFile.length() - currentPosition)];
+                        rFile.readFully(remainingContent);
+
+                        // Write the new line followed by the remaining content
+                        rFile.seek(lineStart);
+                        rFile.writeBytes(newLine + "\n");
+                        rFile.write(remainingContent);
+                    } else {
+                        // Write the new line at the same position as the original line
+                        rFile.seek(lineStart);
+                        rFile.writeBytes(newLine);
+                    }
+                    break;
+                }
+                lineStart = rFile.getFilePointer();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void wordMeaningLanguages(String word,String language){
+        String searchWord = word;
+        ArrayList<String> foundLanguages = new ArrayList<String>();
+        ArrayList<String> foundInFiles = new ArrayList<String>();
+        File folder = new File("GraphFiles");
+        File[] listOfFiles = folder.listFiles();
+
+        for (File file : listOfFiles) {
+            if (file.isFile() && file.getName().matches(language + "-")) {
+                try {
+                    Scanner scanner = new Scanner(file);
+                    while (scanner.hasNextLine()) {
+                        String line = scanner.nextLine();
+                        if (line.contains(searchWord)) {
+                            foundInFiles.add(file.getName());
+                            break;
+                        }
+                    }
+                    scanner.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        for (String fileName : foundInFiles) {
+            String[] splitName = fileName.split("\\.");
+            foundLanguages.add(splitName[splitName.length - 2]);
+            setLanguagesOfMeanings(foundLanguages);
+        }
+    }
+
+    protected void meaningForEditMeaning(String language1, String language2, String word){
+        String filePath = "GraphFiles/" + language1 + "-" + language2 + ".txt";
+        String sWord = word;
+        ArrayList<String> meaningsfeMeaning = new ArrayList<String>();
+        try {
+            File file = new File(filePath);
+            Scanner scanner = new Scanner(file);
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                if (line.startsWith(sWord + ";")) {
+                    String[] splitLine = line.split(";");
+                    String[] splitMeanings = splitLine[1].split("&");
+                    for (String meaning : splitMeanings) {
+                        meaningsfeMeaning.add(meaning);
+                        setMeaningsToEdit(meaningsfeMeaning);
+                    }
+                }
+            }
+            scanner.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void setMeaningsToEdit(ArrayList<String> meaningsToEdit) {
+        this.meaningsToEdit = meaningsToEdit;
+    }
+
+    public ArrayList<String> getLanguagesOfMeanings() {
+        return languagesOfMeanings;
+    }
+
+    public void setLanguagesOfMeanings(ArrayList<String> languagesOfMeanings) {
+        this.languagesOfMeanings = languagesOfMeanings;
     }
 
     public ArrayList<String> getFilePaths() {
