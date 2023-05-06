@@ -47,12 +47,12 @@ public class Functions implements Runnable {
             boolean isFound = false;
             while (reader.hasNext()){
                 String data = reader.nextLine();
-
-                //  data.split(";")[0] -> Word that we are looking for
-                // TODO: Burayla ilgili bir sıkıntı var hallet
-                if (data.split(";")[0].toLowerCase(Locale.ENGLISH).equals(target)) {
-                    foundWords.add(data);
-                    isFound = true;
+                String[] splitData = data.split(";");
+                if (splitData.length > 0) {
+                    if (splitData[0].toLowerCase(Locale.ENGLISH).equals(target)) {
+                        foundWords.add(data);
+                        isFound = true;
+                    }
                 }
                 if (isFound) {
                     goAFewLine++;
