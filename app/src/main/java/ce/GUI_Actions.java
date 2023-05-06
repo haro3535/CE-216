@@ -575,9 +575,7 @@ public class GUI_Actions {
 
         ObservableList<String> list = FXCollections.observableArrayList();
 
-        for (String str : languagesOfMeanings) {
-            list.add(str);
-        }
+        list.addAll(languagesOfMeanings);
         ListView<String> myListView = new ListView<>(list);
         myListView.setPrefHeight(350);
         myListView.setPrefWidth(630);
@@ -674,12 +672,10 @@ public class GUI_Actions {
 
         ObservableList<String> list = FXCollections.observableArrayList();
 
-        for (String str : meaningsToEdit) {
-            list.add(str);
-        }
+        list.addAll(meaningsToEdit);
         ListView<String> myListView = new ListView<>();
         myListView.getItems().add("New meaning");
-        myListView.getItems().add(String.valueOf(list));
+        myListView.getItems().addAll(list);
         myListView.setPrefHeight(350);
         myListView.setPrefWidth(630);
         myListView.setMaxWidth(630);
@@ -1521,9 +1517,9 @@ public class GUI_Actions {
                 }
             }
         }
-
         for (String fileName : foundInFiles) {
             String[] splitName = fileName.split("\\.");
+            System.out.println(splitName.length-2);
             foundLanguages.add(splitName[splitName.length - 2]);
             setLanguagesOfMeanings(foundLanguages);
         }
