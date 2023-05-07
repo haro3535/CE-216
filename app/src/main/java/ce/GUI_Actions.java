@@ -686,7 +686,10 @@ public class GUI_Actions {
             }
             list.add(value);
         }
-        myListView.getItems().add("New meaning");
+        if (meaningsToEdit.size()==0)
+            myListView.getItems().add("There is no meaning!");
+        else
+            myListView.getItems().add("New meaning");
         myListView.getItems().addAll(list);
         myListView.setPrefHeight(350);
         myListView.setPrefWidth(630);
@@ -708,7 +711,10 @@ public class GUI_Actions {
         selectButton.setOnAction(event -> {
             // TODO: meaning için bura değişecek
             buildText = new StringBuilder();
-            editingChosenMeaning(stage,scene,word,selectedMeaning[0],language1,language2);
+            if(selectedMeaning[0].equals("There is no meaning!"))
+                editChoosingLanguage(stage,scene,word,language1);
+            else
+                editingChosenMeaning(stage,scene,word,selectedMeaning[0],language1,language2);
         });
 
         listBox.getChildren().addAll(selectMeaningLabel,myListView, selectButton);

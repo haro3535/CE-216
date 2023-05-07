@@ -41,7 +41,7 @@ public class App extends Application {
         BorderPane borderPane = new BorderPane();
         Scene scene = new Scene(borderPane, 650, 600);
         stage.setTitle("Team 6");
-        File file = new File("Team6DLogo16.png");
+        File file = new File("T6DictionaryLogo.png");
 
         Image image = new Image(new FileInputStream(file.getAbsolutePath()));
         stage.getIcons().add(image);
