@@ -1655,16 +1655,8 @@ public class GUI_Actions {
         this.meaningsToEdit = meaningsToEdit;
     }
 
-    public ArrayList<String> getLanguagesOfMeanings() {
-        return languagesOfMeanings;
-    }
-
     public void setLanguagesOfMeanings(ArrayList<String> languagesOfMeanings) {
         this.languagesOfMeanings = languagesOfMeanings;
-    }
-
-    public ArrayList<String> getFilePaths() {
-        return filePaths;
     }
 
     public void setFilePaths(ArrayList<String> filePaths) {
