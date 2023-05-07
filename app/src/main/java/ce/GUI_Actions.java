@@ -1332,10 +1332,13 @@ public class GUI_Actions {
         String mLanguage = language2;
         String filePath = "GraphFiles/" + wLanguage + "-" + mLanguage + ".txt";
         String word = aWord.toLowerCase(Locale.ROOT); // the new word you want to add
-        String[] meanings = textArea2.getText().split("\\n"); // the meanings of the new word
-        String[] synonyms =  textArea1.getText().split("\\n"); // the synonyms of the new word
+        String[] meanings = textArea2.getText().split("\n"); // the meanings of the new word
+        String[] synonyms =  textArea1.getText().split("\n"); // the synonyms of the new word
 
-        try (RandomAccessFile rFile = new RandomAccessFile(filePath, "rw")) {
+        try (RandomAccessFile rFile = new RandomAccessFile(filePath, "rw");
+             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(rFile.getFD()), StandardCharsets.UTF_8));
+             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(rFile.getFD()), StandardCharsets.UTF_8))) {
+
             StringBuilder newLine = new StringBuilder(word + ";");
             for (int i = 0; i < meanings.length; i++) {
                 newLine.append(meanings[i]);
@@ -1353,7 +1356,7 @@ public class GUI_Actions {
 
             String line;
             long lastLinePos = 0;
-            while ((line = rFile.readLine()) != null) {
+            while ((line = reader.readLine()) != null) {
                 if (line.compareTo(newLine.toString()) > 0) {
                     break;
                 }
@@ -1364,7 +1367,8 @@ public class GUI_Actions {
             rFile.seek(lastLinePos);
             rFile.readFully(remainingBytes);
             rFile.seek(lastLinePos);
-            rFile.writeBytes(newLine.toString());
+            writer.write(newLine.toString());
+            writer.flush();
             rFile.write(remainingBytes);
         } catch (IOException e) {
             e.printStackTrace();
