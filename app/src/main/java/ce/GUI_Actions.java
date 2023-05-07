@@ -1318,7 +1318,7 @@ public class GUI_Actions {
         String wLanguage = language1;
         String mLanguage = language2;
         String filePath = "GraphFiles/" + wLanguage + "-" + mLanguage + ".txt";
-        String word = aWord; // the new word you want to add
+        String word = aWord.toLowerCase(Locale.ROOT); // the new word you want to add
         String[] meanings = textArea2.getText().split("\\n"); // the meanings of the new word
         String[] synonyms =  textArea1.getText().split("\\n"); // the synonyms of the new word
 
@@ -1361,7 +1361,7 @@ public class GUI_Actions {
 
     protected void findWordSynonym(String wLanguage, String sWord) throws IOException {
         String filePath;
-        String searchWord = sWord;
+        String searchWord = sWord.toLowerCase();
         String language = wLanguage;
         String tempFileName = "";
         boolean tempIsFound = false;
@@ -1499,7 +1499,7 @@ public class GUI_Actions {
         String wLanguage = language1;
         String mLanguage = language2;
         String filePath = "GraphFiles/" + wLanguage + "-" + mLanguage + ".txt";
-        String cWord = word; // the word whose meanings you want to change
+        String cWord = word.toLowerCase(); // the word whose meanings you want to change
         String oldMeaning = oMeaning;
         String newMeaning = nMeaning; // the new meanings of the word
         int position = 1; // specify the position where you want to add the new meaning
@@ -1596,7 +1596,7 @@ public class GUI_Actions {
     }
 
     protected void wordMeaningLanguages(String word,String language){
-        String searchWord = word;
+        String searchWord = word.toLowerCase();
         ArrayList<String> foundLanguages = new ArrayList<>();
         ArrayList<String> foundInFiles = new ArrayList<>();
         File folder = new File("GraphFiles");
@@ -1629,7 +1629,7 @@ public class GUI_Actions {
 
     protected void meaningForEditMeaning(String language1, String language2, String word){
         String filePath = "GraphFiles/" + language1 + "-" + language2 + ".txt";
-        String sWord = word;
+        String sWord = word.toLowerCase();
         ArrayList<String> meaningsfeMeaning = new ArrayList<>();
         try {
             RandomAccessFile file = new RandomAccessFile(filePath, "r");
@@ -1649,7 +1649,6 @@ public class GUI_Actions {
             e.printStackTrace();
         }
     }
-
 
     public void setMeaningsToEdit(ArrayList<String> meaningsToEdit) {
         this.meaningsToEdit = meaningsToEdit;
