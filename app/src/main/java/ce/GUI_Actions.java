@@ -246,22 +246,33 @@ public class GUI_Actions {
         searchingText.setOnKeyPressed(event -> {
             if (event.getCode().equals(KeyCode.ENTER))
             {
+                if(searchingText.getText().isEmpty()){
+                    String st = "Please fill the text field.";
+                    handle(stage,st);
+                }
+                else {
                 xmlMethodsArrayList.clear();
                 buildText = new StringBuilder();
                 languageAndWord.clear();
                 searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
-                firstSearchScene(stage,searchingText,scene);
+                firstSearchScene(stage,searchingText,scene);}
             }
         });
 
         Button searchButton = new Button("Search");
         HBox.setMargin(searchButton, new Insets(0,40,0,40));
         searchButton.setOnAction(event -> {
-            xmlMethodsArrayList.clear();
-            buildText = new StringBuilder();
-            languageAndWord.clear();
-            searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
-            firstSearchScene(stage,searchingText,scene);
+            if(searchingText.getText().isEmpty()){
+                String st = "Please fill the text field.";
+                handle(stage,st);
+            }
+            else {
+                xmlMethodsArrayList.clear();
+                buildText = new StringBuilder();
+                languageAndWord.clear();
+                searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
+                firstSearchScene(stage,searchingText,scene);}
+
         });
 
 
@@ -290,10 +301,14 @@ public class GUI_Actions {
         Button selectButton = new Button("Select");
         VBox.setMargin(selectButton, new Insets(20,585,0,0));
         selectButton.setOnAction(event -> {
-            // TODO: ingilizce için burayı değiştiricen
+            if (selectedLanguage[0]==null){
+                String st = "Please choose a language from the list.";
+                handle(stage,st);
+            }
+            else {
             buildText = new StringBuilder();
             findMeaningOverEnglish(selectedLanguage[0].toLowerCase(Locale.ENGLISH),searchingText.getText().toLowerCase(Locale.ENGLISH));
-            choosingLanguage(textField, stage, scene, selectedLanguage[0]);
+            choosingLanguage(textField, stage, scene, selectedLanguage[0]);}
         });
 
 
@@ -382,22 +397,32 @@ public class GUI_Actions {
         searchingText.setOnKeyPressed(event -> {
             if (event.getCode().equals(KeyCode.ENTER))
             {
-                xmlMethodsArrayList.clear();
-                buildText = new StringBuilder();
-                languageAndWord.clear();
-                searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
-                firstSearchScene(stage,searchingText,scene);
+                if(searchingText.getText().isEmpty()){
+                    String st = "Please fill the text field.";
+                    handle(stage,st);
+                }
+                else {
+                    xmlMethodsArrayList.clear();
+                    buildText = new StringBuilder();
+                    languageAndWord.clear();
+                    searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
+                    firstSearchScene(stage,searchingText,scene);}
             }
         });
 
         Button searchButton = new Button("Search");
         HBox.setMargin(searchButton, new Insets(0,40,0,40));
         searchButton.setOnAction(event -> {
-            xmlMethodsArrayList.clear();
-            buildText = new StringBuilder();
-            languageAndWord.clear();
-            searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
-            firstSearchScene(stage, searchingText, scene);
+            if(searchingText.getText().isEmpty()){
+                String st = "Please fill the text field.";
+                handle(stage,st);
+            }
+            else {
+                xmlMethodsArrayList.clear();
+                buildText = new StringBuilder();
+                languageAndWord.clear();
+                searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
+                firstSearchScene(stage,searchingText,scene);}
         });
 
         Label chosenLanguageLabel = new Label("Meanings: ");
@@ -627,9 +652,14 @@ public class GUI_Actions {
         Button selectButton = new Button("Select");
         VBox.setMargin(selectButton, new Insets(20,585,0,0));
         selectButton.setOnAction(event -> {
+            if (selectedLanguage[0]==null){
+                String st = "Please choose a language from list.";
+                handle(stage,st);
+            }
+            else {
             buildText = new StringBuilder();
             meaningForEditMeaning(language1,selectedLanguage[0],word);
-            showingMeanings(stage,scene,word,language1,selectedLanguage[0]);
+            showingMeanings(stage,scene,word,language1,selectedLanguage[0]);}
         });
 
         listBox.getChildren().addAll(selectMeaningLabel,myListView, selectButton);
@@ -739,12 +769,16 @@ public class GUI_Actions {
         Button selectButton = new Button("Select");
         VBox.setMargin(selectButton, new Insets(20,585,0,0));
         selectButton.setOnAction(event -> {
-            // TODO: meaning için bura değişecek
+            if(selectedMeaning[0]==null){
+                String st = "Please choose a meaning from list.";
+                handle(stage,st);
+            }
+            else{
             buildText = new StringBuilder();
             if(selectedMeaning[0].equals("There is no meaning!"))
                 editChoosingLanguage(stage,scene,word,language1);
             else
-                editingChosenMeaning(stage,scene,word,selectedMeaning[0],language1,language2);
+                editingChosenMeaning(stage,scene,word,selectedMeaning[0],language1,language2);}
         });
 
         listBox.getChildren().addAll(selectMeaningLabel,myListView, selectButton);
@@ -759,13 +793,7 @@ public class GUI_Actions {
         chooseLabel.setPadding(new Insets(0,100,0,0));
         Button backButton = new Button("Back");
         HBox.setMargin(backButton, new Insets(0,20,5,5));
-        backButton.setOnAction(event -> {
-            try {
-                editMeaning(stage, scene);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        });
+        backButton.setOnAction(event -> editChoosingLanguage(stage, scene, word, language1));
         lastBox.getChildren().addAll(backButton, chooseLabel);
         borderPane.setBottom(lastBox);
 
