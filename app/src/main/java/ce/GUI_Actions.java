@@ -783,9 +783,9 @@ public class GUI_Actions {
         buttonsBox.setAlignment(Pos.TOP_CENTER);
 
         Label noteLabel = new Label("""
-                Add - Adding a new meaning.
-                Edit - Editing chosen meaning.
-                Remove - Removing chosen meaning.
+                To Add - Delete 'New meaning' and write your meaning.
+                To Edit - Delete meaning and write meaning which will replace old meaning.
+                To Remove - Just delete meaning.
                 Note: If you want to add more meaning write line by line.""");
         noteLabel.setPadding(new Insets(50,40,50,0));
 
@@ -794,16 +794,15 @@ public class GUI_Actions {
         if(!meaning.equals("New Meaning"))
             textArea.setText(meaning);
 
-        Button addButton = new Button("Add");
-        VBox.setMargin(addButton,new Insets(80,0,0,0));
+
         Button editButton = new Button("Edit");
-        VBox.setMargin(editButton,new Insets(30,0,30,0));
-        editButton.setOnAction(event -> editWordMeaning(language1,language2,word,meaning,textArea.getText()));
-        Button removeButton = new Button("Remove");
+        VBox.setMargin(editButton,new Insets(130,0,0,0));
+
+        editButton.setOnAction(event -> editWordMeaning(language1,language2,word,meaning,textArea.getText(), stage, scene));
 
         HBox.setMargin(buttonsBox,new Insets(0,0,0,30));
 
-        buttonsBox.getChildren().addAll(addButton,editButton,removeButton);
+        buttonsBox.getChildren().addAll(editButton);
         textAndButtonBox.getChildren().addAll(textArea,buttonsBox);
         mainBox.getChildren().addAll(noteLabel,textAndButtonBox);
         borderPane.setCenter(mainBox);
@@ -1496,7 +1495,7 @@ public class GUI_Actions {
         }
     }
 
-    protected void editWordMeaning(String language1, String language2,String word, String oMeaning, String nMeaning){
+    protected void editWordMeaning(String language1, String language2,String word, String oMeaning, String nMeaning, Stage stage, Scene scene){
         String wLanguage = language1;
         String mLanguage = language2;
         String filePath = "GraphFiles/" + wLanguage + "-" + mLanguage + ".txt";
@@ -1588,6 +1587,11 @@ public class GUI_Actions {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+        try {
+            backToMainScreen(stage, scene);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
