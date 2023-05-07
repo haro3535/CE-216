@@ -1099,8 +1099,30 @@ public class GUI_Actions {
             }
         textArea.setText(stringBuilder.toString());
         }
-        else
-            textArea.setText("https://www.instagram.com/oguz_tavur/");
+        else{
+            StringBuilder stringBuilder = new StringBuilder();
+            BufferedReader reader = null;
+            try {
+                reader = new BufferedReader(new FileReader("Contacts.txt"));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            try {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    stringBuilder.append(line).append("\n");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            textArea.setText(stringBuilder.toString());
+        }
         textArea.setFont(new Font(15));
         textArea.setWrapText(true);
         textArea.setEditable(false);
