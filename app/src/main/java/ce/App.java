@@ -45,12 +45,12 @@ public class App extends Application {
         stage.show();
 
         MenuBar mainMenuBar = new MenuBar();
-        Menu mHelp = new Menu("Help");
+        Menu mAbout = new Menu("About");
         Menu mAdd = new Menu("Actions");
-        mainMenuBar.getMenus().addAll(mHelp, mAdd);
+        mainMenuBar.getMenus().addAll(mAbout, mAdd);
 
-        MenuItem mManualItem = new MenuItem("User Manual");
-        mManualItem.setOnAction(event -> actions.helpMenu(stage,scene,1));
+        MenuItem mHelpItem = new MenuItem("Help");
+        mHelpItem.setOnAction(event -> actions.helpMenu(stage,scene,1));
 
         MenuItem mContactItem = new MenuItem("Contacts");
         mContactItem.setOnAction(event -> actions.helpMenu(stage,scene,2));
@@ -76,7 +76,7 @@ public class App extends Application {
             }
         });
 
-        mHelp.getItems().addAll(mManualItem,mContactItem);
+        mAbout.getItems().addAll(mHelpItem,mContactItem);
         mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
 
         borderPane.setTop(mainMenuBar);

@@ -45,12 +45,12 @@ public class GUI_Actions {
         BorderPane borderPane = new BorderPane();
 
         MenuBar mainMenuBar = new MenuBar();
-        Menu mHelp = new Menu("Help");
+        Menu mAbout = new Menu("About");
         Menu mAdd = new Menu("Actions");
-        mainMenuBar.getMenus().addAll(mHelp, mAdd);
+        mainMenuBar.getMenus().addAll(mAbout, mAdd);
 
-        MenuItem mManualItem = new MenuItem("User Manual");
-        mManualItem.setOnAction(event -> helpMenu(stage,scene,1));
+        MenuItem mHelpItem = new MenuItem("Help");
+        mHelpItem.setOnAction(event -> helpMenu(stage,scene,1));
 
         MenuItem mContactItem = new MenuItem("Contacts");
         mContactItem.setOnAction(event -> helpMenu(stage,scene,2));
@@ -76,7 +76,7 @@ public class GUI_Actions {
             }
         });
 
-        mHelp.getItems().addAll(mManualItem,mContactItem);
+        mAbout.getItems().addAll(mHelpItem,mContactItem);
         mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
 
         borderPane.setTop(mainMenuBar);
@@ -174,12 +174,12 @@ public class GUI_Actions {
 
 
         MenuBar mainMenuBar = new MenuBar();
-        Menu mHelp = new Menu("Help");
+        Menu mAbout = new Menu("About");
         Menu mAdd = new Menu("Actions");
-        mainMenuBar.getMenus().addAll(mHelp, mAdd);
+        mainMenuBar.getMenus().addAll(mAbout, mAdd);
 
-        MenuItem mManualItem = new MenuItem("User Manual");
-        mManualItem.setOnAction(event -> helpMenu(stage,scene,1));
+        MenuItem mHelpItem = new MenuItem("Help");
+        mHelpItem.setOnAction(event -> helpMenu(stage,scene,1));
 
         MenuItem mContactItem = new MenuItem("Contacts");
         mContactItem.setOnAction(event -> helpMenu(stage,scene,2));
@@ -205,7 +205,7 @@ public class GUI_Actions {
             }
         });
 
-        mHelp.getItems().addAll(mManualItem,mContactItem);
+        mAbout.getItems().addAll(mHelpItem,mContactItem);
         mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
 
         borderPane.setTop(mainMenuBar);
@@ -310,12 +310,12 @@ public class GUI_Actions {
         BorderPane borderPane = new BorderPane();
 
         MenuBar mainMenuBar = new MenuBar();
-        Menu mHelp = new Menu("Help");
+        Menu mAbout = new Menu("About");
         Menu mAdd = new Menu("Actions");
-        mainMenuBar.getMenus().addAll(mHelp, mAdd);
+        mainMenuBar.getMenus().addAll(mAbout, mAdd);
 
-        MenuItem mManualItem = new MenuItem("User Manual");
-        mManualItem.setOnAction(event -> helpMenu(stage,scene,1));
+        MenuItem mHelpItem = new MenuItem("Help");
+        mHelpItem.setOnAction(event -> helpMenu(stage,scene,1));
 
         MenuItem mContactItem = new MenuItem("Contacts");
         mContactItem.setOnAction(event -> helpMenu(stage,scene,2));
@@ -341,7 +341,7 @@ public class GUI_Actions {
             }
         });
 
-        mHelp.getItems().addAll(mManualItem,mContactItem);
+        mAbout.getItems().addAll(mHelpItem,mContactItem);
         mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
 
         borderPane.setTop(mainMenuBar);
@@ -417,16 +417,15 @@ public class GUI_Actions {
     }
 
     public void editMeaning (Stage stage, Scene scene) throws FileNotFoundException {
-
         BorderPane borderPane = new BorderPane();
 
         MenuBar mainMenuBar = new MenuBar();
-        Menu mHelp = new Menu("Help");
+        Menu mAbout = new Menu("About");
         Menu mAdd = new Menu("Actions");
-        mainMenuBar.getMenus().addAll(mHelp, mAdd);
+        mainMenuBar.getMenus().addAll(mAbout, mAdd);
 
-        MenuItem mManualItem = new MenuItem("User Manual");
-        mManualItem.setOnAction(event -> helpMenu(stage,scene,1));
+        MenuItem mHelpItem = new MenuItem("Help");
+        mHelpItem.setOnAction(event -> helpMenu(stage,scene,1));
 
         MenuItem mContactItem = new MenuItem("Contacts");
         mContactItem.setOnAction(event -> helpMenu(stage,scene,2));
@@ -452,7 +451,7 @@ public class GUI_Actions {
             }
         });
 
-        mHelp.getItems().addAll(mManualItem,mContactItem);
+        mAbout.getItems().addAll(mHelpItem,mContactItem);
         mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
 
         borderPane.setTop(mainMenuBar);
@@ -531,14 +530,13 @@ public class GUI_Actions {
     public void editChoosingLanguage(Stage stage, Scene scene, String word, String language1){
         BorderPane borderPane = new BorderPane();
 
-
         MenuBar mainMenuBar = new MenuBar();
-        Menu mHelp = new Menu("Help");
+        Menu mAbout = new Menu("About");
         Menu mAdd = new Menu("Actions");
-        mainMenuBar.getMenus().addAll(mHelp, mAdd);
+        mainMenuBar.getMenus().addAll(mAbout, mAdd);
 
-        MenuItem mManualItem = new MenuItem("User Manual");
-        mManualItem.setOnAction(event -> helpMenu(stage,scene,1));
+        MenuItem mHelpItem = new MenuItem("Help");
+        mHelpItem.setOnAction(event -> helpMenu(stage,scene,1));
 
         MenuItem mContactItem = new MenuItem("Contacts");
         mContactItem.setOnAction(event -> helpMenu(stage,scene,2));
@@ -564,7 +562,7 @@ public class GUI_Actions {
             }
         });
 
-        mHelp.getItems().addAll(mManualItem,mContactItem);
+        mAbout.getItems().addAll(mHelpItem,mContactItem);
         mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
 
         borderPane.setTop(mainMenuBar);
@@ -631,12 +629,12 @@ public class GUI_Actions {
         BorderPane borderPane = new BorderPane();
 
         MenuBar mainMenuBar = new MenuBar();
-        Menu mHelp = new Menu("Help");
+        Menu mAbout = new Menu("About");
         Menu mAdd = new Menu("Actions");
-        mainMenuBar.getMenus().addAll(mHelp, mAdd);
+        mainMenuBar.getMenus().addAll(mAbout, mAdd);
 
-        MenuItem mManualItem = new MenuItem("User Manual");
-        mManualItem.setOnAction(event -> helpMenu(stage,scene,1));
+        MenuItem mHelpItem = new MenuItem("Help");
+        mHelpItem.setOnAction(event -> helpMenu(stage,scene,1));
 
         MenuItem mContactItem = new MenuItem("Contacts");
         mContactItem.setOnAction(event -> helpMenu(stage,scene,2));
@@ -662,7 +660,7 @@ public class GUI_Actions {
             }
         });
 
-        mHelp.getItems().addAll(mManualItem,mContactItem);
+        mAbout.getItems().addAll(mHelpItem,mContactItem);
         mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
 
         borderPane.setTop(mainMenuBar);
@@ -741,12 +739,12 @@ public class GUI_Actions {
 
 
         MenuBar mainMenuBar = new MenuBar();
-        Menu mHelp = new Menu("Help");
+        Menu mAbout = new Menu("About");
         Menu mAdd = new Menu("Actions");
-        mainMenuBar.getMenus().addAll(mHelp, mAdd);
+        mainMenuBar.getMenus().addAll(mAbout, mAdd);
 
-        MenuItem mManualItem = new MenuItem("User Manual");
-        mManualItem.setOnAction(event -> helpMenu(stage,scene,1));
+        MenuItem mHelpItem = new MenuItem("Help");
+        mHelpItem.setOnAction(event -> helpMenu(stage,scene,1));
 
         MenuItem mContactItem = new MenuItem("Contacts");
         mContactItem.setOnAction(event -> helpMenu(stage,scene,2));
@@ -772,7 +770,7 @@ public class GUI_Actions {
             }
         });
 
-        mHelp.getItems().addAll(mManualItem,mContactItem);
+        mAbout.getItems().addAll(mHelpItem,mContactItem);
         mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
 
         borderPane.setTop(mainMenuBar);
@@ -831,12 +829,12 @@ public class GUI_Actions {
         BorderPane borderPane = new BorderPane();
 
         MenuBar mainMenuBar = new MenuBar();
-        Menu mHelp = new Menu("Help");
+        Menu mAbout = new Menu("About");
         Menu mAdd = new Menu("Actions");
-        mainMenuBar.getMenus().addAll(mHelp, mAdd);
+        mainMenuBar.getMenus().addAll(mAbout, mAdd);
 
-        MenuItem mManualItem = new MenuItem("User Manual");
-        mManualItem.setOnAction(event -> helpMenu(stage,scene,1));
+        MenuItem mHelpItem = new MenuItem("Help");
+        mHelpItem.setOnAction(event -> helpMenu(stage,scene,1));
 
         MenuItem mContactItem = new MenuItem("Contacts");
         mContactItem.setOnAction(event -> helpMenu(stage,scene,2));
@@ -862,7 +860,7 @@ public class GUI_Actions {
             }
         });
 
-        mHelp.getItems().addAll(mManualItem,mContactItem);
+        mAbout.getItems().addAll(mHelpItem,mContactItem);
         mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
 
         borderPane.setTop(mainMenuBar);
@@ -945,12 +943,12 @@ public class GUI_Actions {
         BorderPane borderPane = new BorderPane();
 
         MenuBar mainMenuBar = new MenuBar();
-        Menu mHelp = new Menu("Help");
+        Menu mAbout = new Menu("About");
         Menu mAdd = new Menu("Actions");
-        mainMenuBar.getMenus().addAll(mHelp, mAdd);
+        mainMenuBar.getMenus().addAll(mAbout, mAdd);
 
-        MenuItem mManualItem = new MenuItem("User Manual");
-        mManualItem.setOnAction(event -> helpMenu(stage,scene,1));
+        MenuItem mHelpItem = new MenuItem("Help");
+        mHelpItem.setOnAction(event -> helpMenu(stage,scene,1));
 
         MenuItem mContactItem = new MenuItem("Contacts");
         mContactItem.setOnAction(event -> helpMenu(stage,scene,2));
@@ -976,7 +974,7 @@ public class GUI_Actions {
             }
         });
 
-        mHelp.getItems().addAll(mManualItem,mContactItem);
+        mAbout.getItems().addAll(mHelpItem,mContactItem);
         mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
 
         borderPane.setTop(mainMenuBar);
@@ -1035,12 +1033,12 @@ public class GUI_Actions {
         BorderPane borderPane = new BorderPane();
 
         MenuBar mainMenuBar = new MenuBar();
-        Menu mHelp = new Menu("Help");
+        Menu mAbout = new Menu("About");
         Menu mAdd = new Menu("Actions");
-        mainMenuBar.getMenus().addAll(mHelp, mAdd);
+        mainMenuBar.getMenus().addAll(mAbout, mAdd);
 
-        MenuItem mManualItem = new MenuItem("User Manual");
-        mManualItem.setOnAction(event -> helpMenu(stage,scene,1));
+        MenuItem mHelpItem = new MenuItem("Help");
+        mHelpItem.setOnAction(event -> helpMenu(stage,scene,1));
 
         MenuItem mContactItem = new MenuItem("Contacts");
         mContactItem.setOnAction(event -> helpMenu(stage,scene,2));
@@ -1066,7 +1064,7 @@ public class GUI_Actions {
             }
         });
 
-        mHelp.getItems().addAll(mManualItem,mContactItem);
+        mAbout.getItems().addAll(mHelpItem,mContactItem);
         mAdd.getItems().addAll(mAddItem,mEditItem,mFindSynonym);
 
         borderPane.setTop(mainMenuBar);
@@ -1077,8 +1075,30 @@ public class GUI_Actions {
 
 
         TextArea textArea = new TextArea();// TODO: buraya eş anlamlar çıkarılacak
-        if (integer == 1)
-            textArea.setText("asdfhjgkhl");
+        if (integer == 1){
+            StringBuilder stringBuilder = new StringBuilder();
+            BufferedReader reader = null;
+            try {
+                reader = new BufferedReader(new FileReader("UserManual.txt"));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            try {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    stringBuilder.append(line).append("\n");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        textArea.setText(stringBuilder.toString());
+        }
         else
             textArea.setText("https://www.instagram.com/oguz_tavur/");
         textArea.setFont(new Font(15));
