@@ -2,12 +2,21 @@ package ce;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -16,13 +25,18 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -87,9 +101,9 @@ public class GUI_Actions {
         mainBox.setAlignment(Pos.TOP_CENTER);
 
 
-        Label usingAddWordLabel = new Label("In the first selection box, select the language of the word you wants " +
-                "to enter and write this word in the space below. In the second selection box, write synonyms of the" +
-                " word line by line if there are. In the second selection box, select the language of the meaning you" +
+        Label usingAddWordLabel = new Label("In the first selection box, select the language of the word you want " +
+                "to enter and write this word in the space below. In the second selection box if you want to add synonyms, write synonyms of the" +
+                " word line by line if you want to add multiple synonyms. In the second selection box, select the language of the meaning you" +
                 " want to enter and enter the meaning in the space below. If you want to add more meaning, write line by line.");
         usingAddWordLabel.setWrapText(true);
         usingAddWordLabel.setPadding(new Insets(20,20,0,20));
@@ -136,11 +150,16 @@ public class GUI_Actions {
         Button addMeaningButton = new Button("Add");
         VBox.setMargin(addMeaningButton, new Insets(10,20,0, 590));
         addMeaningButton.setOnAction(event -> {
-            try {
-                addAWordToTxt(languageChoiceBox1.getValue(),languageChoiceBox2.getValue(),ftextA.getText(),stextA,ttextA, stage, scene);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            if(languageChoiceBox1.getValue()==null||languageChoiceBox2.getValue()==null|| ftextA.getText().isEmpty()||ttextA.getText().isEmpty()){
+                String st = "Please choose languages and fill word and meanings part. You can optionally fill in the synonym part.";
+                handle(stage,st);
+           }
+            else {
+                try {
+                    addAWordToTxt(languageChoiceBox1.getValue(),languageChoiceBox2.getValue(),ftextA.getText(),stextA,ttextA, stage, scene);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }}
         });
 
 
@@ -483,18 +502,29 @@ public class GUI_Actions {
         searchingText.setOnKeyPressed(event -> {
             if (event.getCode().equals(KeyCode.ENTER))
             {
-                searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
-                languagesOfMeanings.remove(languageBox.getValue());
-                editChoosingLanguage(stage,scene,searchingText.getText(),languageBox.getValue());
+                if (languageBox.getValue()==null||searchingText.getText().isEmpty()){
+                    String st = "Please choose language and fill the text field.";
+                    handle(stage,st);
+                }
+                else {
+                    searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
+                    languagesOfMeanings.remove(languageBox.getValue());
+                    editChoosingLanguage(stage,scene,searchingText.getText(),languageBox.getValue());}
             }
         });
 
         Button searchButton = new Button("Search");
         HBox.setMargin(searchButton, new Insets(0,40,30,30));
         searchButton.setOnAction(event -> {
-            searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
-            languagesOfMeanings.remove(languageBox.getValue());
-            editChoosingLanguage(stage,scene, searchingText.getText(), languageBox.getValue());
+            if (languageBox.getValue()==null||searchingText.getText().isEmpty()){
+                String st = "Please choose language and fill the text field.";
+                handle(stage,st);
+            }
+            else {
+                searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
+                languagesOfMeanings.remove(languageBox.getValue());
+                editChoosingLanguage(stage,scene,searchingText.getText(),languageBox.getValue());}
+
         });
 
         // To find absolute path of img file
@@ -900,20 +930,32 @@ public class GUI_Actions {
         searchingText.setOnKeyPressed(event -> {
             if (event.getCode().equals(KeyCode.ENTER))
             {
+                if (languageBox.getValue()==null||searchingText.getText().isEmpty()){
+                    String st = "Please choose language and fill the text field.";
+                    handle(stage,st);
+                }
+                else {
                 searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
                 synonyms(stage,scene, searchingText,languageBox.getValue());
-            }
+            }}
         });
 
         Button searchButton = new Button("Search");
         HBox.setMargin(searchButton, new Insets(0,40,30,30));
         searchButton.setOnAction(event -> {
+            if (languageBox.getValue()==null||searchingText.getText().isEmpty()){
+                String st = "Please choose language and fill the text field.";
+                handle(stage,st);
+            }
+            else {
+                searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
+
             try {
                 findWordSynonym(languageBox.getValue(), searchingText.getText());
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            synonyms(stage,scene,searchingText,languageBox.getValue());
+            synonyms(stage,scene,searchingText,languageBox.getValue());}
         });
 
         // To find absolute path of img file
@@ -1662,5 +1704,19 @@ public class GUI_Actions {
 
     public void setSynonyms(ArrayList<String> synonyms) {
         this.synonyms = synonyms;
+    }
+
+    public void handle(Stage stage, String string) {
+        final Stage dialog = new Stage();
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.initOwner(stage);
+        VBox dialogVbox = new VBox(20);
+        Label label = new Label(string);
+        label.setWrapText(true);
+        label.setPadding(new Insets(20,10,0,10));
+        dialogVbox.getChildren().add(label);
+        Scene dialogScene = new Scene(dialogVbox, 300, 100);
+        dialog.setScene(dialogScene);
+        dialog.show();
     }
 }

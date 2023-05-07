@@ -99,16 +99,28 @@ public class App extends Application {
         searchingText.setOnKeyPressed(event -> {
             if (event.getCode().equals(KeyCode.ENTER))
             {
-                actions.searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
-                actions.firstSearchScene(stage,searchingText,scene);
+                if (searchingText.getText().isEmpty()){
+                    String st = "Please fill the text field.";
+                    actions.handle(stage,st);
+                }
+                else {
+                    actions.searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH), "", filePaths, false);
+                    actions.firstSearchScene(stage, searchingText, scene);
+                }
             }
         });
 
         Button searchButton = new Button("Search");
         HBox.setMargin(searchButton, new Insets(0,40,0,40));
         searchButton.setOnAction(event -> {
-            actions.searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
-            actions.firstSearchScene(stage,searchingText,scene);
+            if (searchingText.getText().isEmpty()){
+                String st = "Please fill the text field.";
+                actions.handle(stage,st);
+            }
+            else {
+                actions.searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH), "", filePaths, false);
+                actions.firstSearchScene(stage, searchingText, scene);
+            }
         });
 
         VBox imageBox = new VBox();
