@@ -797,12 +797,14 @@ public class GUI_Actions {
 
         Button editButton = new Button("Edit");
         VBox.setMargin(editButton,new Insets(130,0,0,0));
+        Button removeButton = new Button("Remove");
+        VBox.setMargin(editButton,new Insets(20,0,0,0));
 
         editButton.setOnAction(event -> editWordMeaning(language1,language2,word,meaning,textArea.getText(), stage, scene));
 
         HBox.setMargin(buttonsBox,new Insets(0,0,0,30));
 
-        buttonsBox.getChildren().addAll(editButton);
+        buttonsBox.getChildren().addAll(editButton,removeButton);
         textAndButtonBox.getChildren().addAll(textArea,buttonsBox);
         mainBox.getChildren().addAll(noteLabel,textAndButtonBox);
         borderPane.setCenter(mainBox);

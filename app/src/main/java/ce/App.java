@@ -41,6 +41,10 @@ public class App extends Application {
         BorderPane borderPane = new BorderPane();
         Scene scene = new Scene(borderPane, 650, 600);
         stage.setTitle("Team 6");
+        File file = new File("Team6DLogo16.png");
+
+        Image image = new Image(new FileInputStream(file.getAbsolutePath()));
+        stage.getIcons().add(image);
         stage.setScene(scene);
         stage.show();
 
@@ -113,10 +117,10 @@ public class App extends Application {
         VBox.setMargin(imageBox, new Insets(0,0,120,0));
 
         // To find absolute path of img file
-        File file = new File("Team6_400.png");
+        File file1 = new File("Team6_400.png");
 
-        Image image = new Image(new FileInputStream(file.getAbsolutePath()));
-        ImageView imageView = new ImageView(image);
+        Image image1 = new Image(new FileInputStream(file1.getAbsolutePath()));
+        ImageView imageView = new ImageView(image1);
         imageView.setPreserveRatio(true);
         Group imageGroup = new Group(imageView);
 
