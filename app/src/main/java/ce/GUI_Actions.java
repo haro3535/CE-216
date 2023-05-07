@@ -420,6 +420,8 @@ public class GUI_Actions {
 
     public void editMeaning (Stage stage, Scene scene) throws FileNotFoundException {
         BorderPane borderPane = new BorderPane();
+        languagesOfMeanings.clear();
+        languagesOfMeanings.addAll(List.of(dictionaryLanguages));
 
         MenuBar mainMenuBar = new MenuBar();
         Menu mAbout = new Menu("About");
@@ -482,6 +484,7 @@ public class GUI_Actions {
             if (event.getCode().equals(KeyCode.ENTER))
             {
                 searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
+                languagesOfMeanings.remove(languageBox.getValue());
                 editChoosingLanguage(stage,scene,searchingText.getText(),languageBox.getValue());
             }
         });
@@ -490,6 +493,7 @@ public class GUI_Actions {
         HBox.setMargin(searchButton, new Insets(0,40,30,30));
         searchButton.setOnAction(event -> {
             searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
+            languagesOfMeanings.remove(languageBox.getValue());
             editChoosingLanguage(stage,scene, searchingText.getText(), languageBox.getValue());
         });
 
@@ -797,9 +801,9 @@ public class GUI_Actions {
 
 
         Button editButton = new Button("Edit");
-        VBox.setMargin(editButton,new Insets(130,0,0,0));
+        VBox.setMargin(editButton,new Insets(0,0,20,0));
         Button removeButton = new Button("Remove");
-        VBox.setMargin(editButton,new Insets(20,0,0,0));
+        VBox.setMargin(editButton,new Insets(130,0,0,0));
 
         editButton.setOnAction(event -> editWordMeaning(language1,language2,word,meaning,textArea.getText(), stage, scene));
 
