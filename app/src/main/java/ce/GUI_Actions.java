@@ -55,6 +55,7 @@ public class GUI_Actions {
     private ArrayList<String> meaningsToEdit = new ArrayList<>();
     StringBuilder buildText = new StringBuilder();
     private ArrayList<String> synonyms = new ArrayList<>();
+    private ArrayList<String> wsMeanings = new ArrayList<>();
 
     public void popupMenu (Stage stage, Scene scene){
 
@@ -658,8 +659,12 @@ public class GUI_Actions {
             }
             else {
             buildText = new StringBuilder();
-            meaningForEditMeaning(language1,selectedLanguage[0],word);
-            showingMeanings(stage,scene,word,language1,selectedLanguage[0]);}
+                try {
+                    meaningForEditMeaning(language1,selectedLanguage[0],word);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                showingMeanings(stage,scene,word,language1,selectedLanguage[0]);}
         });
 
         listBox.getChildren().addAll(selectMeaningLabel,myListView, selectButton);
@@ -1691,7 +1696,7 @@ public class GUI_Actions {
         }
     }
 
-    protected void meaningForEditMeaning(String language1, String language2, String word){
+    protected void meaningForEditMeaning(String language1, String language2, String word) throws IOException {
         String filePath = "GraphFiles/" + language1 + "-" + language2 + ".txt";
         String sWord = word.toLowerCase();
         ArrayList<String> meaningsfeMeaning = new ArrayList<>();
@@ -1712,6 +1717,103 @@ public class GUI_Actions {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        if (getMeaningsToEdit().isEmpty()){
+            editMeaningViaEnglish(sWord,language1,language2);
+            setMeaningsToEdit(getWsMeanings());
+        }
+    }
+
+    protected void editMeaningViaEnglish(String word,String language1,String language2) throws IOException {
+        String eWord = word.toLowerCase(); // the word to search for
+        String file1Eng = "GraphFiles/" + language1 + "-eng.txt"; // the file to search in if the word is not found in the first file
+        String engFile2 = "GraphFiles/eng-" + language2 + ".txt"; // the file to search for the meaning's meaning
+
+        List<String> meanings = sFM(eWord, file1Eng);
+        if (meanings != null) {
+            for (String meaning : meanings) {
+                List<String> subMeanings = sFM(meaning, engFile2);
+                if (subMeanings != null) {
+                    ArrayList<String> wantedSubMeanings = new ArrayList<>();
+                    for (int i = 0; i < Math.min(2, subMeanings.size()); i++) {
+                        wantedSubMeanings.add(subMeanings.get(i));
+                    }
+                    setWsMeanings(wantedSubMeanings);
+                }
+            }
+            addAWordToTxt2(language1,language2,eWord);
+        }
+    }
+
+    public static List<String> sFM(String word, String file) {
+        try {
+            List<String> lines = Files.readAllLines(Paths.get(file));
+            for (String line : lines) {
+                String[] parts = line.split(";");
+                String wordInFile = parts[0];
+                if (wordInFile.equals(word)) {
+                    String[] meanings = parts[1].split("&");
+                    return Arrays.asList(meanings);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    protected void addAWordToTxt2(String language1, String language2, String aWord) throws IOException {
+        String wLanguage = language1;
+        String mLanguage = language2;
+        String filePath = "GraphFiles/" + wLanguage + "-" + mLanguage + ".txt";
+        String word = aWord.toLowerCase(Locale.ROOT); // the new word you want to add
+        ArrayList<String> meanings = new ArrayList<>();
+        for (int i = 0; i < getWsMeanings().size(); i++){
+            meanings.add(getWsMeanings().get(i));
+        }
+
+        try (RandomAccessFile rFile = new RandomAccessFile(filePath, "rw");
+             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(rFile.getFD()), StandardCharsets.UTF_8));
+             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(rFile.getFD()), StandardCharsets.UTF_8))) {
+
+            StringBuilder newLine = new StringBuilder(word + ";");
+            for (int i = 0; i < meanings.size(); i++) {
+                newLine.append(meanings.get(i));
+                if (i < meanings.size() - 1) {
+                    newLine.append("&");}
+            }
+            newLine.append(";;\n");
+
+            String line;
+            long lastLinePos = 0;
+            while ((line = reader.readLine()) != null) {
+                if (line.compareTo(newLine.toString()) > 0) {
+                    break;
+                }
+                lastLinePos = rFile.getFilePointer();
+            }
+
+            byte[] remainingBytes = new byte[(int) (rFile.length() - lastLinePos)];
+            rFile.seek(lastLinePos);
+            rFile.readFully(remainingBytes);
+            rFile.seek(lastLinePos);
+            writer.write(newLine.toString());
+            writer.flush();
+            rFile.write(remainingBytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ArrayList<String> getWsMeanings() {
+        return wsMeanings;
+    }
+
+    public void setWsMeanings(ArrayList<String> wsMeanings) {
+        this.wsMeanings = wsMeanings;
+    }
+
+    public ArrayList<String> getMeaningsToEdit() {
+        return meaningsToEdit;
     }
 
     public void setMeaningsToEdit(ArrayList<String> meaningsToEdit) {
