@@ -875,6 +875,13 @@ public class GUI_Actions {
         VBox.setMargin(editButton,new Insets(130,0,0,0));
 
         editButton.setOnAction(event -> editWordMeaning(language1,language2,word,meaning,textArea.getText(), stage, scene));
+        removeButton.setOnAction(event -> {
+            try {
+                deleteMeaning(word,meaning,language1,language2,stage,scene);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
 
         HBox.setMargin(buttonsBox,new Insets(0,0,0,30));
 
@@ -1799,6 +1806,41 @@ public class GUI_Actions {
             writer.write(newLine.toString());
             writer.flush();
             rFile.write(remainingBytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void deleteMeaning(String word, String meaningToD, String language1, String language2,Stage stage, Scene scene) throws IOException {
+        String dWord = word;
+        String dMeaning = meaningToD;
+        String filePath = "GraphFiles/" + language1 + "-" + language2 + ".txt";
+        RandomAccessFile file = new RandomAccessFile(filePath, "rw");
+        StringBuffer inputBuffer = new StringBuffer();
+        String line;
+        while ((line = file.readLine()) != null) {
+            if (line.startsWith(dWord + ";")) {
+                String[] parts = line.split(";");
+                String meanings = parts[1];
+                String[] meaningsArray = meanings.split("&");
+                List<String> newMeaningsList = new ArrayList<>();
+                for (String meaning : meaningsArray) {
+                    if (!meaning.equals(dMeaning)) {
+                        newMeaningsList.add(meaning);
+                    }
+                }
+                String newMeanings = String.join("&", newMeaningsList);
+                inputBuffer.append(dWord + ";" + newMeanings + ";" + parts[2] + ";");
+            } else {
+                inputBuffer.append(line);
+            }
+            inputBuffer.append('\n');
+        }
+        file.setLength(0);
+        file.writeBytes(inputBuffer.toString());
+        file.close();
+        try {
+            backToMainScreen(stage, scene);
         } catch (IOException e) {
             e.printStackTrace();
         }
