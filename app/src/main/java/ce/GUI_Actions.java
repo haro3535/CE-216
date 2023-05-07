@@ -23,6 +23,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class GUI_Actions {
@@ -488,7 +490,6 @@ public class GUI_Actions {
         HBox.setMargin(searchButton, new Insets(0,40,30,30));
         searchButton.setOnAction(event -> {
             searchThreads(searchingText.getText().toLowerCase(Locale.ENGLISH),"",filePaths,false);
-            wordMeaningLanguages(searchingText.getText(),languageBox.getValue());
             editChoosingLanguage(stage,scene, searchingText.getText(), languageBox.getValue());
         });
 
@@ -1515,7 +1516,7 @@ public class GUI_Actions {
                     if (line.startsWith(cWord + ";")) {
                         int firstSemicolonIndex = line.indexOf(";");
                         file.seek(lastLineEnd + firstSemicolonIndex + 1);
-                        String remainingLine = file.readLine();
+                        String remainingLine = new String(file.readLine().getBytes("ISO-8859-1"), "UTF-8");
                         String[] meanings = remainingLine.split("&");
                         StringBuilder sb = new StringBuilder();
                         for (int i = 0; i < meanings.length; i++) {
@@ -1529,15 +1530,15 @@ public class GUI_Actions {
                         }
                         sb.setLength(sb.length() - 1);
                         file.seek(lastLineEnd + firstSemicolonIndex + 1);
-                        file.writeBytes(sb.toString());
+                        file.write(sb.toString().getBytes("UTF-8"));
                         long pointerLocation = file.getFilePointer();
                         StringBuilder remainingFileContent = new StringBuilder();
                         while ((line = file.readLine()) != null) {
-                            remainingFileContent.append("\n").append(line);
+                            remainingFileContent.append("\n").append(new String(line.getBytes("ISO-8859-1"), "UTF-8"));
                         }
                         file.setLength(pointerLocation);
                         file.seek(pointerLocation);
-                        file.writeBytes(remainingFileContent.toString());
+                        file.write(remainingFileContent.toString().getBytes("UTF-8"));
                         break;
                     }
                     lastLineEnd = file.getFilePointer();
@@ -1575,12 +1576,21 @@ public class GUI_Actions {
 
                             // Write the new line followed by the remaining content
                             rFile.seek(lineStart);
-                            rFile.writeBytes(newLine + "\n");
+
+                            // Use BufferedWriter to write the new line to the file
+                            try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath), "UTF-8"))) {
+                                writer.write(newLine);
+                            }
+
                             rFile.write(remainingContent);
                         } else {
                             // Write the new line at the same position as the original line
                             rFile.seek(lineStart);
-                            rFile.writeBytes(newLine);
+
+                            // Use BufferedWriter to write the new line to the file
+                            try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath), "UTF-8"))) {
+                                writer.write(newLine);
+                            }
                         }
                         break;
                     }
@@ -1594,38 +1604,6 @@ public class GUI_Actions {
             backToMainScreen(stage, scene);
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
-
-    protected void wordMeaningLanguages(String word,String language){
-        String searchWord = word.toLowerCase();
-        ArrayList<String> foundLanguages = new ArrayList<>();
-        ArrayList<String> foundInFiles = new ArrayList<>();
-        File folder = new File("GraphFiles");
-        File[] listOfFiles = folder.listFiles();
-
-        for (File file : listOfFiles) {
-            if (file.isFile() && file.getName().contains(language + "-")) {
-                try {
-                    Scanner scanner = new Scanner(file);
-                    while (scanner.hasNextLine()) {
-                        String line = scanner.nextLine();
-                        if (line.contains(searchWord)) {
-                            foundInFiles.add(file.getName());
-                            break;
-                        }
-                    }
-                    scanner.close();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        for (String fileName : foundInFiles) {
-            String[] splitName = fileName.split("\\.");
-            String[] sLanguageList = splitName[0].split("-");
-            foundLanguages.add(sLanguageList[1]);
-            setLanguagesOfMeanings(foundLanguages);
         }
     }
 
