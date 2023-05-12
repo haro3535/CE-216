@@ -2,8 +2,6 @@ package ce;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -25,21 +23,15 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.awt.*;
 import java.io.*;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 public class GUI_Actions {
@@ -310,7 +302,7 @@ public class GUI_Actions {
             else {
             buildText = new StringBuilder();
             findMeaningOverEnglish(selectedLanguage[0].toLowerCase(Locale.ENGLISH),searchingText.getText().toLowerCase(Locale.ENGLISH));
-            choosingLanguage(textField, stage, scene, selectedLanguage[0]);}
+            choosingLanguage(textField, stage, scene);}
         });
 
 
@@ -343,7 +335,7 @@ public class GUI_Actions {
         stage.show();
     }
 
-    public void choosingLanguage (TextField textField, Stage stage, Scene scene, String string){
+    public void choosingLanguage (TextField textField, Stage stage, Scene scene){
 
         BorderPane borderPane = new BorderPane();
 
@@ -1454,12 +1446,11 @@ public class GUI_Actions {
     protected void findWordSynonym(String wLanguage, String sWord) throws IOException {
         String filePath;
         String searchWord = sWord.toLowerCase();
-        String language = wLanguage;
         String tempFileName = "";
         boolean tempIsFound = false;
         ArrayList<String> synonymList = new ArrayList<>();
         Set<String> addedSynonyms = new HashSet<>();
-        if (language.equals("deu")) {
+        if (wLanguage.equals("deu")) {
             filePath = "GraphFiles/deu-eng.txt";
             String content = new String(Files.readAllBytes(Paths.get(filePath)));
             String[] lines = content.split("\n");
@@ -1476,7 +1467,7 @@ public class GUI_Actions {
                     }
                 }
             }
-        } else if (language.equals("eng")) {
+        } else if (wLanguage.equals("eng")) {
             filePath = "GraphFiles/eng-deu.txt";
             String content = new String(Files.readAllBytes(Paths.get(filePath)));
             String[] lines = content.split("\n");
@@ -1493,11 +1484,11 @@ public class GUI_Actions {
                     }
                 }
             }
-        } else if (!language.equals("eng") && !language.equals("deu")) {
+        } else if (!wLanguage.equals("eng") && !wLanguage.equals("deu")) {
             File file = new File("GraphFiles");
             FilenameFilter filter = new FilenameFilter() {
                 public boolean accept(File dir, String name) {
-                    return name.endsWith(".txt") && name.contains(language + "-");
+                    return name.endsWith(".txt") && name.contains(wLanguage + "-");
                 }
             };
 
@@ -1528,7 +1519,7 @@ public class GUI_Actions {
                 }
             }
             else if (!tempIsFound){
-            filePath = "GraphFiles/" + language + "-eng.txt";
+            filePath = "GraphFiles/" + wLanguage + "-eng.txt";
             Set<String> searchWordMeanings = new HashSet<>();
             String content = new String(Files.readAllBytes(Paths.get(filePath)));
             String[] lines = content.split("\n");
@@ -1588,15 +1579,11 @@ public class GUI_Actions {
     }
 
     protected void editWordMeaning(String language1, String language2,String word, String oMeaning, String nMeaning, Stage stage, Scene scene){
-        String wLanguage = language1;
-        String mLanguage = language2;
-        String filePath = "GraphFiles/" + wLanguage + "-" + mLanguage + ".txt";
+        String filePath = "GraphFiles/" + language1 + "-" + language2 + ".txt";
         String cWord = word.toLowerCase(); // the word whose meanings you want to change
-        String oldMeaning = oMeaning;
-        String newMeaning = nMeaning; // the new meanings of the word
         int position = 1; // specify the position where you want to add the new meaning
 
-        if (oldMeaning.equals("New meaning")){
+        if (oMeaning.equals("New meaning")){
             try {
                 RandomAccessFile file = new RandomAccessFile(filePath, "rw");
                 String line;
@@ -1605,29 +1592,29 @@ public class GUI_Actions {
                     if (line.startsWith(cWord + ";")) {
                         int firstSemicolonIndex = line.indexOf(";");
                         file.seek(lastLineEnd + firstSemicolonIndex + 1);
-                        String remainingLine = new String(file.readLine().getBytes("ISO-8859-1"), "UTF-8");
+                        String remainingLine = new String(file.readLine().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
                         String[] meanings = remainingLine.split("&");
                         StringBuilder sb = new StringBuilder();
                         for (int i = 0; i < meanings.length; i++) {
-                            if (i == position - 1) {
-                                sb.append(newMeaning).append("&");
+                            if (i == 0) {
+                                sb.append(nMeaning).append("&");
                             }
                             sb.append(meanings[i]).append("&");
                         }
                         if (position > meanings.length) {
-                            sb.append(newMeaning).append("&");
+                            sb.append(nMeaning).append("&");
                         }
                         sb.setLength(sb.length() - 1);
                         file.seek(lastLineEnd + firstSemicolonIndex + 1);
-                        file.write(sb.toString().getBytes("UTF-8"));
+                        file.write(sb.toString().getBytes(StandardCharsets.UTF_8));
                         long pointerLocation = file.getFilePointer();
                         StringBuilder remainingFileContent = new StringBuilder();
                         while ((line = file.readLine()) != null) {
-                            remainingFileContent.append("\n").append(new String(line.getBytes("ISO-8859-1"), "UTF-8"));
+                            remainingFileContent.append("\n").append(new String(line.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
                         }
                         file.setLength(pointerLocation);
                         file.seek(pointerLocation);
-                        file.write(remainingFileContent.toString().getBytes("UTF-8"));
+                        file.write(remainingFileContent.toString().getBytes(StandardCharsets.UTF_8));
                         break;
                     }
                     lastLineEnd = file.getFilePointer();
@@ -1648,8 +1635,8 @@ public class GUI_Actions {
                         for (int i = 1; i < parts.length - 1; i++) {
                             String[] meanings = parts[i].split("&");
                             for (int j = 0; j < meanings.length; j++) {
-                                if (meanings[j].equals(oldMeaning)) {
-                                    meanings[j] = newMeaning;
+                                if (meanings[j].equals(oMeaning)) {
+                                    meanings[j] = nMeaning;
                                 }
                             }
                             parts[i] = String.join("&", meanings);
@@ -1667,7 +1654,7 @@ public class GUI_Actions {
                             rFile.seek(lineStart);
 
                             // Use BufferedWriter to write the new line to the file
-                            try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath), "UTF-8"))) {
+                            try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath), StandardCharsets.UTF_8))) {
                                 writer.write(newLine);
                             }
 
@@ -1762,14 +1749,9 @@ public class GUI_Actions {
     }
 
     protected void addAWordToTxt2(String language1, String language2, String aWord) throws IOException {
-        String wLanguage = language1;
-        String mLanguage = language2;
-        String filePath = "GraphFiles/" + wLanguage + "-" + mLanguage + ".txt";
+        String filePath = "GraphFiles/" + language1 + "-" + language2 + ".txt";
         String word = aWord.toLowerCase(Locale.ROOT); // the new word you want to add
-        ArrayList<String> meanings = new ArrayList<>();
-        for (int i = 0; i < getWsMeanings().size(); i++){
-            meanings.add(getWsMeanings().get(i));
-        }
+        ArrayList<String> meanings = new ArrayList<>(getWsMeanings());
 
         try (RandomAccessFile rFile = new RandomAccessFile(filePath, "rw");
              BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(rFile.getFD()), StandardCharsets.UTF_8));
