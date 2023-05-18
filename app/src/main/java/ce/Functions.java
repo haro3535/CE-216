@@ -57,10 +57,21 @@ public class Functions implements Runnable {
 
     protected void parseMeanings(ArrayList<String> foundWords){
 
+        if (foundWords == null) {
+            return;
+        }
         for (String data:
              foundWords) {
 
-            String meaningPart = data.split(";")[1];
+            String[] parsData = data.split(";");
+            String meaningPart = "";
+
+            try {
+                meaningPart = data.split(";")[1];
+            }catch (ArrayIndexOutOfBoundsException e){
+                System.out.println("Illegal data found!");
+                continue;
+            }
 
             String[] meanings = meaningPart.split("&");
 

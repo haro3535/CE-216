@@ -1818,6 +1818,18 @@ public class GUI_Actions {
         this.synonyms = synonyms;
     }
 
+    public ArrayList<String> getFilePaths() {
+        return filePaths;
+    }
+
+    public ArrayList<Functions> getXmlMethodsArrayList() {
+        return xmlMethodsArrayList;
+    }
+
+    public List<Thread> getThreads() {
+        return threads;
+    }
+
     public void handle(Stage stage, String string) {
         final Stage dialog = new Stage();
         dialog.initModality(Modality.APPLICATION_MODAL);
