@@ -17,7 +17,7 @@ public class Functions implements Runnable {
     private String word;
     StringBuilder meaningTextContent = new StringBuilder();
 
-    protected void searchWord(){
+    public void searchWord(){
 
         String target = getWord().toLowerCase(Locale.ENGLISH);
 
@@ -55,7 +55,7 @@ public class Functions implements Runnable {
         }
     }
 
-    protected void parseMeanings(ArrayList<String> foundWords){
+    public void parseMeanings(ArrayList<String> foundWords){
 
         if (foundWords == null) {
             return;
@@ -83,7 +83,7 @@ public class Functions implements Runnable {
         }
     }
 
-    protected void mergeMeanings(ArrayList<String> foundWords){
+    public void mergeMeanings(ArrayList<String> foundWords){
 
         int meaningCounter = 1;
         for (int i = 0; i < foundWords.size(); i++) {
@@ -113,7 +113,7 @@ public class Functions implements Runnable {
         meaningTextContent.append("______________________________________\n");
     }
 
-    protected void splitFileName(){
+    public void splitFileName(){
 
         String fileName = filepath;
         char separator = '\\';
