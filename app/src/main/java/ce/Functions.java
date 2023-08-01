@@ -19,13 +19,9 @@ public class Functions implements Runnable {
 
     public void searchWord(){
 
-        String target = getWord().toLowerCase(Locale.ENGLISH);
-
         try {
-
             FileReader fileReader = new FileReader(filepath, StandardCharsets.UTF_8);
             Scanner reader = new Scanner(fileReader);
-
             ArrayList<String> foundWords = new ArrayList<>();
 
             int goAFewLine = 0;
@@ -34,7 +30,7 @@ public class Functions implements Runnable {
                 String data = reader.nextLine();
                 String[] splitData = data.split(";");
                 if (splitData.length > 0) {
-                    if (splitData[0].toLowerCase(Locale.ENGLISH).equals(target)) {
+                    if (splitData[0].toLowerCase(Locale.ENGLISH).equals(getWord().toLowerCase(Locale.ENGLISH))) {
                         foundWords.add(data);
                         isFound = true;
                     }
@@ -46,7 +42,6 @@ public class Functions implements Runnable {
                     }
                 }
             }
-
             parseMeanings(foundWords);
             mergeMeanings(foundWords);
 
@@ -63,7 +58,6 @@ public class Functions implements Runnable {
         for (String data:
              foundWords) {
 
-            String[] parsData = data.split(";");
             String meaningPart = "";
 
             try {
@@ -72,7 +66,6 @@ public class Functions implements Runnable {
                 System.out.println("Illegal data found!");
                 continue;
             }
-
             String[] meanings = meaningPart.split("&");
 
             getMeanings().add(new LinkedList<>());
