@@ -1351,7 +1351,6 @@ public class GUI_Actions {
 
         }
 
-
         threads.clear();
 
         if (!isOverEnglish) {
@@ -1366,8 +1365,6 @@ public class GUI_Actions {
              xmlMethodsArrayList) {
 
             if (xmlClass.getMeanings().size() > 0) {
-
-
 
                 boolean isLanguageExistInArray = false;
                 for (LinkedList<String> strings : languageAndWord) {
@@ -1395,9 +1392,7 @@ public class GUI_Actions {
     }
 
     protected void addAWordToTxt(String language1, String language2, String aWord, TextArea textArea1, TextArea textArea2, Stage stage, Scene scene) throws IOException {
-        String wLanguage = language1;
-        String mLanguage = language2;
-        String filePath = "GraphFiles/" + wLanguage + "-" + mLanguage + ".txt";
+        String filePath = "GraphFiles/" + language1 + "-" + language2 + ".txt";
         String word = aWord.toLowerCase(Locale.ROOT); // the new word you want to add
         String[] meanings = textArea2.getText().split("\n"); // the meanings of the new word
         String[] synonyms =  textArea1.getText().split("\n"); // the synonyms of the new word
@@ -1518,7 +1513,7 @@ public class GUI_Actions {
                     }
                 }
             }
-            else if (!tempIsFound){
+            else {
             filePath = "GraphFiles/" + wLanguage + "-eng.txt";
             Set<String> searchWordMeanings = new HashSet<>();
             String content = new String(Files.readAllBytes(Paths.get(filePath)));
@@ -1528,9 +1523,7 @@ public class GUI_Actions {
                 String word = parts[0];
                 if (word.equals(searchWord)) {
                     String[] meanings = parts[1].split("&");
-                    for (String meaning : meanings) {
-                        searchWordMeanings.add(meaning);
-                    }
+                    Collections.addAll(searchWordMeanings, meanings);
                 }
             }
             for (String line : lines) {
