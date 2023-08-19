@@ -161,7 +161,7 @@ public class App extends Application {
 
         if (files != null) {
 
-            System.out.println(files.length + " File Found!");
+            //System.out.println(files.length + " File Found!");
 
             for (File file:
                     files) {
