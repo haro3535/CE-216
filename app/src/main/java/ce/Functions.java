@@ -109,10 +109,12 @@ public class Functions implements Runnable {
     public void splitFileName(){
 
         String fileName = filepath;
+
         char separator = '\\';
         String[] str_arr= fileName.replaceAll(Pattern.quote(String.valueOf(separator)), "\\\\").split("\\\\");
         String baseName = str_arr[1];
         String[] tokens = baseName.split("[-.]");
+
         setSearchIn(tokens[0]);
         setFoundIn(tokens[1]);
 
